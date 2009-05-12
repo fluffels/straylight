@@ -5,3 +5,4 @@ GraphicsLibrary
 CPPLibrary
 makefile.dep
 ray
+gmon.out
