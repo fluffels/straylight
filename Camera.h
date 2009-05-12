@@ -21,10 +21,10 @@ class Camera
       static const int DEFAULT_HEIGHT = 480;
       static const GLdouble DEFAULT_VIEW_ANGLE;   
    
-      Camera(Vector3<GLdouble>& cop, Vector3<GLdouble>& at,
-             Vector3<GLdouble>& up);
+      Camera(const Vector3<GLdouble>& cop, const Vector3<GLdouble>& at,
+             const Vector3<GLdouble>& up);
              
-      void setResolution(int width, int height, GLdouble viewAngle);
+      void setResolution(int width, int height, const GLdouble& viewAngle);
       
       Ray getRayAt(int x, int y);
       

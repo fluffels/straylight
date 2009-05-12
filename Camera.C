@@ -3,8 +3,8 @@
 const GLdouble Camera::DEFAULT_VIEW_ANGLE = 53.0;
 
 Camera::
-Camera(Vector3<GLdouble>& cop, Vector3<GLdouble>& at,
-       Vector3<GLdouble>& up):
+Camera(const Vector3<GLdouble>& cop, const Vector3<GLdouble>& at,
+       const Vector3<GLdouble>& up):
       _cop(cop)
 {
    _dir = at - _cop;
@@ -20,7 +20,7 @@ Camera(Vector3<GLdouble>& cop, Vector3<GLdouble>& at,
 
 
 void Camera::
-setResolution(int width, int height, GLdouble viewAngle)
+setResolution(int width, int height, const GLdouble& viewAngle)
 {
    _width = width;
    _height = height;
