@@ -19,7 +19,7 @@ getGlobalLightAt(Vector3<GLdouble>& p, Sphere& s,
    }
 
    GLdouble Id[3];
-   Vector3<GLdouble> l = (p - _pos).normalise();
+   Vector3<GLdouble> l = (_pos - p).normalise();
    Vector3<GLdouble> n = s.getNormalAt(p);
    for (int a = 0; a < 3; a++)
    {
@@ -28,16 +28,19 @@ getGlobalLightAt(Vector3<GLdouble>& p, Sphere& s,
    }
 
    GLdouble Is[3];
-   /* See p. 309 of the above mentioned book. */
-   Vector3<GLdouble> r = n * ((l.dot(n)) * 2) - l;
-   Vector3<GLdouble> v = p - COP;
+   /* See p. 309 of the above mentioned book. The vectors below are normalised.
+    * This is to make the dot product work properly. */
+   Vector3<GLdouble> r = n * (l.dot(n) * 2) - l;
+   r = r.normalise();
+   Vector3<GLdouble> v = COP - p;
+   v = v.normalise();
    for (int a = 0; a < 3; a++)
    {
-      /*Is[a] = m->getSpecular(a) * _specular.getCoordinate(0)
-              * max<GLdouble>(pow((r.dot(v)), m->getShininess()), 0);
-      cout << "test: " << pow(r.dot(v), m->getShininess()) << endl;
-      cout << "Specular light " << a << ": " << Is[a] << endl;*/
-      Is[a] = 0.0;
+      GLdouble coeff = m->getSpecular(a) * _specular.getCoordinate(a);
+      GLdouble rv = max<GLdouble>(r.dot(v), 0);
+      GLdouble shiny = pow(rv, m->getShininess());      
+      
+      Is[a] = coeff * shiny;
    }
 
    GLdouble I[3];

@@ -1,6 +1,8 @@
 #ifndef RAYTRACER_H_
 #define RAYTRACER_H_
 
+#include <algorithm>
+
 #include <GL/gl.h>
 
 #include "GraphicsLibrary/Vector3.h"
@@ -10,6 +12,8 @@
 #include "Material.h"
 #include "Scene.h"
 #include "Sphere.h"
+
+using namespace std;
 
 class RayTracer
 {

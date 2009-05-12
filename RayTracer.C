@@ -1,6 +1,6 @@
 #include "RayTracer.h"
 
-const Vector3<GLdouble> RayTracer::COP(0.0, 1.0, 7.0);
+const Vector3<GLdouble> RayTracer::COP(0.0, 0.5, 4.0);
 const Vector3<GLdouble> RayTracer::AT(0.0, 0.0, 0.0);
 const Vector3<GLdouble> RayTracer::UP(0.0, 1.0, 0.0);
 
@@ -19,26 +19,29 @@ RayTracer(int xResolution, int yResolution):
 
    _image = new GLubyte[_xResolution * _yResolution * 3];
 
-   Material redMaterial;
-   redMaterial.setAmbient(1.0, 0.0, 0.0);
-   Sphere redSphere(RED_SPHERE_POS, SPHERE_RADIUS, redMaterial);
+   Material material;
+   material.setShininess(15);
+   material.setSpecular(1.0, 1.0, 1.0);
+   
+   material.setAmbient(1.0, 0.0, 0.0);
+   material.setDiffuse(1.0, 0.0, 0.0);
+   Sphere redSphere(RED_SPHERE_POS, SPHERE_RADIUS, material);
    _scene.addSphere(redSphere);
    
-   Material greenMaterial;
-   greenMaterial.setAmbient(0.0, 1.0, 0.0);
-   Sphere greenSphere(GREEN_SPHERE_POS, SPHERE_RADIUS, greenMaterial);
+   material.setAmbient(0.0, 1.0, 0.0);
+   material.setDiffuse(0.0, 1.0, 0.0);
+   Sphere greenSphere(GREEN_SPHERE_POS, SPHERE_RADIUS, material);
    _scene.addSphere(greenSphere);
    
-   Material blueMaterial;
-   blueMaterial.setAmbient(0.0, 0.0, 1.0);
-   Sphere blueSphere(BLUE_SPHERE_POS, SPHERE_RADIUS, blueMaterial);
+   material.setAmbient(0.0, 0.0, 1.0);
+   material.setDiffuse(0.0, 0.0, 1.0);
+   Sphere blueSphere(BLUE_SPHERE_POS, SPHERE_RADIUS, material);
    _scene.addSphere(blueSphere);
    
-   _light.setAmbient(0.4, 0.4, 0.4);
-   _light.setDiffuse(1.0, 1.0, 1.0);
+   _light.setAmbient(0.6, 0.6, 0.6);
+   _light.setDiffuse(0.6, 0.6, 0.6);
    _light.setSpecular(1.0, 1.0, 1.0);
-   _light.setPosition(0.0, 0.0, 0.0);
-
+   _light.setPosition(2.0, 5.0, 0.0);
 }
 
 RayTracer::
@@ -66,7 +69,7 @@ castRays()
 
          for (int a = 0; a < 3; a++)
          {
-            p[a] = colour.getCoordinate(a) * 255;
+            p[a] = min<GLdouble>(colour.getCoordinate(a), 1.0) * 255;
          }
 
          glRasterPos2d(x, y);
