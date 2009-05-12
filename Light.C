@@ -53,6 +53,12 @@ getGlobalLightAt(Vector3<GLdouble>& p, Sphere& s,
    return Iv;
 }
 
+Vector3<GLdouble> Light::
+getPos()
+{
+   return _pos;
+}
+
 void Light::
 setAmbient(GLdouble r, GLdouble g, GLdouble b)
 {

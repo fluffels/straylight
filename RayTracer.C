@@ -22,26 +22,26 @@ RayTracer(int xResolution, int yResolution):
    Material material;
    material.setShininess(15);
    material.setSpecular(1.0, 1.0, 1.0);
-   
+
    material.setAmbient(1.0, 0.0, 0.0);
    material.setDiffuse(1.0, 0.0, 0.0);
    Sphere redSphere(RED_SPHERE_POS, SPHERE_RADIUS, material);
    _scene.addSphere(redSphere);
-   
+
    material.setAmbient(0.0, 1.0, 0.0);
    material.setDiffuse(0.0, 1.0, 0.0);
    Sphere greenSphere(GREEN_SPHERE_POS, SPHERE_RADIUS, material);
    _scene.addSphere(greenSphere);
-   
+
    material.setAmbient(0.0, 0.0, 1.0);
    material.setDiffuse(0.0, 0.0, 1.0);
    Sphere blueSphere(BLUE_SPHERE_POS, SPHERE_RADIUS, material);
    _scene.addSphere(blueSphere);
-   
-   _light.setAmbient(0.6, 0.6, 0.6);
+
+   _light.setAmbient(0.4, 0.4, 0.4);
    _light.setDiffuse(0.6, 0.6, 0.6);
    _light.setSpecular(1.0, 1.0, 1.0);
-   _light.setPosition(2.0, 5.0, 0.0);
+   _light.setPosition(3.0, 5.0, 2.0);
 }
 
 RayTracer::
@@ -99,16 +99,40 @@ castRays()
 Vector3<GLdouble> RayTracer::
 shootRay(Ray& r)
 {
+   Vector3<GLdouble> black(0.0, 0.0, 0.0);
    Vector3<GLdouble> p(0, 0, 0);
    Sphere s(p, 0.5);
-   
+
    if (_scene.testIntersection(r, p, s) == true)
    {
-      return _light.getGlobalLightAt(p, s, COP);
+      //cout << "p = " << p;
+      
+      Vector3<GLdouble> shadowDir = (_light.getPos() - p).normalise();
+      Vector3<GLdouble> delta = shadowDir * 0.5;
+      Vector3<GLdouble> shadowPos = p + delta;
+      Ray shadowRay(shadowPos, shadowDir);
+
+      if (shootShadowRay(shadowRay))
+      {
+         //Vector3<GLdouble> pink(1.0, 0, 1.0);
+         return black;
+      }
+      else
+      {
+         return _light.getGlobalLightAt(p, s, COP);
+      }
    }
    else
    {
-      Vector3<GLdouble> black(0.0, 0.0, 0.0);
       return black;
    }
+}
+
+bool RayTracer::
+shootShadowRay(Ray& r)
+{
+   Vector3<GLdouble> p(0, 0, 0);
+   Sphere s(p, 0.5);
+
+   return _scene.testIntersection(r, p, s);
 }

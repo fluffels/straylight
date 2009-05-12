@@ -20,6 +20,8 @@ class Light
       Vector3<GLdouble> getGlobalLightAt(Vector3<GLdouble>& p,
                                          Sphere& s,
                                          const Vector3<GLdouble>& COP);
+                                         
+      Vector3<GLdouble> getPos();
 
       void setAmbient(GLdouble r, GLdouble g, GLdouble b);
 

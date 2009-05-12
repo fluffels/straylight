@@ -32,8 +32,6 @@ class RayTracer
       ~RayTracer();
       
       void castRays();
-      
-      Vector3<GLdouble> shootRay(Ray& r);
 
    private:
       int _xResolution, _yResolution;
@@ -45,6 +43,10 @@ class RayTracer
       Light _light;
       
       GLubyte* _image;
+      
+      Vector3<GLdouble> shootRay(Ray& r);
+      
+      bool shootShadowRay(Ray& r);
 };
 
 #endif /*RAYTRACER_H_*/

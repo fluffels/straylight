@@ -63,10 +63,28 @@ testIntersection(Ray& r, Vector3<GLdouble>& p)
    }
    else
    {
-      GLdouble t = (-b - sqrt(delta)) / (2 * a);
-      if (t < 0)
+      GLdouble t1 = (-b - sqrt(delta)) / (2 * a);
+      GLdouble t2 = (-b + sqrt(delta)) / (2 * a);
+      GLdouble t;
+      
+      if ((t1 < 0) && (t2 < 0))
       {
-         t = (-b + sqrt(delta)) / (2 * a);
+         return false;
+      }
+      else if (t1 > t2)
+      {
+         return false;
+      }
+      else
+      {
+         if (t1 >= 0)
+         {
+            t = t1;
+         }
+         else
+         {
+            t = t2;
+         }
       }
 
       p = r.getPos() + r.getDir() * t;
