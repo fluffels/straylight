@@ -1,7 +1,7 @@
 #include "RayTracer.h"
 
-const Vector3<GLdouble> RayTracer::COP(0.0, 0.0, 0.0);
-const Vector3<GLdouble> RayTracer::AT(0.0, 0.0, -1.0);
+const Vector3<GLdouble> RayTracer::COP(0.0, 1.0, 4.0);
+const Vector3<GLdouble> RayTracer::AT(0.0, 0.0, 0.0);
 const Vector3<GLdouble> RayTracer::UP(0.0, 1.0, 0.0);
 
 RayTracer::
