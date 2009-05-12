@@ -5,17 +5,17 @@ Light()
 {}
 
 Vector3<GLdouble> Light::
-getGlobalLightAt(const Vector3<GLdouble>& p, const Sphere& s,
+getGlobalLightAt(Vector3<GLdouble>& p, Sphere& s,
                  const Vector3<GLdouble>& COP)
 {
    /* See p. 300 - 302 of Interactive Computer Graphics by Edward Angel,
     * 5th Edition. */
-   Material m = s.getMaterial();
+   Material* m = s.getMaterial();
 
    GLdouble Ia[3];
    for (int a = 0; a < 3; a++)
    {
-      Ia[a] = _ambient.getCoordinate(a) * m.getAmbient(a);
+      Ia[a] = _ambient.getCoordinate(a) * m->getAmbient(a);
    }
 
    GLdouble Id[3];
@@ -23,7 +23,7 @@ getGlobalLightAt(const Vector3<GLdouble>& p, const Sphere& s,
    Vector3<GLdouble> n = s.getNormalAt(p);
    for (int a = 0; a < 3; a++)
    {
-      Id[a] = m.getDiffuse(a)
+      Id[a] = m->getDiffuse(a)
               * max<GLdouble>((l.dot(n)) * _diffuse.getCoordinate(0), 0);
    }
 
@@ -33,8 +33,11 @@ getGlobalLightAt(const Vector3<GLdouble>& p, const Sphere& s,
    Vector3<GLdouble> v = p - COP;
    for (int a = 0; a < 3; a++)
    {
-      Is[a] = m.getSpecular(a) * _specular.getCoordinate(0)
-              * max<GLdouble>(pow((r.dot(v)), m.getShininess()), 0);
+      /*Is[a] = m->getSpecular(a) * _specular.getCoordinate(0)
+              * max<GLdouble>(pow((r.dot(v)), m->getShininess()), 0);
+      cout << "test: " << pow(r.dot(v), m->getShininess()) << endl;
+      cout << "Specular light " << a << ": " << Is[a] << endl;*/
+      Is[a] = 0.0;
    }
 
    GLdouble I[3];

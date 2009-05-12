@@ -14,10 +14,10 @@ Sphere(const Vector3<GLdouble>& pos, const GLdouble radius,
       _mat(mat)
 {}
 
-const Material& Sphere::
-getMaterial() const
+Material* Sphere::
+getMaterial()
 {
-   return _mat;
+   return &_mat;
 }
 
 Vector3<GLdouble> Sphere::
@@ -46,10 +46,16 @@ testIntersection(Ray& r, Vector3<GLdouble>& p)
     * as the class normalises the vector upon receiving it. */
 
    Vector3<GLdouble> distance = r.getPos() - this->_pos;
+   Vector3<GLdouble> dir = r.getDir();
+   //cout << "Distance = " << distance << endl;
 
-   GLdouble b = (distance * 2).dot(r.getDir());
-   GLdouble c = distance.dot(distance) - pow(this->_radius, 2);
-   GLdouble delta = pow(b, 2) - c;
+   GLdouble a = dir.dot(dir);
+   GLdouble b = (distance * 2).dot(dir);
+   //cout << "B = " << b << endl;   
+   GLdouble c = distance.dot(distance) - pow(_radius, 2);
+   //cout << "C = " << c << endl;   
+   GLdouble delta = b * b - 4 * a * c;
+   //cout << "Delta = " << delta << endl;
 
    if (delta < 0)
    {
@@ -57,10 +63,10 @@ testIntersection(Ray& r, Vector3<GLdouble>& p)
    }
    else
    {
-      GLdouble t = -b - sqrt(delta);
+      GLdouble t = (-b - sqrt(delta)) / (2 * a);
       if (t < 0)
       {
-         t = -b + sqrt(delta);
+         t = (-b + sqrt(delta)) / (2 * a);
       }
 
       p = r.getPos() + r.getDir() * t;

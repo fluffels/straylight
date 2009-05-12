@@ -14,6 +14,8 @@ class Material
    public:
       Material();
       
+      void operator=(const Material& rhs);
+      
       GLdouble getAmbient(int color) const;
 
       GLdouble getDiffuse(int color) const;
@@ -39,7 +41,7 @@ class Material
       void setSpecular(GLdouble r, GLdouble g, GLdouble b);
       
    private:
-      Vector3<GLdouble> _ambient, _diffuse, _specular, _pos;
+      GLdouble _ambient[3], _diffuse[3], _specular[3], _pos[3];
 
       GLdouble _shininess;
       

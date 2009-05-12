@@ -2,18 +2,35 @@
 
 Material::
 Material()
-{}
+{
+}
+
+void Material::
+operator=(const Material& rhs)
+{
+   for (int a = 0; a < 3; a++)
+   {
+      this->_ambient[a] = rhs._ambient[a];
+      this->_diffuse[a] = rhs._diffuse[a];
+      this->_specular[a] = rhs._specular[a];
+      this->_pos[a] = rhs._pos[a];
+   }
+   
+   this->_shininess = rhs._shininess;
+   this->_transparent = rhs._transparent;
+   this->_reflective = rhs._reflective;
+}
 
 GLdouble Material::
 getAmbient(int color) const
 {
-   return _ambient.getCoordinate(color);
+   return _ambient[color];
 }
 
 GLdouble Material::
 getDiffuse(int color) const
 {
-   return _diffuse.getCoordinate(color);
+   return _diffuse[color];
 }
 
 GLdouble Material::
@@ -25,7 +42,7 @@ getShininess() const
 GLdouble Material::
 getSpecular(int color) const
 {
-   return _specular.getCoordinate(color);
+   return _specular[color];
 }
 
 bool Material::
@@ -43,17 +60,17 @@ isTransparent() const
 void Material::
 setAmbient(GLdouble r, GLdouble g, GLdouble b)
 {
-   _ambient.setCoordinate(0, r);
-   _ambient.setCoordinate(1, g);
-   _ambient.setCoordinate(2, b);
+   _ambient[0] = r;
+   _ambient[1] = g;
+   _ambient[2] = b;
 }
 
 void Material::
 setDiffuse(GLdouble r, GLdouble g, GLdouble b)
 {
-   _diffuse.setCoordinate(0, r);
-   _diffuse.setCoordinate(1, g);
-   _diffuse.setCoordinate(2, b);
+   _diffuse[0] = r;
+   _diffuse[1] = g;
+   _diffuse[2] = b;
 }
 
 void Material::
@@ -77,7 +94,7 @@ setShininess(GLdouble newValue)
 void Material::
 setSpecular(GLdouble r, GLdouble g, GLdouble b)
 {
-   _specular.setCoordinate(0, r);
-   _specular.setCoordinate(1, g);
-   _specular.setCoordinate(2, b);
+   _specular[0] = r;
+   _specular[1] = g;
+   _specular[2] = b;
 }

@@ -2,8 +2,7 @@
 
 Scene::
 Scene()
-{
-}
+{}
 
 void Scene::
 addSphere(Sphere& s)
@@ -12,16 +11,18 @@ addSphere(Sphere& s)
 }
 
 bool Scene::
-testIntersection(Ray& r, Vector3<GLdouble>& p)
-{   
+testIntersection(Ray& r, Vector3<GLdouble>& p,
+                 Sphere& s)
+{
    vector<Sphere>::iterator i;
    for (i = spheres.begin(); i != spheres.end(); i++)
    {
       if (i->testIntersection(r, p) == true)
       {
+         s = *i;
          return true;
-      }      
+      }
    }
-   
+
    return false;
 }

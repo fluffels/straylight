@@ -22,7 +22,7 @@ class Sphere
       Sphere(const Vector3<GLdouble>& pos, const GLdouble radius,
              const Material& mat);
 
-      const Material& getMaterial() const;
+      Material* getMaterial();
 
       /**
        * Calculate the normal to the sphere at the given intersection point.

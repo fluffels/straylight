@@ -17,8 +17,8 @@ class Light
    public:
       Light();
 
-      Vector3<GLdouble> getGlobalLightAt(const Vector3<GLdouble>& p,
-                                         const Sphere& s,
+      Vector3<GLdouble> getGlobalLightAt(Vector3<GLdouble>& p,
+                                         Sphere& s,
                                          const Vector3<GLdouble>& COP);
 
       void setAmbient(GLdouble r, GLdouble g, GLdouble b);
