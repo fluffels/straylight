@@ -1,6 +1,8 @@
 #ifndef RAYTRACER_H_
 #define RAYTRACER_H_
 
+#include <GL/gl.h>
+
 #include "GraphicsLibrary/Vector3.h"
 
 #include "Camera.h"
@@ -14,10 +16,16 @@ class RayTracer
    
       RayTracer(int xResolution, int yResolution);
       
+      ~RayTracer();
+      
       void castRays();
 
    private:
+      int _xResolution, _yResolution;
+   
       Camera cam;
+      
+      GLubyte* _image;
 };
 
 #endif /*RAYTRACER_H_*/
