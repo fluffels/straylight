@@ -3,3 +3,5 @@
 .settings
 GraphicsLibrary
 CPPLibrary
+makefile.dep
+ray
