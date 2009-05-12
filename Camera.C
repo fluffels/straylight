@@ -45,6 +45,7 @@ getRayAt(int x, int y)
    const GLdouble Y_MAG = (HIGH - LOW) * (y / MAX_Y) + LOW;
 
    Vector3<GLdouble> p = _cop + (_dir + (_right * X_MAG) + (_up * Y_MAG));
+   p = p.normalise();
    
    Ray r(_cop, p);
    
