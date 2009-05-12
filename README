@@ -1,0 +1,14 @@
+GRF780 Assignment 3
+
+	by Jan Kroeze
+	(26 26 59 24)
+	thejcwk@gmail.com
+=========================
+
+Instructions
+------------
+
+To compile the program, execute "make" in the root directory of the project. To
+run the project, simply execute "./ray" while in the root directory of the
+project. Executing the program will render the scene constructed through ray
+tracing in an OpenGL window. Press any key to exit the window.
