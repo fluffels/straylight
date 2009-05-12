@@ -3,12 +3,17 @@
 
 #include <GL/glut.h>
 
+#include "RayTracer.h"
+
 using namespace std;
 
 /* Window constants. */
 const int WINDOW_HEIGHT = 480;
 const int WINDOW_WIDTH = 640;
 const char* title = "Jan Kroeze (s26265924)";
+
+/* Global variables. */
+RayTracer* r;
 
 void
 display()
@@ -42,8 +47,12 @@ main(int argc, char** argv)
    glutKeyboardFunc(keyboard);
    
    init();
+   
+   r = new RayTracer(WINDOW_WIDTH, WINDOW_HEIGHT);
 
    glutMainLoop();
+   
+   delete r;
 
    return 0;
 }

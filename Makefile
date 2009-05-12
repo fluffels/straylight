@@ -2,7 +2,7 @@ CC = g++
 CFLAGS = -g -p -Wall -Wextra -pedantic --pedantic-error -fmessage-length=0 -std=c++0x
 LDFLAGS = -g -p
 LDLIBS = -L/usr/X11R6/lib -lglut
-OBJS = Main.o Ray.o Camera.o CPPLibrary/IllegalArgumentException.o
+OBJS = Main.o Ray.o Camera.o RayTracer.o CPPLibrary/IllegalArgumentException.o
 TARGET = ray
 
 all : ${TARGET}
