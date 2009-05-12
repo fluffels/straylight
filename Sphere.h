@@ -17,19 +17,20 @@
 class Sphere
 {
    public:
-      Sphere(Vector3<GLdouble>& pos, GLdouble radius);
-   
-      Sphere(Vector3<GLdouble>& pos, GLdouble radius, Material& mat);
-      
+      Sphere(const Vector3<GLdouble>& pos, const GLdouble radius);
+
+      Sphere(const Vector3<GLdouble>& pos, const GLdouble radius,
+             const Material& mat);
+
       const Material& getMaterial() const;
-      
+
       /**
        * Calculate the normal to the sphere at the given intersection point.
        */
       Vector3<GLdouble> getNormalAt(const Vector3<GLdouble>& p) const;
-      
+
       void setMaterial(Material& newMaterial);
-      
+
       /**
        * Tests for intersection between this Sphere and a given Ray.
        * @param r The Ray to test against.
@@ -37,12 +38,12 @@ class Sphere
        * @return True if the Ray intersects this Sphere, false otherwise.
        */
       bool testIntersection(Ray& r, Vector3<GLdouble>& p);
-      
+
    private:
       Vector3<GLdouble> _pos;
 
       GLdouble _radius;
-      
+
       Material _mat;
 };
 

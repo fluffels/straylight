@@ -1,13 +1,14 @@
 #include "Sphere.h"
 
 Sphere::
-Sphere(Vector3<GLdouble>& pos, GLdouble radius):
+Sphere(const Vector3<GLdouble>& pos, const GLdouble radius):
       _pos(pos),
       _radius(radius)
 {}
 
 Sphere::
-Sphere(Vector3<GLdouble>& pos, GLdouble radius, Material& mat):
+Sphere(const Vector3<GLdouble>& pos, const GLdouble radius,
+       const Material& mat):
       _pos(pos),
       _radius(radius),
       _mat(mat)
@@ -40,16 +41,16 @@ bool Sphere::
 testIntersection(Ray& r, Vector3<GLdouble>& p)
 {
    /* See p. 18 of 3D Computer Graphics by Alan Watt, 3rd Edition. */
-   
+
    /* Note that the Ray's direction vector is guaranteed to be a unit vector,
     * as the class normalises the vector upon receiving it. */
-    
+
    Vector3<GLdouble> distance = r.getPos() - this->_pos;
-   
-   GLdouble b = (distance * 2).dot(r.getDir()); 
+
+   GLdouble b = (distance * 2).dot(r.getDir());
    GLdouble c = distance.dot(distance) - pow(this->_radius, 2);
    GLdouble delta = pow(b, 2) - c;
-   
+
    if (delta < 0)
    {
       return false;
@@ -61,8 +62,8 @@ testIntersection(Ray& r, Vector3<GLdouble>& p)
       {
          t = -b + sqrt(delta);
       }
-      
+
       p = r.getPos() + r.getDir() * t;
-      return true;      
+      return true;
    }
 }
