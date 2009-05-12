@@ -17,6 +17,8 @@
 class Sphere
 {
    public:
+      Sphere(Vector3<GLdouble>& pos, GLdouble radius);
+   
       Sphere(Vector3<GLdouble>& pos, GLdouble radius, Material& mat);
       
       const Material& getMaterial() const;

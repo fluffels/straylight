@@ -1,6 +1,12 @@
 #include "Sphere.h"
 
 Sphere::
+Sphere(Vector3<GLdouble>& pos, GLdouble radius):
+      _pos(pos),
+      _radius(radius)
+{}
+
+Sphere::
 Sphere(Vector3<GLdouble>& pos, GLdouble radius, Material& mat):
       _pos(pos),
       _radius(radius),
