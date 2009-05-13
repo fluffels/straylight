@@ -7,3 +7,10 @@ makefile.dep
 ray
 gmon.out
 test.tga
+noisy_reflect.tga
+out.tga
+reflection_02.tga
+reflection_div.tga
+reflection_mul.tga
+reflection.tga
+test.tga
