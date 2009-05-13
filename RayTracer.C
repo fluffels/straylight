@@ -67,9 +67,9 @@ castRays(bool interactive)
    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
    glRasterPos2d(0, 0);
 
-   for (int y = 0; y < _xResolution; y++)
+   for (int y = 0; y < _yResolution; y++)
    {
-      for (int x = 0; x < _yResolution; x++)
+      for (int x = 0; x < _xResolution; x++)
       {
          int offset = y * (_xResolution * 3) + x * 3;
          GLubyte* p = _image + offset;
