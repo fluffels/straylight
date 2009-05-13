@@ -61,7 +61,7 @@ RayTracer::
 }
 
 void RayTracer::
-castRays()
+castRays(bool interactive)
 {
    glPixelStorei(GL_PACK_ALIGNMENT, 1);
    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -82,28 +82,28 @@ castRays()
             p[a] = min<GLdouble>(colour.getCoordinate(a), 1.0) * 255;
          }
 
-         glRasterPos2d(x, y);
-         glDrawPixels(1, 1, GL_RGB, GL_UNSIGNED_BYTE, p);
-         glutSwapBuffers();
+         if (interactive)
+         {
+            glRasterPos2d(x, y);
+            glDrawPixels(1, 1, GL_RGB, GL_UNSIGNED_BYTE, p);
+            glutSwapBuffers();
+         }
       }
    }
+}
 
-   //glDrawPixels(_xResolution, _yResolution, GL_RGB, GL_UNSIGNED_BYTE, _image);
-   //glutSwapBuffers();
-
-   /*GLubyte colour[3];
-   for (int x = 0; x < _xResolution; x++)
+void RayTracer::
+drawImage()
 {
-      for (int y = 0; y < _yResolution; y++)
-      {
-         colour[0] = 255;
-         colour[1] = 0;
-         colour[2] = 0;
-         
-         glRasterPos2d(x, y);
-         glDrawPixels(1, 1, GL_RGB, GL_UNSIGNED_BYTE, colour);
-      }
-}*/
+   glRasterPos2d(0, 0);
+   glDrawPixels(_xResolution, _yResolution, GL_RGB, GL_UNSIGNED_BYTE, _image);
+   glutSwapBuffers();
+}
+
+GLubyte* RayTracer::
+getImage()
+{
+   return _image;
 }
 
 Vector3<GLdouble> RayTracer::

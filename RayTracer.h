@@ -34,7 +34,11 @@ class RayTracer
       
       ~RayTracer();
       
-      void castRays();
+      void castRays(bool interactive);
+      
+      void drawImage();
+      
+      GLubyte* getImage();
 
    private:
       int _xResolution, _yResolution;
