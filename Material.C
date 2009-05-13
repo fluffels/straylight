@@ -5,22 +5,6 @@ Material()
 {
 }
 
-void Material::
-operator=(const Material& rhs)
-{
-   for (int a = 0; a < 3; a++)
-   {
-      this->_ambient[a] = rhs._ambient[a];
-      this->_diffuse[a] = rhs._diffuse[a];
-      this->_specular[a] = rhs._specular[a];
-      this->_pos[a] = rhs._pos[a];
-   }
-   
-   this->_shininess = rhs._shininess;
-   this->_transparent = rhs._transparent;
-   this->_reflective = rhs._reflective;
-}
-
 GLdouble Material::
 getAmbient(int color) const
 {
@@ -50,13 +34,6 @@ isReflective() const
 {
    return _reflective;
 }
-
-bool Material::
-isTransparent() const
-{
-   return _transparent;
-}
-
 void Material::
 setAmbient(GLdouble r, GLdouble g, GLdouble b)
 {
@@ -77,12 +54,6 @@ void Material::
 setReflective(bool value)
 {
    _reflective = value;
-}
-
-void Material::
-setTransparent(bool value)
-{
-   _transparent = value;
 }
 
 void Material::

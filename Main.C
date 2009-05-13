@@ -21,7 +21,7 @@ bool castOnly = false;
 bool renderingDone = false;
 bool show = false;
 
-int width = 200;
+int width = 1024;
 int height = width;
 
 char* outfile = "out.tga";
@@ -82,18 +82,37 @@ parseArguments(int argc, char** argv)
       }
       else if (strcmp(argv[a], "-w") == 0)
       {
+         if (argc < a + 2)
+         {
+            printUsage();
+         }
+         
          width = atoi(argv[a + 1]);
          a++;
       }
       else if (strcmp(argv[a], "-h") == 0)
       {
+         if (argc < a + 2)
+         {
+            printUsage();
+         }
+                  
          height = atoi(argv[a + 1]);
          a++;
       }
       else if (strcmp(argv[a], "-o") == 0)
       {
+         if (argc < a + 2)
+         {
+            printUsage();
+         }
+                  
          outfile = argv[a + 1];
          a++;
+      }
+      else if (strcmp(argv[a], "-h") == 0)
+      {
+         printUsage();
       }
       else
       {
@@ -107,10 +126,10 @@ printUsage()
 {
    printf("Usage: ray [options]\n");
    printf("\n");
-   printf("\t-w\tSet the horizontal resolution of the image to produce.\n");
-   printf("\t-h\tSet the vertical resolution of the image to produce.\n");
-   printf("\t-o\tSpecify the name of the output file (default 'out.tga').\n");
-   printf("\t--show\tPass this to view the image as it is being rendered.\n");
+   printf("\t-w\t\tSet the horizontal resolution of the image to produce.\n");
+   printf("\t-h\t\tSet the vertical resolution of the image to produce.\n");
+   printf("\t-o\t\tSpecify the name of the output file (default 'out.tga').\n");
+   printf("\t--show\t\tPass this to view the image as it is being rendered.\n");
    printf("\t--cast-only\tPass this to disable output to a file.\n");
 
    exit(-1);

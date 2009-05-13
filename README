@@ -3,7 +3,7 @@ GRF780 Assignment 3
 	by Jan Kroeze
 	(26 26 59 24)
 	thejcwk@gmail.com
-=========================
+====================
 
 
 Instructions
@@ -12,22 +12,40 @@ Instructions
 To compile the program, execute "make" in the root directory of the project. To
 run the project, simply execute "./ray" while in the root directory of the
 project. Executing the program will render the scene constructed through ray
-tracing in an OpenGL window. Press any key to exit the window.
+tracing in an OpenGL window and then output this image to a file called
+'out.tga'. Press any key to exit the window.
 
 
 Command-line Arguments
 ----------------------
 
+Usage: ray [options]
+
+	-w		Set the horizontal resolution of the image to produce.
+	-h		Set the vertical resolution of the image to produce.
+	-o		Specify the name of the output file (default 'out.tga').
+	--show		Pass this to view the image as it is being rendered.
+	--cast-only	Pass this to disable output to a file.
+
 Pass --show to the ray program to show rendering progress. Note that this slows
-down the process significantly.
+down the process significantly. Passing --cast-only will cause the program not
+to write an output file. The -o <outfile> parameter controls the name of the
+output file created by the program. -w & -h control the width and height of the
+generated image (see Remarks below).
+
+Examples: 	./ray -w 1024 -h 1024 		[Creates a 1024x1024 file called out.tga]
+				./ray --show					[Shows rendering as it progresses.]
+				./ray --show --cast-only	[Same as above, but no output file is
+													generated.]
 
 
 Remarks
 -------
 
-The program is able to render a 1024x1024 image in around 2 seconds on a 3.4Ghz
-machine. If it seems to not be responding give it some time / enable the --show
-option.
+The program is able to render a 1024x1024 image in around 2,5 seconds on a
+3.4Ghz machine. If it seems to not be responding give it some time / enable the 
+--show option.
 
-The program has some problems rendering non-square images. If it gives buggy
-output, try a square resolution.
+The program has some problems rendering non-square images. Unfortunately, I did
+not have time to fix this. If it gives buggy output, or crashes, try a square
+resolution.

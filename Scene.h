@@ -23,8 +23,6 @@ class Scene
       ~Scene();
 
       void addObject(SceneObject* s);
-      
-      //void addSphere(SceneObject& s);
 
       /**
        * Tests whether a Ray intersects a SceneObject.

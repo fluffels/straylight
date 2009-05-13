@@ -35,18 +35,14 @@ getRayAt(int x, int y)
       throw IllegalArgumentException("X / Y out of range.");
    }
    
-   const GLdouble LOW = -0.5;//-tan(_viewAngle);
-   const GLdouble HIGH = 0.5;//tan(_viewAngle);
-   //const GLdouble RANGE = HIGH - LOW;
-   //cout << RANGE << ": " << LOW << " - " << HIGH << endl;
+   const GLdouble LOW = -0.5;
+   const GLdouble HIGH = 0.5;
    
    const GLdouble MAX_X = _width - 1;
    const GLdouble MAX_Y = _height - 1;
    
    const GLdouble X_MAG = (HIGH - LOW) * (x / MAX_X) + LOW;
-   //cout << "X_MAG = " << X_MAG << endl;
    const GLdouble Y_MAG = (HIGH - LOW) * (y / MAX_Y) + LOW;
-   //cout << "Y_MAG = " << Y_MAG << endl;
 
    Vector3<GLdouble> p = _cop + (_dir + (_right * X_MAG) + (_up * Y_MAG));
    

@@ -13,9 +13,7 @@ class Material
 {
    public:
       Material();
-      
-      void operator=(const Material& rhs);
-      
+            
       GLdouble getAmbient(int color) const;
 
       GLdouble getDiffuse(int color) const;
@@ -25,16 +23,12 @@ class Material
       GLdouble getSpecular(int color) const;
       
       bool isReflective() const;
-      
-      bool isTransparent() const;
    
       void setAmbient(GLdouble r, GLdouble g, GLdouble b);
 
       void setDiffuse(GLdouble r, GLdouble g, GLdouble b);
       
       void setReflective(bool value);
-      
-      void setTransparent(bool value);
 
       void setShininess(GLdouble newValue);
 
@@ -45,7 +39,7 @@ class Material
 
       GLdouble _shininess;
       
-      bool _transparent, _reflective;
+      bool  _reflective;
 };
 
 #endif /*MATERIAL_H_*/
