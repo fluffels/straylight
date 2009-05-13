@@ -4,13 +4,20 @@ Ray::
 Ray(Vector3<GLdouble>& pos, Vector3<GLdouble>& dir):
       _pos(pos),
       _dir(dir.normalise()),
-      _depth(TRACE_DEPTH)
+      _depth(TRACE_DEPTH),
+      _containerCount(0)
 {}
 
 int Ray::
 getDepth() const
 {
    return _depth;
+}
+
+int Ray::
+getContainerCount() const
+{
+   return _containerCount;
 }
 
 const Vector3<GLdouble>& Ray::
@@ -35,6 +42,12 @@ const Vector3<GLdouble>& Ray::
 getPos() const
 {
    return _pos;
+}
+
+int Ray::
+setContainerCount(int newValue)
+{
+   _containerCount = newValue;
 }
 
 void Ray::

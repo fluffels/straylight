@@ -1,13 +1,15 @@
 #include "RayTracer.h"
 
-const Vector3<GLdouble> RayTracer::COP(0.0, 1.0, 4.0);
+const Vector3<GLdouble> RayTracer::COP(0.0, 1.0, 6.0);
 const Vector3<GLdouble> RayTracer::AT(0.0, 2.0, 0.0);
 const Vector3<GLdouble> RayTracer::UP(0.0, 1.0, 0.0);
 
 const Vector3<GLdouble> RayTracer::RED_SPHERE_POS(-1.0, 1.0, 0.0);
 const Vector3<GLdouble> RayTracer::GREEN_SPHERE_POS(0.0, 1.2, -1.0);
 const Vector3<GLdouble> RayTracer::BLUE_SPHERE_POS(1.0, 1.0, 0.0);
+const Vector3<GLdouble> RayTracer::REF_SPHERE_POS(0.0, 1.5, 2.5);
 const GLdouble RayTracer::SPHERE_RADIUS = 0.5;
+const GLdouble RayTracer::REF_SPHERE_RADIUS = 0.5;
 const Vector3<GLdouble> RayTracer::PLANE_NORMAL(0.1, 1.0, 0.0);
 const GLdouble RayTracer::PLANE_D = 0.0;
 
@@ -24,6 +26,14 @@ RayTracer(int xResolution, int yResolution):
    Material material;
    material.setShininess(15);
    material.setSpecular(1.0, 1.0, 1.0);
+   
+   material.setAmbient(0.0, 0.0, 1.0);
+   material.setDiffuse(0.0, 0.0, 1.0);
+   material.setTransparent(true);
+   Sphere* refSphere = new Sphere(REF_SPHERE_POS, REF_SPHERE_RADIUS, material);
+   _scene.addObject(refSphere);
+   
+   material.setTransparent(false);
 
    material.setAmbient(1.0, 0.0, 0.0);
    material.setDiffuse(1.0, 0.0, 0.0);
@@ -44,8 +54,6 @@ RayTracer(int xResolution, int yResolution):
 
    material.setAmbient(0.8, 0.4, 0.0);
    material.setDiffuse(0.8, 0.4, 0.0);
-   //material.setSpecular(0, 0, 0);
-   //material.setShininess(0);
    material.setReflective(true);
    Plane* plane = new Plane(PLANE_NORMAL, PLANE_D);
    plane->setMaterial(material);
@@ -99,12 +107,12 @@ Vector3<GLdouble> RayTracer::
 combineColours(Vector3<GLdouble>& c1, Vector3<GLdouble>& c2)
 {
    Vector3<GLdouble> r;
-   
+
    for (int a = 0; a < 3; a++)
    {
       r.setCoordinate(a, c1.getCoordinate(a) + c2.getCoordinate(a) * 0.6);
    }
-   
+
    return r;
 }
 
@@ -131,7 +139,7 @@ shootRay(Ray& r)
    {
       const SceneObject* s = r.getLastIntersected();
       const Material& m = s->getMaterial();
-      
+
       Vector3<GLdouble> localColour;
       if (shootShadowRay(r))
       {
@@ -148,9 +156,9 @@ shootRay(Ray& r)
          Vector3<GLdouble> p = r.getLastIntersection();
          Vector3<GLdouble> n = r.getLastIntersected()->getNormalAt(p);
          Vector3<GLdouble> l = r.getDir() * -1;
-         
+
          Vector3<GLdouble> reflect = n * (n.dot(l) * 2) - l;
-         
+
          reflect = reflect.normalise();
          p += reflect * 0.01;
          Ray newRay(p, reflect);
@@ -162,8 +170,38 @@ shootRay(Ray& r)
       else if ((r.getDepth() != 0) && (m.isTransparent()))
       {
          /* 3D Computer Graphics by Alan Wawtt, p. 24 */
-         GLdouble ior = 1.53;
+         const SceneObject* s = r.getLastIntersected();
+         const Material& m = s->getMaterial();
+         Vector3<GLdouble> p = r.getLastIntersection();
+
          Vector3<GLdouble> i = r.getDir() * -1;
+         Vector3<GLdouble> n = s->getNormalAt(p);
+         
+         GLdouble ior;
+         if (r.getContainerCount() % 2 == 0)
+         {
+            r.setContainerCount(r.getContainerCount() + 1);
+            ior = 1.53;
+         }
+         else
+         {
+            r.setContainerCount(r.getContainerCount() - 1);
+            //n *= -1;
+            ior = 1 / 1.53;
+         }
+
+         GLdouble cosEta = i.dot(n);
+         GLdouble cosTheta = (sqrt(1 - pow(ior, 2) * (1 - pow(cosEta, 2))))
+                             / ior;
+         
+         Vector3<GLdouble> ref = (i * ior) - (n * (cosTheta + ior * cosEta));
+         ref = ref.normalise();
+         p += ref * 0.01;
+         Ray newRay(p, ref);
+         newRay.setDepth(r.getDepth() - 1);
+         
+         Vector3<GLdouble> Lfi = shootRay(newRay);
+         return Lfi;//combineColours(localColour, Lfi);
       }
       else
       {
