@@ -5,6 +5,7 @@ GRF780 Assignment 3
 	thejcwk@gmail.com
 =========================
 
+
 Instructions
 ------------
 
@@ -12,3 +13,21 @@ To compile the program, execute "make" in the root directory of the project. To
 run the project, simply execute "./ray" while in the root directory of the
 project. Executing the program will render the scene constructed through ray
 tracing in an OpenGL window. Press any key to exit the window.
+
+
+Command-line Arguments
+----------------------
+
+Pass --show to the ray program to show rendering progress. Note that this slows
+down the process significantly.
+
+
+Remarks
+-------
+
+The program is able to render a 1024x1024 image in around 2 seconds on a 3.4Ghz
+machine. If it seems to not be responding give it some time / enable the --show
+option.
+
+The program has some problems rendering non-square images. If it gives buggy
+output, try a square resolution.

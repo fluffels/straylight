@@ -27,6 +27,7 @@ int height = width;
 char* outfile = "out.tga";
 
 void printUsage();
+void writeImage();
 
 void
 display()
@@ -40,6 +41,7 @@ display()
    {
       r->castRays(true);
       renderingDone = true;
+      writeImage();
    }
    else
    {
@@ -140,6 +142,23 @@ void
 startOffline()
 {
    r->castRays(false);
+   writeImage();
+}
+
+void
+teardown()
+{
+   delete r;
+}
+
+void
+writeImage()
+{
+   if (castOnly)
+   {
+      return;
+   }
+   
    GLubyte* image = r->getImage();
 
    Image out(width, height, Image::RGB, NULL);
@@ -163,12 +182,6 @@ startOffline()
    }
 
    out.write_TGA24(outfile);
-}
-
-void
-teardown()
-{
-   delete r;
 }
 
 int

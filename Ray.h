@@ -18,7 +18,11 @@ class SceneObject;
 class Ray
 {
    public:
+      static const int TRACE_DEPTH = 2;
+   
       Ray(Vector3<GLdouble>& pos, Vector3<GLdouble>& dir);
+      
+      int getDepth() const;
       
       const Vector3<GLdouble>& getDir() const;
       
@@ -28,12 +32,16 @@ class Ray
       
       const Vector3<GLdouble>& getPos()const;
       
+      void setDepth(int newValue);
+      
       void setLastIntersected(const SceneObject* newValue);
       
-      void setLastIntersection(const Vector3<GLdouble>& newValue);      
+      void setLastIntersection(const Vector3<GLdouble>& newValue);
       
    private:
       Vector3<GLdouble> _pos, _dir, _lastIntersection;
+      
+      int _depth;
       
       const SceneObject* _lastIntersected;
 };

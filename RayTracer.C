@@ -1,14 +1,14 @@
 #include "RayTracer.h"
 
-const Vector3<GLdouble> RayTracer::COP(0.0, 1.0, 5.0);
-const Vector3<GLdouble> RayTracer::AT(0.0, 0.0, 0.0);
+const Vector3<GLdouble> RayTracer::COP(0.0, 1.0, 4.0);
+const Vector3<GLdouble> RayTracer::AT(0.0, 2.0, 0.0);
 const Vector3<GLdouble> RayTracer::UP(0.0, 1.0, 0.0);
 
 const Vector3<GLdouble> RayTracer::RED_SPHERE_POS(-1.0, 1.0, 0.0);
-const Vector3<GLdouble> RayTracer::GREEN_SPHERE_POS(0.0, 1.2, 0.0);
+const Vector3<GLdouble> RayTracer::GREEN_SPHERE_POS(0.0, 1.2, -1.0);
 const Vector3<GLdouble> RayTracer::BLUE_SPHERE_POS(1.0, 1.0, 0.0);
 const GLdouble RayTracer::SPHERE_RADIUS = 0.5;
-const Vector3<GLdouble> RayTracer::PLANE_NORMAL(0.0, 1.0, 0.0);
+const Vector3<GLdouble> RayTracer::PLANE_NORMAL(0.1, 1.0, 0.0);
 const GLdouble RayTracer::PLANE_D = 0.0;
 
 RayTracer::
@@ -32,26 +32,29 @@ RayTracer(int xResolution, int yResolution):
 
    material.setAmbient(0.0, 1.0, 0.0);
    material.setDiffuse(0.0, 1.0, 0.0);
+   material.setReflective(true);
    Sphere* greenSphere = new Sphere(GREEN_SPHERE_POS, SPHERE_RADIUS, material);
    _scene.addObject(greenSphere);
 
    material.setAmbient(0.0, 0.0, 1.0);
    material.setDiffuse(0.0, 0.0, 1.0);
+   material.setReflective(false);
    Sphere* blueSphere = new Sphere(BLUE_SPHERE_POS, SPHERE_RADIUS, material);
    _scene.addObject(blueSphere);
-   
-   material.setAmbient(1.0, 1.0, 1.0);
-   material.setDiffuse(1.0, 1.0, 1.0);
-   material.setSpecular(0, 0, 0);
-   material.setShininess(0);
+
+   material.setAmbient(0.8, 0.4, 0.0);
+   material.setDiffuse(0.8, 0.4, 0.0);
+   //material.setSpecular(0, 0, 0);
+   //material.setShininess(0);
+   material.setReflective(true);
    Plane* plane = new Plane(PLANE_NORMAL, PLANE_D);
    plane->setMaterial(material);
    _scene.addObject(plane);
 
-   _light.setAmbient(0.4, 0.4, 0.4);
-   _light.setDiffuse(0.6, 0.6, 0.6);
+   _light.setAmbient(0.5, 0.5, 0.5);
+   _light.setDiffuse(0.9, 0.9, 0.9);
    _light.setSpecular(1.0, 1.0, 1.0);
-   _light.setPosition(1.0, 5.0, 0.0);
+   _light.setPosition(3.0, 3.0, 3.0);
 }
 
 RayTracer::
@@ -92,6 +95,19 @@ castRays(bool interactive)
    }
 }
 
+Vector3<GLdouble> RayTracer::
+combineColours(Vector3<GLdouble>& c1, Vector3<GLdouble>& c2)
+{
+   Vector3<GLdouble> r;
+   
+   for (int a = 0; a < 3; a++)
+   {
+      r.setCoordinate(a, c1.getCoordinate(a) + c2.getCoordinate(a) * 0.6);
+   }
+   
+   return r;
+}
+
 void RayTracer::
 drawImage()
 {
@@ -113,15 +129,45 @@ shootRay(Ray& r)
 
    if (_scene.testIntersection(r) == true)
    {
+      const SceneObject* s = r.getLastIntersected();
+      const Material& m = s->getMaterial();
+      
+      Vector3<GLdouble> localColour;
       if (shootShadowRay(r))
       {
-        // cout << "Shaded" << endl;
-         return black;
+         localColour = black;
       }
       else
       {
-         //cout << "Calculating lighting." << endl;
-         return _light.getGlobalLightAt(r, COP);
+         localColour = _light.getGlobalLightAt(r, COP);
+      }
+
+      if ((r.getDepth() != 0) && (m.isReflective()))
+      {
+         /* 3D Computer Graphics by Alan Watt, p. 24 */
+         Vector3<GLdouble> p = r.getLastIntersection();
+         Vector3<GLdouble> n = r.getLastIntersected()->getNormalAt(p);
+         Vector3<GLdouble> l = r.getDir() * -1;
+         
+         Vector3<GLdouble> reflect = n * (n.dot(l) * 2) - l;
+         
+         reflect = reflect.normalise();
+         p += reflect * 0.01;
+         Ray newRay(p, reflect);
+         newRay.setDepth(r.getDepth() - 1);
+
+         Vector3<GLdouble> Lri = shootRay(newRay);
+         return combineColours(localColour, Lri);
+      }
+      else if ((r.getDepth() != 0) && (m.isTransparent()))
+      {
+         /* 3D Computer Graphics by Alan Wawtt, p. 24 */
+         GLdouble ior = 1.53;
+         Vector3<GLdouble> i = r.getDir() * -1;
+      }
+      else
+      {
+         return localColour;
       }
    }
    else
@@ -136,10 +182,7 @@ shootShadowRay(Ray& r)
    Vector3<GLdouble> p = r.getLastIntersection();
    Vector3<GLdouble> l = (_light.getPos() - p).normalise();
 
-   //cout << "p = " << p;
-   //cout << "l = " << l;
    p += l * 0.01;
-   //cout << "pnew = " << p;
    Ray shadowRay(p, l);
 
    return _scene.testIntersection(shadowRay);

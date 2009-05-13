@@ -3,8 +3,15 @@
 Ray::
 Ray(Vector3<GLdouble>& pos, Vector3<GLdouble>& dir):
       _pos(pos),
-      _dir(dir.normalise())
+      _dir(dir.normalise()),
+      _depth(TRACE_DEPTH)
 {}
+
+int Ray::
+getDepth() const
+{
+   return _depth;
+}
 
 const Vector3<GLdouble>& Ray::
 getDir() const
@@ -28,6 +35,12 @@ const Vector3<GLdouble>& Ray::
 getPos() const
 {
    return _pos;
+}
+
+void Ray::
+setDepth(int newValue)
+{
+   _depth = newValue;
 }
 
 void Ray::
