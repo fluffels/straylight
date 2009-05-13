@@ -10,6 +10,7 @@
 #include "Camera.h"
 #include "Light.h"
 #include "Material.h"
+#include "Plane.h"
 #include "Scene.h"
 #include "Sphere.h"
 
@@ -26,6 +27,8 @@ class RayTracer
       static const Vector3<GLdouble> GREEN_SPHERE_POS;
       static const Vector3<GLdouble> BLUE_SPHERE_POS;
       static const GLdouble SPHERE_RADIUS;
+      static const Vector3<GLdouble> PLANE_NORMAL;
+      static const GLdouble PLANE_D;
       
       RayTracer(int xResolution, int yResolution);
       
