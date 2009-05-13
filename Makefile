@@ -4,8 +4,7 @@ CFLAGS = -g -p -Wall -Wextra -pedantic --pedantic-error -fmessage-length=0 \
 LDFLAGS = -g -p
 LDLIBS = -L/usr/X11R6/lib -lglut
 OBJS = Main.o Ray.o Camera.o RayTracer.o Material.o SceneObject.o Sphere.o \
-Scene.o Light.o \
-CPPLibrary/IllegalArgumentException.o
+Plane.o Scene.o Light.o CPPLibrary/IllegalArgumentException.o
 TARGET = ray
 
 all : ${TARGET}
@@ -14,13 +13,7 @@ ${TARGET} : ${OBJS}
 	${CC} ${LDFLAGS} ${LDLIBS} -o $@ $^
 	
 clean:
-	rm -v $(OBJS) $(TARGET) makefile.dep
+	rm -v $(OBJS) $(TARGET)
 
-%.o : %.C
+%.o : %.C %.h
 	${CC} ${CFLAGS} -o $@ -c $<
-
-makefile.dep : *.[Ch]
-	for i in *.C; do gcc -MM "$${i}"; done >> $@
-	for i in GraphicsLibrary/*.C; do gcc -MM "$${i}"; done >> $@
-	
-include makefile.dep
