@@ -8,7 +8,7 @@
 using namespace std;
 
 /* Window constants. */
-const int WINDOW_HEIGHT = 400;
+const int WINDOW_HEIGHT = 200;
 const int WINDOW_WIDTH = WINDOW_HEIGHT;
 const char* title = "Jan Kroeze (s26265924)";
 

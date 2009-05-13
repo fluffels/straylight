@@ -9,12 +9,13 @@
 
 #include "Material.h"
 #include "Ray.h"
+#include "SceneObject.h"
 
 /**
  * Models a spherical object using a centre point and a radius. Also has
  * material properties.
  */
-class Sphere
+class Sphere : public SceneObject
 {
    public:
       Sphere(const Vector3<GLdouble>& pos, const GLdouble radius);
@@ -22,29 +23,14 @@ class Sphere
       Sphere(const Vector3<GLdouble>& pos, const GLdouble radius,
              const Material& mat);
 
-      Material* getMaterial();
+      virtual Vector3<GLdouble> getNormalAt(const Vector3<GLdouble>& p) const;
 
-      /**
-       * Calculate the normal to the sphere at the given intersection point.
-       */
-      Vector3<GLdouble> getNormalAt(const Vector3<GLdouble>& p) const;
-
-      void setMaterial(Material& newMaterial);
-
-      /**
-       * Tests for intersection between this Sphere and a given Ray.
-       * @param r The Ray to test against.
-       * @param p The intersection point is stored in this variable.
-       * @return True if the Ray intersects this Sphere, false otherwise.
-       */
-      bool testIntersection(Ray& r, Vector3<GLdouble>& p);
+      virtual bool testIntersection(Ray& r) const;
 
    private:
       Vector3<GLdouble> _pos;
 
       GLdouble _radius;
-
-      Material _mat;
 };
 
 #endif /*SPHERE_H_*/

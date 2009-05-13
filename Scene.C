@@ -4,22 +4,31 @@ Scene::
 Scene()
 {}
 
-void Scene::
-addSphere(Sphere& s)
+Scene::
+~Scene()
 {
-   spheres.push_back(s);
+   vector<SceneObject*>::iterator i;
+   for (i = objects.begin(); i != objects.end(); i++)
+   {
+      delete *i;
+   }
+}
+
+void Scene::
+addObject(SceneObject* s)
+{
+   objects.push_back(s);
 }
 
 bool Scene::
-testIntersection(Ray& r, Vector3<GLdouble>& p,
-                 Sphere& s)
+testIntersection(Ray& r)
 {
-   vector<Sphere>::iterator i;
-   for (i = spheres.begin(); i != spheres.end(); i++)
+   vector<SceneObject*>::iterator i;
+   for (i = objects.begin(); i != objects.end(); i++)
    {
-      if (i->testIntersection(r, p) == true)
+      SceneObject* s = *i;
+      if (s->testIntersection(r) == true)
       {
-         s = *i;
          return true;
       }
    }

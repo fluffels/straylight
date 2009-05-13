@@ -25,18 +25,18 @@ RayTracer(int xResolution, int yResolution):
 
    material.setAmbient(1.0, 0.0, 0.0);
    material.setDiffuse(1.0, 0.0, 0.0);
-   Sphere redSphere(RED_SPHERE_POS, SPHERE_RADIUS, material);
-   _scene.addSphere(redSphere);
+   Sphere* redSphere = new Sphere(RED_SPHERE_POS, SPHERE_RADIUS, material);
+   _scene.addObject(redSphere);
 
    material.setAmbient(0.0, 1.0, 0.0);
    material.setDiffuse(0.0, 1.0, 0.0);
-   Sphere greenSphere(GREEN_SPHERE_POS, SPHERE_RADIUS, material);
-   _scene.addSphere(greenSphere);
+   Sphere* greenSphere = new Sphere(GREEN_SPHERE_POS, SPHERE_RADIUS, material);
+   _scene.addObject(greenSphere);
 
    material.setAmbient(0.0, 0.0, 1.0);
    material.setDiffuse(0.0, 0.0, 1.0);
-   Sphere blueSphere(BLUE_SPHERE_POS, SPHERE_RADIUS, material);
-   _scene.addSphere(blueSphere);
+   Sphere* blueSphere = new Sphere(BLUE_SPHERE_POS, SPHERE_RADIUS, material);
+   _scene.addObject(blueSphere);
 
    _light.setAmbient(0.4, 0.4, 0.4);
    _light.setDiffuse(0.6, 0.6, 0.6);
@@ -100,26 +100,16 @@ Vector3<GLdouble> RayTracer::
 shootRay(Ray& r)
 {
    Vector3<GLdouble> black(0.0, 0.0, 0.0);
-   Vector3<GLdouble> p(0, 0, 0);
-   Sphere s(p, 0.5);
 
-   if (_scene.testIntersection(r, p, s) == true)
+   if (_scene.testIntersection(r) == true)
    {
-      //cout << "p = " << p;
-      
-      Vector3<GLdouble> shadowDir = (_light.getPos() - p).normalise();
-      Vector3<GLdouble> delta = shadowDir * 0.5;
-      Vector3<GLdouble> shadowPos = p + delta;
-      Ray shadowRay(shadowPos, shadowDir);
-
-      if (shootShadowRay(shadowRay))
+      if (shootShadowRay(r))
       {
-         //Vector3<GLdouble> pink(1.0, 0, 1.0);
          return black;
       }
       else
       {
-         return _light.getGlobalLightAt(p, s, COP);
+         return _light.getGlobalLightAt(r, COP);
       }
    }
    else
@@ -131,8 +121,12 @@ shootRay(Ray& r)
 bool RayTracer::
 shootShadowRay(Ray& r)
 {
-   Vector3<GLdouble> p(0, 0, 0);
-   Sphere s(p, 0.5);
+   Vector3<GLdouble> p = r.getLastIntersection();
+   Vector3<GLdouble> l = (_light.getPos() - p).normalise();
 
-   return _scene.testIntersection(r, p, s);
+   //TODO: Make this smaller.
+   p += l * 0.5;
+   Ray shadowRay(p, l);
+
+   return _scene.testIntersection(shadowRay);
 }

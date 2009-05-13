@@ -17,9 +17,7 @@ class Light
    public:
       Light();
 
-      Vector3<GLdouble> getGlobalLightAt(Vector3<GLdouble>& p,
-                                         Sphere& s,
-                                         const Vector3<GLdouble>& COP);
+      Vector3<GLdouble> getGlobalLightAt(Ray& ray, const Vector3<GLdouble>& COP);
                                          
       Vector3<GLdouble> getPos();
 

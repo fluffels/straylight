@@ -5,25 +5,27 @@ Light()
 {}
 
 Vector3<GLdouble> Light::
-getGlobalLightAt(Vector3<GLdouble>& p, Sphere& s,
-                 const Vector3<GLdouble>& COP)
+getGlobalLightAt(Ray& ray, const Vector3<GLdouble>& COP)
 {
    /* See p. 300 - 302 of Interactive Computer Graphics by Edward Angel,
     * 5th Edition. */
-   Material* m = s.getMaterial();
-
+    
+   const SceneObject* s = ray.getLastIntersected();
+   const Vector3<GLdouble>& p = ray.getLastIntersection();   
+   const Material& m = s->getMaterial();
+   
    GLdouble Ia[3];
    for (int a = 0; a < 3; a++)
    {
-      Ia[a] = _ambient.getCoordinate(a) * m->getAmbient(a);
+      Ia[a] = _ambient.getCoordinate(a) * m.getAmbient(a);
    }
 
    GLdouble Id[3];
    Vector3<GLdouble> l = (_pos - p).normalise();
-   Vector3<GLdouble> n = s.getNormalAt(p);
+   Vector3<GLdouble> n = s->getNormalAt(p);
    for (int a = 0; a < 3; a++)
    {
-      Id[a] = m->getDiffuse(a)
+      Id[a] = m.getDiffuse(a)
               * max<GLdouble>((l.dot(n)) * _diffuse.getCoordinate(0), 0);
    }
 
@@ -36,9 +38,9 @@ getGlobalLightAt(Vector3<GLdouble>& p, Sphere& s,
    v = v.normalise();
    for (int a = 0; a < 3; a++)
    {
-      GLdouble coeff = m->getSpecular(a) * _specular.getCoordinate(a);
+      GLdouble coeff = m.getSpecular(a) * _specular.getCoordinate(a);
       GLdouble rv = max<GLdouble>(r.dot(v), 0);
-      GLdouble shiny = pow(rv, m->getShininess());      
+      GLdouble shiny = pow(rv, m.getShininess());      
       
       Is[a] = coeff * shiny;
    }

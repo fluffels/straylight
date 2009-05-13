@@ -8,7 +8,7 @@
 #include "GraphicsLibrary/Vector3.h"
 
 #include "Ray.h"
-#include "Sphere.h"
+#include "SceneObject.h"
 
 using namespace std;
 
@@ -19,21 +19,22 @@ class Scene
 {
    public:
       Scene();
+      
+      ~Scene();
 
-      void addSphere(Sphere& s);
+      void addObject(SceneObject* s);
+      
+      //void addSphere(SceneObject& s);
 
       /**
-       * Tests whether a ray intersects an object in the scene.
-       * @param r The ray to test.
-       * @param p The intersection point will be stored here.
-       * @param s The sphere intersected will be stored here.
+       * Tests whether a Ray intersects a SceneObject.
+       * @param r The Ray to test.
        * @return True if the ray intersects an object, false otherwise.
        */
-      bool testIntersection(Ray& r, Vector3<GLdouble>& p,
-                            Sphere& s);
+      bool testIntersection(Ray& r);
 
    private:
-      vector<Sphere> spheres;
+      vector<SceneObject*> objects;
 };
 
 #endif /*SCENE_H_*/
