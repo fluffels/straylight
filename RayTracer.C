@@ -38,7 +38,7 @@ RayTracer(int xResolution, int yResolution):
 
    material.setAmbient(0.0, 0.0, 1.0);
    material.setDiffuse(0.0, 0.0, 1.0);
-   material.setReflective(false);
+   material.setReflective(true);
    Sphere* blueSphere = new Sphere(BLUE_SPHERE_POS, SPHERE_RADIUS, material);
    _scene.addObject(blueSphere);
 
@@ -133,7 +133,8 @@ shootRay(Ray& r)
       Vector3<GLdouble> localColour;
       if (shootShadowRay(r))
       {
-         localColour = black;
+         Vector3<GLdouble> colour = _light.getGlobalLightAt(r, COP);
+         localColour = colour / 2;
       }
       else
       {
