@@ -189,8 +189,8 @@ writeImage()
    {
       for (int x = 0; x < width; x++)
       {
-         GLubyte* source = image + (y * (height * 3) + x * 3);
-         unsigned char* dest = out.data + ((height - 1 - y) * (height * 3)
+         GLubyte* source = image + (y * (width * 3) + x * 3);
+         unsigned char* dest = out.data + ((height - 1 - y) * (width * 3)
                                            + x * 3);
 
          for (int c = 0; c < 3; c++)
