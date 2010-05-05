@@ -1,9 +1,9 @@
 CC = g++
-CFLAGS = -fmessage-length=0 -std=c++0x
-LDFLAGS =
-LDLIBS = -L/usr/X11R6/lib -lglut
+CFLAGS = -fmessage-length=0 -std=c++0x -pipe
+LDFLAGS = -pipe
+LDLIBS = -L/usr/X11R6/lib -lglut -lpng
 OBJS = Main.o Ray.o Camera.o RayTracer.o Material.o SceneObject.o Sphere.o \
-Plane.o Scene.o Light.o Image.o CPPLibrary/IllegalArgumentException.o
+Plane.o Scene.o Light.o
 TARGET = straylight
 
 

@@ -41,7 +41,7 @@ class RayTracer
 
       void drawImage();
 
-      GLubyte* getImage();
+      GLbyte* getImage();
 
    private:
       int _xResolution, _yResolution;
@@ -52,7 +52,7 @@ class RayTracer
 
       Light _light;
 
-      GLubyte* _image;
+      GLbyte* _image;
 
       Vector3<GLdouble> shootRay(Ray& r);
 

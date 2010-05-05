@@ -19,7 +19,7 @@ RayTracer(int xResolution, int yResolution):
 {
    _cam.setResolution(xResolution, yResolution, Camera::DEFAULT_VIEW_ANGLE);
 
-   _image = new GLubyte[_xResolution * _yResolution * 3];
+   _image = new GLbyte[_xResolution * _yResolution * 3];
 
    Material material;
    material.setShininess(15);
@@ -73,7 +73,7 @@ castRays(bool interactive)
       for (int x = 0; x < _xResolution; x++)
       {
          int offset = y * (_xResolution * 3) + x * 3;
-         GLubyte* p = _image + offset;
+         GLbyte* p = _image + offset;
 
          Ray r = _cam.getRayAt(x, y);
          Vector3<GLdouble> colour = shootRay(r);
@@ -86,7 +86,7 @@ castRays(bool interactive)
          if (interactive)
          {
             glRasterPos2d(x, y);
-            glDrawPixels(1, 1, GL_RGB, GL_UNSIGNED_BYTE, p);
+            glDrawPixels(1, 1, GL_RGB, GL_BYTE, p);
             glutSwapBuffers();
          }
       }
@@ -114,7 +114,7 @@ drawImage()
    glutSwapBuffers();
 }
 
-GLubyte* RayTracer::
+GLbyte* RayTracer::
 getImage()
 {
    return _image;

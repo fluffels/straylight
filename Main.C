@@ -5,8 +5,8 @@
 #include <map>
 
 #include <GL/glu.h>
+#include <png.h>
 
-#include "Image.h"
 #include "RayTracer.h"
 
 using namespace std;
@@ -24,7 +24,18 @@ bool show = false;
 int width = 1024;
 int height = width;
 
-char* outfile = "out.tga";
+const char* outFileName = "out.png";
+FILE* outFile;
+
+const int BIT_DEPTH = 8;
+const int COLOUR_TYPE = PNG_COLOR_TYPE_RGB;
+const int INTERLACE_TYPE = PNG_INTERLACE_NONE; //_ADAM7;
+const int COMPRESSION_TYPE = PNG_COMPRESSION_TYPE_DEFAULT;
+const int FILTER_METHOD = PNG_FILTER_TYPE_DEFAULT;
+const int COLOURS_PER_PIXEL = 3;
+
+png_structp png;
+png_infop pngInfo;
 
 void printUsage();
 void writeImage();
@@ -107,7 +118,7 @@ parseArguments(int argc, char** argv)
             printUsage();
          }
                   
-         outfile = argv[a + 1];
+         outFileName = argv[a + 1];
          a++;
       }
       else if (strcmp(argv[a], "-h") == 0)
@@ -139,6 +150,44 @@ void
 setup()
 {
    r = new RayTracer(width, height);
+   
+   outFile = fopen(outFileName, "wb");
+   if (outFile == NULL)
+   {
+      fprintf(stderr, "Could not open file \"%s\" for writing.\n",
+         outFileName);
+      exit(-1);
+   }
+   
+   png = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+   if (png == NULL)
+   {
+      fprintf(stderr, "Could not create PNG struct.\n");
+      exit(-1);
+   }
+   
+   pngInfo = png_create_info_struct(png);
+   if (pngInfo == NULL)
+   {
+      fprintf(stderr, "Could not create PNG info struct.\n");
+      exit(-1);
+   }
+   
+   if (setjmp(png_jmpbuf(png)))
+   {
+      fprintf(stderr, "Could not initialize libPNG input / output.\n");
+		exit(-1);
+   }
+	png_init_io(png, outFile);
+   
+   if (setjmp(png_jmpbuf(png)))
+   {
+      fprintf(stderr, "Could not write PNG header.\n");
+		exit(-1);
+   }
+	png_set_IHDR(png, pngInfo, width, height, BIT_DEPTH, COLOUR_TYPE,
+      INTERLACE_TYPE, COMPRESSION_TYPE, FILTER_METHOD);
+	png_write_info(png, pngInfo);
 }
 
 void
@@ -178,29 +227,30 @@ writeImage()
       return;
    }
    
-   GLubyte* image = r->getImage();
-
-   Image out(width, height, Image::RGB, NULL);
-
-   /* The image has to be flipped around the x axis since OpenGL and TGA have
-    * different coordinate systems.
-    */
-   for (int y = 0; y < height; y++)
+   GLbyte* image = r->getImage();
+   
+   png_byte* rowPointers[height];
+   for (int a = 0; a < height; a++)
    {
-      for (int x = 0; x < width; x++)
-      {
-         GLubyte* source = image + (y * (width * 3) + x * 3);
-         unsigned char* dest = out.data + ((height - 1 - y) * (width * 3)
-                                           + x * 3);
-
-         for (int c = 0; c < 3; c++)
-         {
-            dest[c] = source[c];
-         }
-      }
+      rowPointers[height - 1 - a] = (png_byte*) image + a * width
+         * COLOURS_PER_PIXEL;
    }
+   
+   if (setjmp(png_jmpbuf(png)))
+   {
+      fprintf(stderr, "Could not write image data.\n");
+		exit(-1);
+   }
+   png_write_image(png, rowPointers);
 
-   out.write_TGA24(outfile);
+   if (setjmp(png_jmpbuf(png)))
+   {
+      fprintf(stderr, "Could not finish write.\n");
+		exit(-1);
+   }
+	png_write_end(png, NULL);
+   
+   fclose(outFile);
 }
 
 int
