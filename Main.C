@@ -12,7 +12,7 @@
 using namespace std;
 
 /* Window constants. */
-const char* title = "Jan Kroeze (s26265924)";
+const char* title = "Straylight";
 
 /* Global variables. */
 RayTracer* r;
