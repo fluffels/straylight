@@ -1,0 +1,31 @@
+Version 1.0
+===========
+
+Here is a sample profile for Version 1.0 of Straylight.
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls   s/call   s/call  name    
+ 20.38      3.61     3.61 885016084     0.00     0.00  Matrix<double>::getValue(int, int) const
+ 14.28      6.14     2.53 107467928     0.00     0.00  Matrix<double>::allocateMatrix()
+ 10.72      8.04     1.90 539006266     0.00     0.00  Matrix<double>::setValue(int, int, double)
+  9.62      9.75     1.71 859144515     0.00     0.00  Matrix<double>::getRowCount() const
+  8.81     11.31     1.56 1240371610     0.00     0.00  Matrix<double>::getColumnCount() const
+  7.25     12.59     1.29 56932493     0.00     0.00  Matrix<double>::Matrix(Matrix<double> const&)
+  3.10     13.14     0.55 86880178     0.00     0.00  Matrix<double>::~Matrix()
+  1.81     13.46     0.32 16149339     0.00     0.00  Matrix<double>::operator-(Matrix<double> const&) const
+
+We can see that program execution time is dominated by Matrix
+operations. getValue(), allocateMatrix() and setValue() will likely need
+to be retained in some form since vectors will need their values changed
+and memory allocated for them, but perhaps this can be done in a simpler
+way.
+
+getRowCount(), getColumnCount() and the contructor and destructor can be
+eliminated.
+
+Together, these account for 74.16% of the running time! They are therefore
+the largest performance culprits. For version 1.1 an attempt will be made
+to create a small and fast Vector3 class that does not depend on Matrices.
+Since Vectors are small and are created on the fly and not stored, the
+program will switch to storing them on the stack, rather than on the heap.
