@@ -70,4 +70,26 @@ threading solution. This is after the minor change of adding a Colour
 class.
 
 
+Version 1.1.1
+=============
 
+This version added a Colour class to replace the use of Vectors to store
+Colour values.
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls   s/call   s/call  name    
+  9.25      0.66     0.66 154124159     0.00     0.00  SimpleVector::dot(SimpleVector const&) const
+  7.49      1.19     0.53 104712192     0.00     0.00  Colour::get(int) const
+  7.06      1.69     0.50 188230238     0.00     0.00  SimpleVector::SimpleVector(double, double, double)
+  6.78      2.17     0.48 122286159     0.00     0.00  SimpleVector::SimpleVector(SimpleVector const&)
+  6.22      2.61     0.44 35342554     0.00     0.00  Sphere::testIntersection(Ray&) const
+  5.93      3.03     0.42 39558044     0.00     0.00  SimpleVector::getMagnitude() const
+  5.79      3.44     0.41 12305144     0.00     0.00  Scene::testIntersection(Ray&)
+  5.51      3.83     0.39  4363008     0.00     0.00  Light::getGlobalLightAt(Ray&, SimpleVector const&)
+  4.24      4.13     0.30 39558044     0.00     0.00  SimpleVector::operator/(double) const
+  3.96      4.41     0.28 68597247     0.00     0.00  SimpleVector::operator*(do
+
+The addition results in even more OOP-related overhead. This project
+may benefit greatly from the eradication of getters and setters and some
+way to prevent the ubiquotous copying.

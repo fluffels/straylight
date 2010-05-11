@@ -6,6 +6,7 @@
 #include <GL/gl.h>
 
 #include "Camera.h"
+#include "Colour.h"
 #include "Light.h"
 #include "Material.h"
 #include "Plane.h"
@@ -104,15 +105,6 @@ class RayTracer
       void castRays(bool interactive);
 
       /**
-       * Blends two colours.
-       * 
-       * @param c1 The first colour.
-       * @param c2 The second colour.
-       * @return The combination of the two colours.
-       */
-      Vector combineColours(Vector& c1, Vector& c2);
-
-      /**
        * Draws the image to the screen in one go.
        */
       void drawImage();
@@ -160,7 +152,7 @@ class RayTracer
        * @param r The ray to shoot.
        * @return The colour returned by the ray.
        */
-      Vector shootRay(Ray& r);
+      Colour shootRay(Ray& r);
 
       /**
        * Shoots a ray to determine if an intersection point struck by

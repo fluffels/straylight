@@ -25,36 +25,36 @@ RayTracer(int xResolution, int yResolution):
 
    Material material;
    material.setShininess(15);
-   material.setSpecular(1.0, 1.0, 1.0);
+   material.setSpecular(Colour(1.0, 1.0, 1.0));
 
-   material.setAmbient(1.0, 0.0, 0.0);
-   material.setDiffuse(1.0, 0.0, 0.0);
+   material.setAmbient(Colour(1.0, 0.0, 0.0));
+   material.setDiffuse(Colour(1.0, 0.0, 0.0));
    Sphere* redSphere = new Sphere(RED_SPHERE_POS, SPHERE_RADIUS, material);
    _scene.addObject(redSphere);
 
-   material.setAmbient(0.0, 1.0, 0.0);
-   material.setDiffuse(0.0, 1.0, 0.0);
+   material.setAmbient(Colour(0.0, 1.0, 0.0));
+   material.setDiffuse(Colour(0.0, 1.0, 0.0));
    material.setReflective(true);
    Sphere* greenSphere = new Sphere(GREEN_SPHERE_POS, SPHERE_RADIUS, material);
    _scene.addObject(greenSphere);
 
-   material.setAmbient(0.0, 0.0, 1.0);
-   material.setDiffuse(0.0, 0.0, 1.0);
+   material.setAmbient(Colour(0.0, 0.0, 1.0));
+   material.setDiffuse(Colour(0.0, 0.0, 1.0));
    material.setReflective(true);
    Sphere* blueSphere = new Sphere(BLUE_SPHERE_POS, SPHERE_RADIUS, material);
    _scene.addObject(blueSphere);
 
-   material.setAmbient(0.8, 0.4, 0.0);
-   material.setDiffuse(0.8, 0.4, 0.0);
+   material.setAmbient(Colour(0.8, 0.4, 0.0));
+   material.setDiffuse(Colour(0.8, 0.4, 0.0));
    material.setReflective(true);
    Plane* plane = new Plane(PLANE_NORMAL, PLANE_D);
    plane->setMaterial(material);
    _scene.addObject(plane);
 
-   _light.setAmbient(0.5, 0.5, 0.5);
-   _light.setDiffuse(0.9, 0.9, 0.9);
-   _light.setSpecular(1.0, 1.0, 1.0);
-   _light.setPosition(3.0, 3.0, 3.0);
+   _light.setAmbient(Colour(0.5, 0.5, 0.5));
+   _light.setDiffuse(Colour(0.9, 0.9, 0.9));
+   _light.setSpecular(Colour(1.0, 1.0, 1.0));
+   _light.setPosition(Vector(3.0, 3.0, 3.0));
 }
 
 RayTracer::
@@ -78,11 +78,11 @@ castRays(bool interactive)
          unsigned char* p = _image + offset;
          
          Ray r = _cam.getRayAt(x, y);
-         Vector colour = shootRay(r);
+         Colour colour = shootRay(r);
 
-         p[0] = min<double>(colour.x, 1.0) * 255;
-         p[1] = min<double>(colour.y, 1.0) * 255;
-         p[2] = min<double>(colour.z, 1.0) * 255;
+         p[0] = min<double>(colour.r, 1.0) * 255;
+         p[1] = min<double>(colour.g, 1.0) * 255;
+         p[2] = min<double>(colour.b, 1.0) * 255;
          
          if (interactive)
          {
@@ -92,18 +92,6 @@ castRays(bool interactive)
          }
       }
    }
-}
-
-Vector RayTracer::
-combineColours(Vector& c1, Vector& c2)
-{
-   Vector c;
-   
-   c.x = c1.x + c2.x * 0.6;
-   c.y = c1.y + c2.y * 0.6;
-   c.z = c1.z + c2.z * 0.6;
-   
-   return c;
 }
 
 void RayTracer::
@@ -121,20 +109,20 @@ getImage()
    return _image;
 }
 
-Vector RayTracer::
+Colour RayTracer::
 shootRay(Ray& r)
 {
-   Vector black(0.0, 0.0, 0.0);
+   Colour black(0.0, 0.0, 0.0);
 
    if (_scene.testIntersection(r) == true)
    {
       const SceneObject* s = r.getLastIntersected();
       const Material& m = s->getMaterial();
       
-      Vector localColour;
+      Colour localColour;
       if (shootShadowRay(r))
       {
-         Vector colour = _light.getGlobalLightAt(r, COP);
+         Colour colour = _light.getGlobalLightAt(r, COP);
          localColour = colour / 2;
       }
       else
@@ -156,8 +144,8 @@ shootRay(Ray& r)
          Ray newRay(p, reflect);
          newRay.setDepth(r.getDepth() - 1);
 
-         Vector Lri = shootRay(newRay);
-         return combineColours(localColour, Lri);
+         Colour Lri = shootRay(newRay);
+         return localColour.combine(Lri);
       }
       else
       {

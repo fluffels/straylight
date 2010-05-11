@@ -3,7 +3,7 @@
 
 #include <GL/glut.h>
 
-#include "GraphicsLibrary/Vector3.h"
+#include "Colour.h"
 
 /**
  * Models the material properties as specified by the Phon global illumination
@@ -19,22 +19,18 @@ class Material
       Material();
       
       /**
-       * Returns a component of this material's ambient colour.
+       * Returns this material's ambient colour.
        * 
-       * @param color The index of the colour component to return.
-       * @return The specified component of the ambient colour as a 
-       * double.
+       * @return The ambient colour as an object of class Colour.
        */
-      double getAmbient(int colour) const;
+      const Colour& getAmbient() const;
       
       /**
-       * Returns a component of this material's diffuse colour.
+       * Returns this material's diffuse colour.
        * 
-       * @param color The index of the colour component to return.
-       * @return The specified component of the diffuse colour as a 
-       * double.
+       * @return The diffuse colour as an object of class Colour.
        */
-      double getDiffuse(int colour) const;
+      const Colour& getDiffuse() const;
       
       /**
        * Returns this material's shininess coefficient.
@@ -44,13 +40,11 @@ class Material
       double getShininess() const;
       
       /**
-       * Returns a component of this material's specular colour.
+       * Returns this material's specular colour.
        * 
-       * @param color The index of the colour component to return.
-       * @return The specified component of the specular colour as a 
-       * double.
+       * @return The specular colour as an object of class Colour.
        */
-      double getSpecular(int colour) const;
+      const Colour& getSpecular() const;
       
       /**
        * Returns whether this material is reflective.
@@ -58,24 +52,20 @@ class Material
        * @return A boolean indicating this material's reflectivity.
        */
       bool isReflective() const;
-   
+      
       /**
-       * Sets this material's ambient colour by component.
+       * Sets this material's ambient colour.
        * 
-       * @param r The new ambient colour's red component.
-       * @param g The new ambient colour's green component.
-       * @param b The new ambient colour's blue component.
+       * @param colour The new ambient colour for this material.
        */
-      void setAmbient(GLdouble r, GLdouble g, GLdouble b);
-
+      void setAmbient(Colour colour);
+      
       /**
-       * Sets this material's diffuse colour by component.
+       * Sets this material's diffuse colour.
        * 
-       * @param r The new diffuse colour's red component.
-       * @param g The new diffuse colour's green component.
-       * @param b The new diffuse colour's blue component.
+       * @param colour The new diffuse colour for this material.
        */
-      void setDiffuse(GLdouble r, GLdouble g, GLdouble b);
+      void setDiffuse(Colour colour);
       
       /**
        * Sets whether this material is reflective.
@@ -91,31 +81,29 @@ class Material
        * @param newValue The materials new shininess.
        */
       void setShininess(double newValue);
-
+      
       /**
-       * Sets this materials specular colour by component.
+       * Sets this material's specular colour.
        * 
-       * @param r The new specular colour's red component.
-       * @param g The new specular colour's green component.
-       * @param b The new specular colour's blue component.
+       * @param colour The new specular colour for this material.
        */
-      void setSpecular(double r, double g, double b);
+      void setSpecular(Colour colour);
       
    private:
       /**
        * The material's ambient colour.
        */
-      double _ambient[3];
+      Colour _ambient;
       
       /**
        * The material's diffuse colour.
        */
-      double _diffuse[3];
+      Colour _diffuse;
       
       /**
        * The material's specular colour.
        */
-      double _specular[3];
+      Colour _specular;
 
       /**
        * The material's shininess coefficient.

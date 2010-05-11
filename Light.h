@@ -5,6 +5,7 @@
 
 #include "CPPLibrary/IllegalArgumentException.h"
 
+#include "Colour.h"
 #include "Sphere.h"
 #include "Vector.h"
 
@@ -21,20 +22,6 @@ class Light
        * position to the origin (0, 0, 0).
        */
       Light();
-      
-      /**
-       * Get a component of this light's ambient colour.
-       * 
-       * @param componentIndex 0 for red, 1 for green, 2 for blue.
-       */
-      double getAmbient(int componentIndex);
-      
-      /**
-       * Get a component of this light's diffuse colour.
-       * 
-       * @param componentIndex 0 for red, 1 for green, 2 for blue.
-       */
-      double getDiffuse(int componentIndex);
 
       /**
        * Determine the illumination contributed by this light to the
@@ -47,7 +34,7 @@ class Light
        * @return A vector describing the light intensity in terms of its
        * red, green and blue components.
        */
-      Vector getGlobalLightAt(Ray& ray, const Vector& COP);
+      Colour getGlobalLightAt(Ray& ray, const Vector& COP);
       
       /**
        * Return the light's position.
@@ -57,64 +44,48 @@ class Light
       Vector getPos();
       
       /**
-       * Get a component of this light's specular colour.
+       * Sets this material's ambient colour.
        * 
-       * @param componentIndex 0 for red, 1 for green, 2 for blue.
+       * @param colour The new ambient colour for this material.
        */
-      double getSpecular(int componentIndex);
+      void setAmbient(Colour colour);
+      
+      /**
+       * Sets this material's diffuse colour.
+       * 
+       * @param colour The new diffuse colour for this material.
+       */
+      void setDiffuse(Colour colour);
 
       /**
-       * Set the light's ambient colour by component.
+       * Set the light's position.
        * 
-       * @param r The new red component of the light's ambient colour.
-       * @param g The new green component of the light's ambient colour.
-       * @param b The new blue component of the light's ambient colour.
+       * @param vector The new position.
        */
-      void setAmbient(double r, double g, double b);
-
+      void setPosition(Vector vector);
+      
       /**
-       * Set the light's diffuse colour by component.
+       * Sets this material's specular colour.
        * 
-       * @param r The new red component of the light's diffuse colour.
-       * @param g The new green component of the light's diffuse colour.
-       * @param b The new blue component of the light's diffuse colour.
+       * @param colour The new specular colour for this material.
        */
-      void setDiffuse(double r, double g, double b);
-
-      /**
-       * Set the light's position by coordinates.
-       * 
-       * @param x The light's new x coordinate.
-       * @param y The light's new y coordinate.
-       * @param z The light's new z coordinate.
-       */
-      void setPosition(double x, double y, double z);
-
-      /**
-       * Set the light's specular colour by component.
-       * 
-       * @param r The new red component of the light's specular colour.
-       * @param g The new green component of the light's specular
-       * colour.
-       * @param b The new blue component of the light's specular colour.
-       */      
-      void setSpecular(double r, double g, double b);
+      void setSpecular(Colour colour);
 
    private:
       /**
        * The light's ambient colour.
        */
-      Vector _ambient;
+      Colour _ambient;
       
       /**
        * The light's diffuse colour.
        */      
-      Vector _diffuse;
+      Colour _diffuse;
       
       /**
        * The light's specular colour.
        */
-      Vector _specular;
+      Colour _specular;
       
       /**
        * The light's position.

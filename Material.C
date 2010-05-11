@@ -2,36 +2,35 @@
 
 Material::
 Material():
+   _ambient(0, 0, 0),
+   _diffuse(0, 0, 0),
+   _specular(0, 0, 0),
    _shininess(0),
    _reflective(false)
+{}
+
+const Colour& Material::
+getAmbient() const
 {
-   setAmbient(0, 0, 0);
-   setDiffuse(0, 0, 0);
-   setSpecular(0, 0, 0);
+   return _ambient;
 }
 
-GLdouble Material::
-getAmbient(int colour) const
+const Colour& Material::
+getDiffuse() const
 {
-   return _ambient[colour];
+   return _diffuse;
 }
 
-GLdouble Material::
-getDiffuse(int colour) const
-{
-   return _diffuse[colour];
-}
-
-GLdouble Material::
+double Material::
 getShininess() const
 {
    return _shininess;
 }
 
-GLdouble Material::
-getSpecular(int colour) const
+const Colour& Material::
+getSpecular() const
 {
-   return _specular[colour];
+   return _specular;
 }
 
 bool Material::
@@ -39,20 +38,17 @@ isReflective() const
 {
    return _reflective;
 }
+
 void Material::
-setAmbient(double r, double g, double b)
+setAmbient(Colour colour)
 {
-   _ambient[0] = r;
-   _ambient[1] = g;
-   _ambient[2] = b;
+   _ambient = colour;
 }
 
 void Material::
-setDiffuse(double r, double g, double b)
+setDiffuse(Colour colour)
 {
-   _diffuse[0] = r;
-   _diffuse[1] = g;
-   _diffuse[2] = b;
+   _diffuse = colour;
 }
 
 void Material::
@@ -68,9 +64,7 @@ setShininess(double newValue)
 }
 
 void Material::
-setSpecular(double r, double g, double b)
+setSpecular(Colour colour)
 {
-   _specular[0] = r;
-   _specular[1] = g;
-   _specular[2] = b;
+   _specular = colour;
 }
