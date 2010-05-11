@@ -120,7 +120,7 @@ class RayTracer
       /**
        * Returns the raw image data.
        */
-      GLbyte* getImage();
+      unsigned char* getImage();
 
    private:
       /**
@@ -152,7 +152,7 @@ class RayTracer
        * Image data, stored as columns of pixels with three eight-bit
        * values.
        */
-      GLbyte* _image;
+      unsigned char* _image;
 
       /**
        * Shoots an individual ray.

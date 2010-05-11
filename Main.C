@@ -227,7 +227,7 @@ writeImage()
       return;
    }
    
-   GLbyte* image = r->getImage();
+   unsigned char* image = r->getImage();
    
    png_byte* rowPointers[height];
    for (int a = 0; a < height; a++)
