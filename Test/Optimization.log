@@ -29,3 +29,45 @@ the largest performance culprits. For version 1.1 an attempt will be made
 to create a small and fast Vector3 class that does not depend on Matrices.
 Since Vectors are small and are created on the fly and not stored, the
 program will switch to storing them on the stack, rather than on the heap.
+
+
+Version 1.1
+===========
+
+The switch to a simpler vector class had the desired effect. Dropping
+execution time by a factor of 11x, measured by the execution times of
+the 2048x2048 test run.
+
+359.09 / 30.87 = 11.63
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls   s/call   s/call  name    
+ 11.63      0.73     0.73 154124159     0.00     0.00  SimpleVector::dot(SimpleVector const&) const
+  8.92      1.29     0.56 35342554     0.00     0.00  Sphere::testIntersection(Ray&) const
+  8.28      1.81     0.52 201068945     0.00     0.00  SimpleVector::SimpleVector(double, double, double)
+  6.69      2.23     0.42 126480463     0.00     0.00  SimpleVector::SimpleVector(SimpleVector const&)
+  6.05      2.61     0.38 12305144     0.00     0.00  Scene::testIntersection(Ray&)
+  5.89      2.98     0.37 39558044     0.00     0.00  SimpleVector::getMagnitude() const
+  4.62      3.27     0.29  4363008     0.00     0.00  Light::getGlobalLightAt(Ray&, SimpleVector const&)
+  4.14      3.53     0.26 60736723     0.00     0.00  SimpleVector::operator-(SimpleVector const&) const
+  3.82      3.77     0.24 68597247     0.00     0.00  SimpleVector::operator*(double) const
+
+Most of the time is now spent in the dot operator. This seems curious,
+but it is part of Sphere::testIntersection which is at least the second
+highest time now Sphere::testIntersection, which is as it should be.
+
+There still seems to be way too much time spent on Vector constructors
+and copy constructors. There may be more work to do to optimize the
+Vector class.
+
+It's likely that because the Vectors are stored on the stack and are
+constantly being copied into and out of functions these constructors are
+taking so much time.
+
+For the next major version it would be more advantageous to explore a
+threading solution. This is after the minor change of adding a Colour
+class.
+
+
+

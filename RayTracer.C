@@ -1,15 +1,15 @@
 #include "RayTracer.h"
 
-const Vector3<GLdouble> RayTracer::COP(0.0, 1.0, 4.0);
-const Vector3<GLdouble> RayTracer::AT(0.0, 2.0, 0.0);
-const Vector3<GLdouble> RayTracer::UP(0.0, 1.0, 0.0);
+const Vector RayTracer::COP(0.0, 1.0, 4.0);
+const Vector RayTracer::AT(0.0, 2.0, 0.0);
+const Vector RayTracer::UP(0.0, 1.0, 0.0);
 
-const Vector3<GLdouble> RayTracer::RED_SPHERE_POS(-1.0, 1.0, 0.0);
-const Vector3<GLdouble> RayTracer::GREEN_SPHERE_POS(0.0, 1.2, -1.0);
-const Vector3<GLdouble> RayTracer::BLUE_SPHERE_POS(1.0, 1.0, 0.0);
-const GLdouble RayTracer::SPHERE_RADIUS = 0.5;
-const Vector3<GLdouble> RayTracer::PLANE_NORMAL(0.1, 1.0, 0.0);
-const GLdouble RayTracer::PLANE_D = 0.0;
+const Vector RayTracer::RED_SPHERE_POS(-1.0, 1.0, 0.0);
+const Vector RayTracer::GREEN_SPHERE_POS(0.0, 1.2, -1.0);
+const Vector RayTracer::BLUE_SPHERE_POS(1.0, 1.0, 0.0);
+const double RayTracer::SPHERE_RADIUS = 0.5;
+const Vector RayTracer::PLANE_NORMAL(0.1, 1.0, 0.0);
+const double RayTracer::PLANE_D = 0.0;
 
 RayTracer::
 RayTracer(int xResolution, int yResolution):
@@ -17,9 +17,10 @@ RayTracer(int xResolution, int yResolution):
       _yResolution(yResolution),
       _cam(COP, AT, UP)
 {
-   _cam.setResolution(xResolution, yResolution, Camera::DEFAULT_VIEW_ANGLE);
+   _cam.setResolution(xResolution, yResolution,
+      Camera::DEFAULT_VIEW_ANGLE);
 
-   _image = new GLbyte[_xResolution * _yResolution * 3];
+   _image = new GLbyte[_xResolution * _yResolution * BYTES_PER_PIXEL];
 
    Material material;
    material.setShininess(15);
@@ -74,43 +75,42 @@ castRays(bool interactive)
       {
          int offset = y * (_xResolution * 3) + x * 3;
          GLbyte* p = _image + offset;
-
+         
          Ray r = _cam.getRayAt(x, y);
-         Vector3<GLdouble> colour = shootRay(r);
+         Vector colour = shootRay(r);
 
-         for (int a = 0; a < 3; a++)
-         {
-            p[a] = min<GLdouble>(colour.getCoordinate(a), 1.0) * 255;
-         }
-
+         p[0] = min<double>(colour.x, 1.0) * 255;
+         p[1] = min<double>(colour.y, 1.0) * 255;
+         p[2] = min<double>(colour.z, 1.0) * 255;
+         
          if (interactive)
          {
             glRasterPos2d(x, y);
-            glDrawPixels(1, 1, GL_RGB, GL_BYTE, p);
+            glDrawPixels(1, 1, GL_RGB, GL_UNSIGNED_BYTE, p);
             glutSwapBuffers();
          }
       }
    }
 }
 
-Vector3<GLdouble> RayTracer::
-combineColours(Vector3<GLdouble>& c1, Vector3<GLdouble>& c2)
+Vector RayTracer::
+combineColours(Vector& c1, Vector& c2)
 {
-   Vector3<GLdouble> r;
+   Vector c;
    
-   for (int a = 0; a < 3; a++)
-   {
-      r.setCoordinate(a, c1.getCoordinate(a) + c2.getCoordinate(a) * 0.6);
-   }
+   c.x = c1.x + c2.x * 0.6;
+   c.y = c1.y + c2.y * 0.6;
+   c.z = c1.z + c2.z * 0.6;
    
-   return r;
+   return c;
 }
 
 void RayTracer::
 drawImage()
 {
    glRasterPos2d(0, 0);
-   glDrawPixels(_xResolution, _yResolution, GL_RGB, GL_UNSIGNED_BYTE, _image);
+   glDrawPixels(_xResolution, _yResolution, GL_RGB, GL_UNSIGNED_BYTE,
+      _image);
    glutSwapBuffers();
 }
 
@@ -120,20 +120,20 @@ getImage()
    return _image;
 }
 
-Vector3<GLdouble> RayTracer::
+Vector RayTracer::
 shootRay(Ray& r)
 {
-   Vector3<GLdouble> black(0.0, 0.0, 0.0);
+   Vector black(0.0, 0.0, 0.0);
 
    if (_scene.testIntersection(r) == true)
    {
       const SceneObject* s = r.getLastIntersected();
       const Material& m = s->getMaterial();
       
-      Vector3<GLdouble> localColour;
+      Vector localColour;
       if (shootShadowRay(r))
       {
-         Vector3<GLdouble> colour = _light.getGlobalLightAt(r, COP);
+         Vector colour = _light.getGlobalLightAt(r, COP);
          localColour = colour / 2;
       }
       else
@@ -144,18 +144,18 @@ shootRay(Ray& r)
       if ((r.getDepth() != 0) && (m.isReflective()))
       {
          /* 3D Computer Graphics by Alan Watt, p. 24 */
-         Vector3<GLdouble> p = r.getLastIntersection();
-         Vector3<GLdouble> n = r.getLastIntersected()->getNormalAt(p);
-         Vector3<GLdouble> l = r.getDir() * -1;
+         Vector p = r.getLastIntersection();
+         Vector n = r.getLastIntersected()->getNormalAt(p);
+         Vector l = r.getDir() * -1;
          
-         Vector3<GLdouble> reflect = n * (n.dot(l) * 2) - l;
+         Vector reflect = n * (n.dot(l) * 2) - l;
          
          reflect = reflect.normalise();
          p += reflect * 0.01;
          Ray newRay(p, reflect);
          newRay.setDepth(r.getDepth() - 1);
 
-         Vector3<GLdouble> Lri = shootRay(newRay);
+         Vector Lri = shootRay(newRay);
          return combineColours(localColour, Lri);
       }
       else
@@ -172,8 +172,8 @@ shootRay(Ray& r)
 bool RayTracer::
 shootShadowRay(Ray& r)
 {
-   Vector3<GLdouble> p = r.getLastIntersection();
-   Vector3<GLdouble> l = (_light.getPos() - p).normalise();
+   Vector p = r.getLastIntersection();
+   Vector l = (_light.getPos() - p).normalise();
 
    p += l * 0.01;
    Ray shadowRay(p, l);

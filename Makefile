@@ -2,8 +2,8 @@ CC = g++
 CFLAGS = -fmessage-length=0 -std=c++0x -pipe
 LDFLAGS = -pipe
 LDLIBS = -L/usr/X11R6/lib -lglut -lpng
-OBJS = Main.o Ray.o Camera.o RayTracer.o Material.o SceneObject.o Sphere.o \
-Plane.o Scene.o Light.o
+OBJS = GraphicsLibrary/SimpleVector.o Camera.o Ray.o SceneObject.o \
+Sphere.o Material.o Plane.o Scene.o Light.o RayTracer.o Main.o
 TARGET = straylight
 
 

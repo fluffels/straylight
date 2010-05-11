@@ -3,12 +3,9 @@
 
 #include <vector>
 
-#include <GL/glut.h>
-
-#include "GraphicsLibrary/Vector3.h"
-
 #include "Ray.h"
 #include "SceneObject.h"
+#include "Vector.h"
 
 using namespace std;
 
@@ -18,10 +15,21 @@ using namespace std;
 class Scene
 {
    public:
+      /**
+       * Default constructor.
+       */
       Scene();
       
+      /**
+       * Default destructor.
+       */
       ~Scene();
 
+      /**
+       * Add an object to the scene.
+       * 
+       * @param s A pointer to the SceneObject to add.
+       */
       void addObject(SceneObject* s);
 
       /**
@@ -32,6 +40,9 @@ class Scene
       bool testIntersection(Ray& r);
 
    private:
+      /**
+       * The list of SceneObjects in this Scene.
+       */
       vector<SceneObject*> objects;
 };
 

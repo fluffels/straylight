@@ -2,21 +2,47 @@
 #define PLANE_H_
 
 #include "SceneObject.h"
+#include "Vector.h"
 
+/**
+ * Encapsulates an axis aligned infinite plane.
+ */
 class Plane : public SceneObject
 {
    public:
-      static const int POINT_COUNT = 4;
+      /**
+       * Constructor.
+       * 
+       * @param normal The normal to this place.
+       * @param d 
+       */
+      //TODO: Add something here.
+      Plane(const Vector& normal, const double d);
 
-      Plane(const Vector3<GLdouble>& normal, const GLdouble d);
-
-      virtual Vector3<GLdouble> getNormalAt(const Vector3<GLdouble>& p) const;
+      /**
+       * Get the normal to this plane.
+       * 
+       * @param p The point on the plane to get the normal at.
+       * @return The normal at the point as an object of class Vector.
+       */
+      virtual Vector getNormalAt(const Vector& p) const;
       
+      /**
+       * Tests whether a ray intersects this plane.
+       * 
+       * @param r The ray to test against.
+       * @return True if the ray intersects the plane, false otherwise.
+       */
       virtual bool testIntersection(Ray& r) const;
 
    private:
-      Vector3<GLdouble> _normal;
-      GLdouble _d;
+      /**
+       * This plane's normal.
+       */
+      Vector _normal;
+      
+      //TODO: Add something here.
+      double _d;
 };
 
 #endif /*PLANE_H_*/

@@ -15,7 +15,7 @@ do
 	do
 		echo Testing $x x $y pixels...
       export TIME="\t$x\t$y\t%e"
-		time -a -o times.log ./ray -w $x -h $y
+		time -a -o times.log ../straylight -w $x -h $y
 	done
    echo "" >> times.log
 done

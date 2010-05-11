@@ -1,10 +1,9 @@
 #include "Camera.h"
 
-const GLdouble Camera::DEFAULT_VIEW_ANGLE = (27.0 / 180.0) * PI;
+const double Camera::DEFAULT_VIEW_ANGLE = (27.0 / 180.0) * PI;
 
 Camera::
-Camera(const Vector3<GLdouble>& cop, const Vector3<GLdouble>& at,
-       const Vector3<GLdouble>& up):
+Camera(const Vector cop, const Vector at, const Vector up):
       _cop(cop)
 {
    _dir = at - _cop;
@@ -20,7 +19,7 @@ Camera(const Vector3<GLdouble>& cop, const Vector3<GLdouble>& at,
 
 
 void Camera::
-setResolution(int width, int height, const GLdouble& viewAngle)
+setResolution(int width, int height, GLdouble viewAngle)
 {
    _width = width;
    _height = height;
@@ -35,16 +34,16 @@ getRayAt(int x, int y)
       throw IllegalArgumentException("X / Y out of range.");
    }
    
-   const GLdouble LOW = -0.5;
-   const GLdouble HIGH = 0.5;
+   const double LOW = -0.5;
+   const double HIGH = 0.5;
    
-   const GLdouble MAX_X = _width - 1;
-   const GLdouble MAX_Y = _height - 1;
+   const double MAX_X = _width - 1;
+   const double MAX_Y = _height - 1;
    
-   const GLdouble X_MAG = (HIGH - LOW) * (x / MAX_X) + LOW;
-   const GLdouble Y_MAG = (HIGH - LOW) * (y / MAX_Y) + LOW;
-
-   Vector3<GLdouble> p = _cop + (_dir + (_right * X_MAG) + (_up * Y_MAG));
+   const double X_MAG = (HIGH - LOW) * (x / MAX_X) + LOW;
+   const double Y_MAG = (HIGH - LOW) * (y / MAX_Y) + LOW;
+   
+   Vector p = _cop + (_dir + (_right * X_MAG) + (_up * Y_MAG));
    
    /* Subtracting the COP from p gives a zoom effect when the camera is moved
     * further away, but it flips the image upside down. This is likely for the
@@ -52,7 +51,7 @@ getRayAt(int x, int y)
     * simulates a pinhole camera. We simply reverse Y to negate this.
     */
    p = (p - _cop).normalise();
-   p.setY(-1 * p.getY());
+   p.y = -1 * p.y;
    
    Ray r(_cop, p);
    

@@ -1,7 +1,7 @@
 #include "Ray.h"
 
 Ray::
-Ray(Vector3<GLdouble>& pos, Vector3<GLdouble>& dir):
+Ray(const Vector& pos, const Vector& dir):
       _pos(pos),
       _dir(dir.normalise()),
       _depth(TRACE_DEPTH)
@@ -13,7 +13,7 @@ getDepth() const
    return _depth;
 }
 
-const Vector3<GLdouble>& Ray::
+const Vector& Ray::
 getDir() const
 {
    return _dir;
@@ -25,13 +25,13 @@ getLastIntersected() const
    return _lastIntersected;
 }
 
-const Vector3<GLdouble>& Ray::
+const Vector Ray::
 getLastIntersection() const
 {
    return _lastIntersection;
 }
 
-const Vector3<GLdouble>& Ray::
+const Vector Ray::
 getPos() const
 {
    return _pos;
@@ -50,7 +50,7 @@ setLastIntersected(const SceneObject* newValue)
 }
 
 void Ray::
-setLastIntersection(const Vector3<GLdouble>& newValue)
+setLastIntersection(const Vector& newValue)
 {
    _lastIntersection = newValue;
 }

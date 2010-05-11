@@ -2,93 +2,149 @@
 
 Light::
 Light()
-{}
+{
+   _ambient.x = 0;
+   _ambient.y = 0;
+   _ambient.z = 0;
+   
+   _diffuse.x = 0;
+   _diffuse.y = 0;
+   _diffuse.z = 0;
+   
+   _specular.x = 0;
+   _specular.y = 0;
+   _specular.z = 0;
+   
+   _pos.x;
+   _pos.y;
+   _pos.z;
+}
 
-Vector3<GLdouble> Light::
-getGlobalLightAt(Ray& ray, const Vector3<GLdouble>& COP)
+double Light::
+getAmbient(int componentIndex)
+{
+   switch (componentIndex)
+   {
+      case 0: return _ambient.x;
+      case 1: return _ambient.y;
+      case 2: return _ambient.z;
+      default:
+         throw IllegalArgumentException("Illegal component index.");      
+   }
+}
+
+double Light::
+getDiffuse(int componentIndex)
+{
+   switch (componentIndex)
+   {
+      case 0: return _diffuse.x;
+      case 1: return _diffuse.y;
+      case 2: return _diffuse.z;
+      default:
+         throw IllegalArgumentException("Illegal component index.");      
+   }
+}
+
+Vector Light::
+getGlobalLightAt(Ray& ray, const Vector& COP)
 {
    /* See p. 300 - 302 of Interactive Computer Graphics by Edward Angel,
     * 5th Edition. */
     
    const SceneObject* s = ray.getLastIntersected();
-   const Vector3<GLdouble>& p = ray.getLastIntersection();   
+   const Vector& p = ray.getLastIntersection();   
    const Material& m = s->getMaterial();
    
-   GLdouble Ia[3];
+   double Ia[3];
    for (int a = 0; a < 3; a++)
    {
-      Ia[a] = _ambient.getCoordinate(a) * m.getAmbient(a);
+      Ia[a] = getAmbient(a) * m.getAmbient(a);
    }
-
-   GLdouble Id[3];
-   Vector3<GLdouble> l = (_pos - p).normalise();
-   Vector3<GLdouble> n = s->getNormalAt(p);
+   
+   double Id[3];
+   Vector l = (_pos - p).normalise();
+   Vector n = s->getNormalAt(p);
    for (int a = 0; a < 3; a++)
    {
-      Id[a] = m.getDiffuse(a)
-              * max<GLdouble>((l.dot(n)) * _diffuse.getCoordinate(0), 0);
+      double scaledDot = l.dot(n) * getDiffuse(a);
+      Id[a] = m.getDiffuse(a) * max<double>(scaledDot, 0);
    }
 
-   GLdouble Is[3];
-   /* See p. 309 of the above mentioned book. The vectors below are normalised.
-    * This is to make the dot product work properly. */
-   Vector3<GLdouble> r = n * (l.dot(n) * 2) - l;
+   double Is[3];
+   /* See p. 309 of the above mentioned book. The vectors below are
+    * normalised. This means that the dot products yield the cosines
+    * of the angles between the vectors. */
+   Vector r = n * (l.dot(n) * 2) - l;
    r = r.normalise();
-   Vector3<GLdouble> v = COP - p;
+   Vector v = COP - p;
    v = v.normalise();
    for (int a = 0; a < 3; a++)
    {
-      GLdouble coeff = m.getSpecular(a) * _specular.getCoordinate(a);
-      GLdouble rv = max<GLdouble>(r.dot(v), 0);
-      GLdouble shiny = pow(rv, m.getShininess());      
+      double coeff = m.getSpecular(a) * getSpecular(a);
+      double rv = max<double>(r.dot(v), 0);
+      double shiny = pow(rv, m.getShininess());      
       
       Is[a] = coeff * shiny;
    }
 
-   GLdouble I[3];
+   double I[3];
    for (int a = 0; a < 3; a++)
    {
       I[a] = Ia[a] + Id[a] + Is[a];
    }
    
-   Vector3<GLdouble> Iv(I[0], I[1], I[2]);
+   Vector Iv(I[0], I[1], I[2]);
    return Iv;
 }
 
-Vector3<GLdouble> Light::
+Vector Light::
 getPos()
 {
    return _pos;
 }
 
-void Light::
-setAmbient(GLdouble r, GLdouble g, GLdouble b)
+double Light::
+getSpecular(int componentIndex)
 {
-   _ambient.setCoordinate(0, r);
-   _ambient.setCoordinate(1, g);
-   _ambient.setCoordinate(2, b);
+   switch (componentIndex)
+   {
+      case 0: return _specular.x;
+      case 1: return _specular.y;
+      case 2: return _specular.z;
+      default:
+         throw IllegalArgumentException("Illegal component index.");      
+   }
 }
 
 void Light::
-setDiffuse(GLdouble r, GLdouble g, GLdouble b)
+setAmbient(double r, double g, double b)
 {
-   _diffuse.setCoordinate(0, r);
-   _diffuse.setCoordinate(1, g);
-   _diffuse.setCoordinate(2, b);
+   _ambient.x = r;
+   _ambient.y = g;
+   _ambient.z = b;
 }
 
 void Light::
-setPosition(GLdouble x, GLdouble y, GLdouble z)
+setDiffuse(double r, double g, double b)
 {
-   _pos.setX(x);
-   _pos.setY(y);
-   _pos.setZ(z);
+   _diffuse.x = r;
+   _diffuse.y = g;
+   _diffuse.z = b;
+}
+
+void Light::
+setPosition(double x, double y, double z)
+{
+   _pos.x = x;
+   _pos.y = y;
+   _pos.z = z;
 }
 
 void Light::
 setSpecular(GLdouble r, GLdouble g, GLdouble b)
 {
-   _specular.setCoordinate(0, r);
-   _specular.setCoordinate(1, g);
-   _specular.setCoordinate(2, b);
+   _specular.x = r;
+   _specular.y = g;
+   _specular.z = b;
 }

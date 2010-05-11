@@ -13,7 +13,7 @@ for res in $LIST
 do
    echo Testing $res x $res pixels...
    export TIME="\t$res\t%e"
-   time -a -o times.log ./ray -w $res -h $res
+   time -a -o times.log ../straylight -w $res -h $res
 done
 
 export TIME=$PREV_TIME
