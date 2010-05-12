@@ -22,6 +22,8 @@ clean:
 debug:
 	${MAKE} EXTRA_C_FLAGS="-g3 -pg" EXTRA_LD_FLAGS="-pg"
 
+optimized:
+	${MAKE} EXTRA_C_FLAGS="-O3" EXTRA_LD_FLAGS="-O3"
 
 ######################
 # ------------------ #
