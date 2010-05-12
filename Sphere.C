@@ -1,44 +1,44 @@
 #include "Sphere.h"
 
 Sphere::
-Sphere(const Vector& pos, const double radius):
-      _pos(pos),
-      _radius(radius)
+Sphere(const Vector& newPos, double newR):
+      pos(newPos),
+      r(newR)
 {}
 
 Sphere::
-Sphere(const Vector& pos, const double radius, const Material& mat):
-      _pos(pos),
-      _radius(radius)
+Sphere(const Vector& newPos, double newR, const Material& newMat):
+      pos(newPos),
+      r(newR)
 {
-   setMaterial(mat);
+   mat = newMat;
 }
 
 Vector Sphere::
-getNormalAt(const Vector& p) const
+getNormalAt(const Vector& point) const
 {
    /* See p. 19 of 3D Computer Graphics by Alan Watt (3rd Edition). */
-   Vector n((p.x - _pos.x) / _radius,
-            (p.y - _pos.y) / _radius,
-            (p.z - _pos.z) / _radius);
+   Vector n((point.x - pos.x) / r,
+            (point.y - pos.y) / r,
+            (point.z - pos.z) / r);
 
    return n.normalise();
 }
 
 bool Sphere::
-testIntersection(Ray& r) const
+testIntersection(Ray& ray) const
 {
    /* See p. 18 of 3D Computer Graphics by Alan Watt, 3rd Edition. */
 
    /* Note that the Ray's direction vector is guaranteed to be a unit
     * vector, as the class normalises the vector upon receiving it. */
 
-   Vector distance = r.getPos() - this->_pos;
-   Vector dir = r.getDir();
+   Vector distance = ray.getPos() - this->pos;
+   Vector dir = ray.getDir();
 
    double a = dir.dot(dir);
    double b = (distance * 2).dot(dir);
-   double c = distance.dot(distance) - pow(_radius, 2);
+   double c = distance.dot(distance) - pow(r, 2);
    double delta = b * b - 4 * a * c;
 
    if (delta < 0)
@@ -71,8 +71,8 @@ testIntersection(Ray& r) const
          }
       }
 
-      r.setLastIntersected(this);
-      r.setLastIntersection(r.getPos() + r.getDir() * t);
+      ray.setLastIntersected(this);
+      ray.setLastIntersection(ray.getPos() + ray.getDir() * t);
 
       return true;
    }

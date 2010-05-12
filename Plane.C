@@ -2,9 +2,19 @@
 
 Plane::
 Plane(const Vector& normal, const double d):
-      _normal(normal.normalise()),
-      _d(d)
+   /* Make sure the normal is, actually, normalised. */
+   _normal(normal.normalise()),
+   _d(d)
 {
+}
+
+Plane::
+Plane(const Vector& normal, const double d, const Material& newMat):
+   /* Make sure the normal is, actually, normalised. */
+   _normal(normal.normalise()),
+   _d(d)
+{
+   mat = newMat;
 }
 
 Vector Plane::

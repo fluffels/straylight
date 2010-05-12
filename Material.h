@@ -19,101 +19,29 @@ class Material
       Material();
       
       /**
-       * Returns this material's ambient colour.
-       * 
-       * @return The ambient colour as an object of class Colour.
-       */
-      const Colour& getAmbient() const;
-      
-      /**
-       * Returns this material's diffuse colour.
-       * 
-       * @return The diffuse colour as an object of class Colour.
-       */
-      const Colour& getDiffuse() const;
-      
-      /**
-       * Returns this material's shininess coefficient.
-       * 
-       * @return The material's shininess as a double.
-       */
-      double getShininess() const;
-      
-      /**
-       * Returns this material's specular colour.
-       * 
-       * @return The specular colour as an object of class Colour.
-       */
-      const Colour& getSpecular() const;
-      
-      /**
-       * Returns whether this material is reflective.
-       * 
-       * @return A boolean indicating this material's reflectivity.
-       */
-      bool isReflective() const;
-      
-      /**
-       * Sets this material's ambient colour.
-       * 
-       * @param colour The new ambient colour for this material.
-       */
-      void setAmbient(Colour colour);
-      
-      /**
-       * Sets this material's diffuse colour.
-       * 
-       * @param colour The new diffuse colour for this material.
-       */
-      void setDiffuse(Colour colour);
-      
-      /**
-       * Sets whether this material is reflective.
-       * 
-       * @param value True will make this material reflective, false
-       * will make it irreflective.
-       */
-      void setReflective(bool value);
-
-      /**
-       * Sets this materials new shininess.
-       * 
-       * @param newValue The materials new shininess.
-       */
-      void setShininess(double newValue);
-      
-      /**
-       * Sets this material's specular colour.
-       * 
-       * @param colour The new specular colour for this material.
-       */
-      void setSpecular(Colour colour);
-      
-   private:
-      /**
        * The material's ambient colour.
        */
-      Colour _ambient;
+      Colour ambient;
       
       /**
        * The material's diffuse colour.
        */
-      Colour _diffuse;
+      Colour diffuse;
       
       /**
        * The material's specular colour.
        */
-      Colour _specular;
+      Colour specular;
 
       /**
        * The material's shininess coefficient.
        */
-      double _shininess;
+      double shininess;
       
       /**
        * Whether the material is reflective or not.
        */
-      bool _reflective;
+      bool reflective;
 };
 
 #endif /*MATERIAL_H_*/

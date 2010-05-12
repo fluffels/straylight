@@ -19,12 +19,10 @@ class SceneObject
 {
    public:
       /**
-       * Get the material properties of this SceneObject.
-       * 
-       * @return An objects of class Material describing this
-       * SceneObject's material properties.
+       * An object of class Material that describes the properties of
+       * this SceneObject.
        */
-      const Material& getMaterial() const;
+      Material mat;
 
       /**
        * Returns the SceneObject's normal at a specific point.
@@ -35,14 +33,6 @@ class SceneObject
       virtual Vector getNormalAt(const Vector& p) const = 0;
 
       /**
-       * Change the material properties of this SceneObject.
-       * 
-       * @param newMaterial An object of class Material describing the
-       * new material properties of this SceneObject.
-       */
-      void setMaterial(const Material& newMaterial);
-
-      /**
        * Tests for intersection between this SceneObject and a given
        * Ray.
        * 
@@ -51,9 +41,6 @@ class SceneObject
        * otherwise.
        */
       virtual bool testIntersection(Ray& r) const = 0;
-
-   private:
-      Material _mat;
 };
 
 #endif /*SCENEOBJECT_H_*/

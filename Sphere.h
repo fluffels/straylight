@@ -21,50 +21,48 @@ class Sphere : public SceneObject
        * Constructor.
        * 
        * @param pos This Sphere's centre as an object of class Vector.
-       * @param radius This Sphere's radius as a double.
+       * @param r This Sphere's radius as a double.
        */
-      Sphere(const Vector& pos, const double radius);
+      Sphere(const Vector& pos, double r);
 
       /**
        * Constructor
        * 
        * @param pos This Sphere's centre as an object of class Vector.
-       * @param radius This Sphere's radius as a double.
+       * @param r This Sphere's radius as a double.
        * @param mat This Sphere's material properties as an object of
        * class Material.
        */
-      Sphere(const Vector& pos, const double radius,
-         const Material& mat);
+      Sphere(const Vector& pos, double r, const Material& mat);
 
       /**
        * Returns the normal to this Sphere's surface at any point.
        * 
-       * @param p The point on this Sphere's surface to get the normal
-       * for as an object of class Vector.
+       * @param point The point on this Sphere's surface to get the
+       * normal for as an object of class Vector.
        * 
        * @return An object of class Vector containing the normal.
        */
-      virtual Vector getNormalAt(const Vector& p) const;
+      virtual Vector getNormalAt(const Vector& point) const;
 
       /**
        * Tests for intersection between this Sphere and a given Ray.
        * 
-       * @param r An object of class Ray to test against.
+       * @param ray A Ray to test against.
        * @return True if the Ray intersects this Sphere, false
        * otherwise.
        */
-      virtual bool testIntersection(Ray& r) const;
+      virtual bool testIntersection(Ray& ray) const;
 
-   private:
       /**
        * The centre of this Sphere.
        */
-      Vector _pos;
+      Vector pos;
 
       /**
        * The radius of this Sphere.
        */
-      double _radius;
+      double r;
 };
 
 #endif /*SPHERE_H_*/

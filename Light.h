@@ -37,60 +37,24 @@ class Light
       Colour getGlobalLightAt(Ray& ray, const Vector& COP);
       
       /**
-       * Return the light's position.
-       * 
-       * @return A vector describing the light's position.
-       */                                   
-      Vector getPos();
-      
-      /**
-       * Sets this material's ambient colour.
-       * 
-       * @param colour The new ambient colour for this material.
-       */
-      void setAmbient(Colour colour);
-      
-      /**
-       * Sets this material's diffuse colour.
-       * 
-       * @param colour The new diffuse colour for this material.
-       */
-      void setDiffuse(Colour colour);
-
-      /**
-       * Set the light's position.
-       * 
-       * @param vector The new position.
-       */
-      void setPosition(Vector vector);
-      
-      /**
-       * Sets this material's specular colour.
-       * 
-       * @param colour The new specular colour for this material.
-       */
-      void setSpecular(Colour colour);
-
-   private:
-      /**
        * The light's ambient colour.
        */
-      Colour _ambient;
+      Colour ambient;
       
       /**
        * The light's diffuse colour.
        */      
-      Colour _diffuse;
+      Colour diffuse;
       
       /**
        * The light's specular colour.
        */
-      Colour _specular;
+      Colour specular;
       
       /**
        * The light's position.
        */
-      Vector _pos;
+      Vector pos;
 };
 
 #endif /*LIGHT_H_*/

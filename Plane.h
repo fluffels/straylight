@@ -13,11 +13,22 @@ class Plane : public SceneObject
       /**
        * Constructor.
        * 
-       * @param normal The normal to this place.
+       * @param normal The normal to this Plane.
        * @param d 
        */
       //TODO: Add something here.
       Plane(const Vector& normal, const double d);
+      
+      /**
+       * Constructor.
+       * 
+       * @param normal The normal to this Plane.
+       * @param d 
+       * @param newMat The material of this Plane.
+       */
+      //TODO: Add something here.
+      Plane(const Vector& normal, const double d,
+         const Material& newMat);
 
       /**
        * Get the normal to this plane.
@@ -37,11 +48,16 @@ class Plane : public SceneObject
 
    private:
       /**
-       * This plane's normal.
+       * This plane's normal. This is private because there's no need to
+       * change it at the moment.
        */
       Vector _normal;
       
       //TODO: Add something here.
+      /**
+       * This is private because there's no need to change it at the
+       * moment.
+       */
       double _d;
 };
 
