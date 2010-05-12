@@ -33,8 +33,8 @@ testIntersection(Ray& ray) const
    /* Note that the Ray's direction vector is guaranteed to be a unit
     * vector, as the class normalises the vector upon receiving it. */
 
-   Vector distance = ray.getPos() - this->pos;
-   Vector dir = ray.getDir();
+   Vector distance = ray.pos - this->pos;
+   Vector dir = ray.dir;
 
    double a = dir.dot(dir);
    double b = (distance * 2).dot(dir);
@@ -71,8 +71,8 @@ testIntersection(Ray& ray) const
          }
       }
 
-      ray.setLastIntersected(this);
-      ray.setLastIntersection(ray.getPos() + ray.getDir() * t);
+      ray.intersected = this;
+      ray.intersection = ray.pos + ray.dir * t;
 
       return true;
    }

@@ -23,95 +23,35 @@ class Ray
       /**
        * Constructor.
        * 
-       * @param pos The position of the ray.
-       * @param dir The direction of the ray.
+       * @param newPos The position of the ray.
+       * @param newDir The direction of the ray.
        */
-      Ray(const Vector& pos, const Vector& dir);
+      Ray(const Vector& newPos, const Vector& newDir);
       
-      /**
-       * Get the ray's current depth.
-       * 
-       * @return An integer between 0 and TRACE_DEPTH indicating depth.
-       */
-      int getDepth() const;
-      
-      /**
-       * Get the ray's direction.
-       * 
-       * @return A vector describing the ray's direction.
-       */
-      const Vector& getDir() const;
-      
-      /**
-       * Get the last object intersection by this ray.
-       * 
-       * @return A pointer to the most recent object intersected by the
-       * ray.
-       */
-      const SceneObject* getLastIntersected() const;
-      
-      /**
-       * Get the location of the most recent intersection.
-       * 
-       * @return A vector containing the coordinates of the most recent
-       * intersection.
-       */
-      const Vector getLastIntersection() const;
-      
-      /**
-       * Get the ray's position.
-       * 
-       * @return A vector describing the ray's position.
-       */
-      const Vector getPos() const;
-      
-      /**
-       * Set the ray's depth.
-       * 
-       * @param newValue The new depth value.
-       */
-      void setDepth(int newValue);
-      
-      /**
-       * Set the last object intersected by the ray.
-       * 
-       * @param newValue The new most recent intersected object.
-       */
-      void setLastIntersected(const SceneObject* newValue);
-      
-      /**
-       * Set the location of the most recent inresection.
-       * 
-       * @param newValue A vector describing the most recent
-       * intersection's coordinates.
-       */
-      void setLastIntersection(const Vector& newValue);
-      
-   private:
       /**
        * The ray's position.
        */
-      Vector _pos;
+      Vector pos;
       
       /**
        * The ray's direction.
        */
-      Vector _dir;
+      Vector dir;
       
       /**
        * The location of the ray's last intersection with an object.
        */
-      Vector _lastIntersection;
+      Vector intersection;
       
       /**
        * The current trace depth of this ray.
        */
-      int _depth;
+      int depth;
       
       /**
        * The most recently intersected object for this ray.
        */
-      const SceneObject* _lastIntersected;
+      const SceneObject* intersected;
 };
 
 #endif /*RAY_H_*/

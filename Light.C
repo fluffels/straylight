@@ -15,7 +15,7 @@ getGlobalLightAt(Ray& ray, const Vector& COP)
    
    /* See p. 300 - 302 of Interactive Computer Graphics by Edward Angel,
     * 5th Edition. */
-   const SceneObject* object = ray.getLastIntersected();
+   const SceneObject* object = ray.intersected;
    const Material& material = object->mat;
    const Colour& mAmbient = material.ambient;
    
@@ -26,7 +26,7 @@ getGlobalLightAt(Ray& ray, const Vector& COP)
       result.set(a, c);
    }
    
-   const Vector& point = ray.getLastIntersection();
+   const Vector& point = ray.intersection;
    const Vector light = (pos - point).normalise();
    const Vector normal = object->getNormalAt(point);
    const Colour& mDiffuse = material.diffuse;

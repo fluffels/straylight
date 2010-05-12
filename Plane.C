@@ -26,7 +26,7 @@ getNormalAt(const Vector& p) const
 bool Plane::
 testIntersection(Ray& r) const
 {
-   double Vd = _normal.dot(r.getDir());
+   double Vd = _normal.dot(r.dir);
    
    if (Vd >= 0)
    {
@@ -34,7 +34,7 @@ testIntersection(Ray& r) const
    }
    else
    {
-      double Vo = -(_normal.dot(r.getPos()) + _d);
+      double Vo = -(_normal.dot(r.pos) + _d);
       double t = Vo / Vd;
       
       if (t < 0)
@@ -43,10 +43,10 @@ testIntersection(Ray& r) const
       }
       else
       {
-         Vector p = r.getPos() + r.getDir() * t;
+         Vector p = r.pos + r.dir * t;
          
-         r.setLastIntersected(this);
-         r.setLastIntersection(p);
+         r.intersected = this;
+         r.intersection = p;
          
          return true;
       }

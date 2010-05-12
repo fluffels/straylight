@@ -116,7 +116,7 @@ shootRay(Ray& r)
 
    if (_scene.testIntersection(r) == true)
    {
-      const SceneObject* s = r.getLastIntersected();
+      const SceneObject* s = r.intersected;
       const Material& m = s->mat;
       
       Colour localColour;
@@ -130,19 +130,19 @@ shootRay(Ray& r)
          localColour = _light.getGlobalLightAt(r, COP);
       }
 
-      if ((r.getDepth() != 0) && (m.reflective))
+      if ((r.depth != 0) && (m.reflective))
       {
          /* 3D Computer Graphics by Alan Watt, p. 24 */
-         Vector p = r.getLastIntersection();
-         Vector n = r.getLastIntersected()->getNormalAt(p);
-         Vector l = r.getDir() * -1;
+         Vector p = r.intersection;
+         Vector n = r.intersected->getNormalAt(p);
+         Vector l = r.dir * -1;
          
          Vector reflect = n * (n.dot(l) * 2) - l;
          
          reflect = reflect.normalise();
          p += reflect * 0.01;
          Ray newRay(p, reflect);
-         newRay.setDepth(r.getDepth() - 1);
+         newRay.depth = r.depth - 1;
 
          Colour Lri = shootRay(newRay);
          return localColour.combine(Lri);
@@ -161,7 +161,7 @@ shootRay(Ray& r)
 bool RayTracer::
 shootShadowRay(Ray& r)
 {
-   Vector p = r.getLastIntersection();
+   Vector p = r.intersection;
    Vector l = (_light.pos - p).normalise();
 
    p += l * 0.01;
