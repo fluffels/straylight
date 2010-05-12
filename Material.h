@@ -6,8 +6,8 @@
 #include "Colour.h"
 
 /**
- * Models the material properties as specified by the Phon global illumination
- * model.
+ * Models the material properties as specified by the Phong global
+ * illumination model.
  */
 class Material
 {
