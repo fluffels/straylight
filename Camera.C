@@ -45,10 +45,11 @@ getRayAt(int x, int y)
    
    Vector p = _cop + (_dir + (_right * X_MAG) + (_up * Y_MAG));
    
-   /* Subtracting the COP from p gives a zoom effect when the camera is moved
-    * further away, but it flips the image upside down. This is likely for the
-    * same reason that our eyes and cameras see images upside down, as this code
-    * simulates a pinhole camera. We simply reverse Y to negate this.
+   /* Subtracting the COP from p gives a zoom effect when the camera is
+    * moved further away, but it flips the image upside down. This is
+    * likely for the same reason that our eyes and cameras see images
+    * upside down, as this code simulates a pinhole camera. That is why
+    * the y-coordinate is flipped around below.
     */
    p = (p - _cop).normalise();
    p.y = -1 * p.y;
