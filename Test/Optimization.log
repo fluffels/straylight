@@ -93,3 +93,38 @@ Each sample counts as 0.01 seconds.
 The addition results in even more OOP-related overhead. This project
 may benefit greatly from the eradication of getters and setters and some
 way to prevent the ubiquotous copying.
+
+
+Version 1.1.2
+=============
+
+This version cleaned up the code a little, taking out some superfluous
+getters and setters and presumably eliminating a lot of copying.
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls   s/call   s/call  name    
+  9.83      0.61     0.61 104712192     0.00     0.00  Colour::get(int) const
+  9.58      1.21     0.60 154124159     0.00     0.00  SimpleVector::dot(SimpleVector const&) const
+  7.41      1.67     0.46 188230238     0.00     0.00  SimpleVector::SimpleVector(double, double, double)
+  7.01      2.10     0.44 39558044     0.00     0.00  SimpleVector::getMagnitude() const
+  6.28      2.49     0.39  4363008     0.00     0.00  Light::getGlobalLightAt(Ray&, SimpleVector const&)
+  6.12      2.87     0.38 12305144     0.00     0.00  Scene::testIntersection(Ray&)
+  4.91      3.18     0.31 39558044     0.00     0.00  SimpleVector::operator/(double) const
+  4.67      3.47     0.29 35342554     0.00     0.00  Sphere::testIntersection(Ray&) const
+  3.87      3.71     0.24 70121497     0.00     0.00  SimpleVector::SimpleVector(SimpleVector const&)
+  3.87      3.95     0.24 68597247     0.00     0.00  SimpleVector::operator*(do:
+
+Colour::get takes up more % of time, although it's absolute time is
+down. Vector dot product and copy still take a lot of time, as does
+getting magnitude. Perhaps there is some superfluous normalisation going
+on? testIntersection may be too low, or the scene may be pretty simple.
+
+All in all there's no glaringly obvious things to remove, as most take
+about 0.6 seconds. The scene should be made larger so we have some more
+data in terms of time. There's also the problem that this scene isn't
+really representative because of its simplicity. The program would
+benefit much more from threading at the moment.
+
+Negligable performance improvements here. The OOP changes were made for 
+the sake of simplicity though, so no harm done there.
