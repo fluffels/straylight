@@ -128,3 +128,54 @@ benefit much more from threading at the moment.
 
 Negligable performance improvements here. The OOP changes were made for 
 the sake of simplicity though, so no harm done there.
+
+
+Version 1.2
+===========
+
+This version added multithreading to Straylight. The image was divided into
+four y-bands and work was distributed to each core on a quad core CPU.
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  ms/call  ms/call  name    
+ 22.46      1.61     1.61 85048393     0.00     0.00  Camera::getRayAt(int, int)
+ 12.70      2.52     0.91 31703973     0.00     0.00  Sphere::testIntersection(Ray&) const
+ 12.28      3.40     0.88  3112989     0.00     0.00  loadScene()
+  6.42      3.86     0.46 55219949     0.00     0.00  parseArguments(int, char**)
+  6.14      4.30     0.44 10449333     0.00     0.00  Light::getGlobalLightAt(Ray&, SimpleVector const&)
+  5.72      4.71     0.41 48794013     0.00     0.00  Camera::Camera(SimpleVector, SimpleVector, SimpleVector)
+  4.60      5.04     0.33 25715520     0.00     0.00  SimpleVector::cross(SimpleVector const&) const
+  3.49      5.29     0.25                             shootRay(Ray&)
+  3.35      5.53     0.24  1039233     0.00     0.00  SimpleVector::operator/(double) const
+  2.93      5.74     0.21                             Ray::Ray(SimpleVector const&, SimpleVector const&)
+  2.79      5.94     0.20                             Light::Light()
+  2.23      6.10     0.16                             Camera::Camera(SimpleVector, SimpleVector, SimpleVector)
+  1.95      6.24     0.14       34     4.12    48.46  _fini
+  1.67      6.36     0.12  3256709     0.00     0.00  shootShadowRay(Ray&)
+  1.67      6.48     0.12  4266589     0.00     0.00  castRays()
+  1.40      6.58     0.10                             Light::Light()
+  1.12      6.66     0.08  7525277     0.00     0.00  Colour::set(int, double)
+
+Interestingly, the debug version that's used to produce this call graph
+shows a significant *increase* in the amount of time the ray tracer spent
+creating an image - even though the work has been distributed among four
+CPU cores.
+
+39.90 / 29.75 = 1.35 times *increase* in time taken.
+
+However, the optimized build shows a different story. A quick run over
+2048x2048 pixels shows:
+
+4.89 / 2.06 = 2.37 times decrease in time taken.
+
+This makes more sense, however it's still not the 4x speed increase that's
+expected given the parallel nature of ray tracing.
+
+A likely culprit is imperfect load balancing. As mentioned before, the scene is
+simply divided into four bands. If one band is less complex than the other, the
+thread that is computing it will terminate long before the others, leaving a
+core idle.
+
+This should be addressed in the next version with a better multithreading
+algorithm.
