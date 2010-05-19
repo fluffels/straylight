@@ -19,7 +19,7 @@ Camera(const Vector cop, const Vector at, const Vector up):
 
 
 void Camera::
-setResolution(int width, int height, GLdouble viewAngle)
+setResolution(int width, int height, double viewAngle)
 {
    _width = width;
    _height = height;

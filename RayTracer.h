@@ -1,9 +1,10 @@
 #ifndef RAYTRACER_H_
 #define RAYTRACER_H_
 
-#include <algorithm>
+
 
 #include <GL/gl.h>
+
 
 #include "Camera.h"
 #include "Colour.h"
@@ -25,56 +26,11 @@ using namespace std;
 class RayTracer
 {
    public:
-      /**
-       * The center of projection.
-       */
-      static const Vector COP;
       
-      /**
-       * The "at" vector - the direction the camera is looking in.
-       */
-      static const Vector AT;
       
-      /**
-       * The "up" vector - the direction of "up" from the camera.
-       */
-      static const Vector UP;
+      
 
-      /**
-       * The position of the red sphere.
-       */
-      static const Vector RED_SPHERE_POS;
       
-      /**
-       * The position of the green sphere.
-       */
-      static const Vector GREEN_SPHERE_POS;
-      
-      /**
-       * The position of the blue sphere.
-       */
-      static const Vector BLUE_SPHERE_POS;
-      
-      /**
-       * The radius for the spheres.
-       */
-      static const double SPHERE_RADIUS;
-      
-      /**
-       * The normal to the plane.
-       */
-      static const Vector PLANE_NORMAL;
-      
-      /**
-       * Amount of bytes per pixel.
-       */
-      static const int BYTES_PER_PIXEL = 3;
-      
-      /**
-       * 
-       */
-      //TODO: Add something here.
-      static const double PLANE_D;
 
       /**
        * Constructor.
@@ -103,6 +59,13 @@ class RayTracer
        * screen while it is being calculated.
        */      
       void castRays(bool interactive);
+
+      /**
+       * Casts rays between the specified ranges of y.
+       *
+       * @param arg Arguments
+       */
+      void* castRaySubset(void* arg);
 
       /**
        * Draws the image to the screen in one go.
@@ -146,22 +109,7 @@ class RayTracer
        */
       unsigned char* _image;
 
-      /**
-       * Shoots an individual ray.
-       * 
-       * @param r The ray to shoot.
-       * @return The colour returned by the ray.
-       */
-      Colour shootRay(Ray& r);
-
-      /**
-       * Shoots a ray to determine if an intersection point struck by
-       * a ray is in shadow.
-       * 
-       * @return True if the intersection point is in shadow, false
-       * otherwise.
-       */
-      bool shootShadowRay(Ray& r);
+      
 };
 
 #endif /*RAYTRACER_H_*/

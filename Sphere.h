@@ -3,8 +3,6 @@
 
 #include <cmath>
 
-#include <GL/glut.h>
-
 #include "Material.h"
 #include "Ray.h"
 #include "SceneObject.h"

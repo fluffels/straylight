@@ -1,10 +1,9 @@
 CC = g++
 CFLAGS = -fmessage-length=0 -std=c++0x -pipe
 LDFLAGS = -pipe
-LDLIBS = -L/usr/X11R6/lib -lglut -lpng
+LDLIBS = -L/usr/X11R6/lib -lpng -lpthread
 OBJS = Colour.o GraphicsLibrary/SimpleVector.o Camera.o Ray.o \
-Material.o SceneObject.o Sphere.o Plane.o Light.o Scene.o RayTracer.o \
-Main.o
+Material.o SceneObject.o Sphere.o Plane.o Light.o Scene.o Main.o
 TARGET = straylight
 
 
@@ -34,5 +33,5 @@ optimized:
 ${TARGET}: ${OBJS}
 	${CC} ${LDFLAGS} ${EXTRA_LD_FLAGS} ${LDLIBS} -o ${TARGET} $^
 
-%.o: %.C
+%.o: %.C %.h Makefile
 	${CC} ${CFLAGS} ${EXTRA_C_FLAGS} -c -o $@ $<

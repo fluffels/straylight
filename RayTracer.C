@@ -17,44 +17,7 @@ RayTracer(int xResolution, int yResolution):
       _yResolution(yResolution),
       _cam(COP, AT, UP)
 {
-   _cam.setResolution(xResolution, yResolution,
-      Camera::DEFAULT_VIEW_ANGLE);
-
-   _image =
-      new unsigned char[_xResolution * _yResolution * BYTES_PER_PIXEL];
-
-   Material mat;
-   mat.shininess = 15;
-   mat.specular = Colour(1.0, 1.0, 1.0);
-
-   mat.ambient = Colour(1.0, 0.0, 0.0);
-   mat.diffuse = Colour(1.0, 0.0, 0.0);
-   Sphere* redSphere = new Sphere(RED_SPHERE_POS, SPHERE_RADIUS, mat);
-   _scene.addObject(redSphere);
-
-   mat.ambient = Colour(0.0, 1.0, 0.0);
-   mat.diffuse = Colour(0.0, 1.0, 0.0);
-   mat.reflective = true;
-   Sphere* greenSphere = new Sphere(GREEN_SPHERE_POS, SPHERE_RADIUS,
-      mat);
-   _scene.addObject(greenSphere);
-
-   mat.ambient = Colour(0.0, 0.0, 1.0);
-   mat.diffuse = Colour(0.0, 0.0, 1.0);
-   mat.reflective = true;
-   Sphere* blueSphere = new Sphere(BLUE_SPHERE_POS, SPHERE_RADIUS, mat);
-   _scene.addObject(blueSphere);
-
-   mat.ambient = Colour(0.8, 0.4, 0.0);
-   mat.diffuse =Colour(0.8, 0.4, 0.0);
-   mat.reflective = true;
-   Plane* plane = new Plane(PLANE_NORMAL, PLANE_D, mat);
-   _scene.addObject(plane);
-
-   _light.ambient = Colour(0.5, 0.5, 0.5);
-   _light.diffuse = Colour(0.9, 0.9, 0.9);
-   _light.specular = Colour(1.0, 1.0, 1.0);
-   _light.pos = Vector(3.0, 3.0, 3.0);
+   
 }
 
 RayTracer::
@@ -63,33 +26,39 @@ RayTracer::
    delete[] _image;
 }
 
+
 void RayTracer::
 castRays(bool interactive)
 {
-   glPixelStorei(GL_PACK_ALIGNMENT, 1);
-   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-   glRasterPos2d(0, 0);
+	int cutoff = _yResolution / 4;
 
-   for (int y = 0; y < _yResolution; y++)
+	pthread_t thread[THREAD_COUNT];
+
+	for (int i = 0; i < THREAD_COUNT; i++)
+	{
+      int args[2] = {cutoff * i, cutoff * (i + 1)};
+	   pthread_create(thread + i, NULL, castRaySubset, (void*)args);
+	}
+
+	for (int i = 0; i < THREAD_COUNT; i++);
+}
+
+void* RayTracer::
+castRaySubset(void* args)
+{
+   for (int y = low; y < high; y++)
    {
       for (int x = 0; x < _xResolution; x++)
       {
          int offset = y * (_xResolution * 3) + x * 3;
          unsigned char* p = _image + offset;
-         
+
          Ray r = _cam.getRayAt(x, y);
          Colour colour = shootRay(r);
 
          p[0] = min<double>(colour.r, 1.0) * 255;
          p[1] = min<double>(colour.g, 1.0) * 255;
          p[2] = min<double>(colour.b, 1.0) * 255;
-         
-         if (interactive)
-         {
-            glRasterPos2d(x, y);
-            glDrawPixels(1, 1, GL_RGB, GL_UNSIGNED_BYTE, p);
-            glutSwapBuffers();
-         }
       }
    }
 }

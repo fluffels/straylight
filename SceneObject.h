@@ -5,8 +5,6 @@
  * compile time encapsulation. */
 class Ray;
 
-#include <GL/glut.h>
-
 #include "Material.h"
 #include "Ray.h"
 #include "Vector.h"

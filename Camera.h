@@ -31,7 +31,7 @@ class Camera
        * 
        * 0.471 radians / 27 degrees
        */
-      static const GLdouble DEFAULT_VIEW_ANGLE;   
+      static const double DEFAULT_VIEW_ANGLE;   
    
       /**
        * Constructor.
