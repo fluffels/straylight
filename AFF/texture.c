@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "texture.h"
 
 /* skip all rows that start with #, i.e., comments */

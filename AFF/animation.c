@@ -5,14 +5,13 @@
            transform out of an struct AnimationList
 ----------------------------------------------------------------------*/
 
+#include <float.h>
 #include <math.h>
 #include <string.h>
 #include "animation.h"
 #include "quat.h"
 
-#ifdef WIN32
-#include <float.h>
-#endif
+#define MAXFLOAT FLT_MAX
 
 /*----------------------------------------------------------------------
   FindAnimation()
@@ -206,9 +205,11 @@ int _GetVisibility(Animation* animation, double time)
 int GetTranslation(struct AnimationList *al,char* name, double time, double Tout[3])
 {
    void* a = FindAnimation(name,al);
+   Animation* anim = (Animation*)a;
+   
    if(a)
    {
-      _GetTranslation(a, time, Tout);
+      _GetTranslation(anim, time, Tout);
       return TRUE;
    }
    Tout[0]=Tout[1]=Tout[2]=0.0;
@@ -234,9 +235,11 @@ int GetTranslation(struct AnimationList *al,char* name, double time, double Tout
 int GetRotation(struct AnimationList *al,char* name, double time, double Rout[4])
 {
   void* a = FindAnimation(name,al);
+  Animation* anim = (Animation*)a;
+  
   if(a)
   {
-     _GetRotation(a, time, Rout);
+     _GetRotation(anim, time, Rout);
      return TRUE;
   }
   Rout[0]=1.0; Rout[1]=0.0; Rout[2]=0.0; Rout[3]=0.0;
@@ -260,9 +263,11 @@ int GetRotation(struct AnimationList *al,char* name, double time, double Rout[4]
 int GetScale(struct AnimationList *al,char* name, double time, double Sout[3])
 {
    void* a = FindAnimation(name,al);
+   Animation* anim = (Animation*)a;
+   
    if(a) 
    {
-      _GetScale(a, time, Sout);
+      _GetScale(anim, time, Sout);
       return TRUE;
    }
    Sout[0]=Sout[1]=Sout[2]=1.0;
@@ -285,7 +290,9 @@ int GetScale(struct AnimationList *al,char* name, double time, double Sout[3])
 int GetVisibility(struct AnimationList *al, char *name, double time)
 {
    void* a = FindAnimation(name,al);
-   if(a) return _GetVisibility(a, time);
+   Animation* anim = (Animation*)a;
+   
+   if(a) return _GetVisibility(anim, time);
    return 1;  /* visible by default */
 }
 
@@ -313,9 +320,11 @@ int GetMatrix(struct AnimationList *al,char* name, double time, double m[4][4])
 {
    int x,y;
    void* a = FindAnimation(name,al);
+   Animation* anim = (Animation*)a;
+   
    if(a)
    {
-      _GetMatrix(a, time, m);
+      _GetMatrix(anim, time, m);
       return TRUE;
    }
    /* return identity matrix */
@@ -355,7 +364,15 @@ void GetCamera(struct AnimationList *al,double time,
 {
    Animation *a;
    /* is there an animation called "camera", then use it to animate the camera */
-   a=FindAnimation("camera",al);
+   
+   char *animName = new char[7];
+   strcpy(animName, "camera");
+   
+   a=FindAnimation(animName,al);
+   Animation* anim = (Animation*)a;
+   
+   delete[] animName;
+   
    if(a)
    {
       double m[4][4];
@@ -363,16 +380,16 @@ void GetCamera(struct AnimationList *al,double time,
       /* get position of the camera, if any */
       if(a->translations)
       {
-	 _GetTranslation(a,time,viewPos);
+	 _GetTranslation(anim,time,viewPos);
 	 *gotPosition=1;
       }
       else *gotPosition=0;
 
       /* get view direction and up vector, if any */
-      if(a->rotations)
+      if(anim->rotations)
       {
 	 /* get matrix (we use only the upper 3x3 matrix to extract dir, and up */
-	 _GetMatrix(a,time,m);
+	 _GetMatrix(anim,time,m);
 	 
 	 /* the viewer looks along the negative z-axis, with the y-axis up */
 	 viewDir[0]=-m[0][2];

@@ -6,6 +6,7 @@
 
 ----------------------------------------------------------------------*/
 
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -190,7 +191,13 @@ static void parseLight(FILE *fp)
    num=fscanf(fp, "%f %f %f ",&col[X], &col[Y], &col[Z]);
    if(num==0)
    {
-      V4SET4(col,1.0f,1.0f,1.0f,1.0f);
+      //I have no idea what V4SET4 is, but I'm guessing it sets 4 values
+      //of a length-4 vector. :P
+      //V4SET4(col,1.0f,1.0f,1.0f,1.0f);
+      for (int j = 0; j < 4; j++)
+      {
+         col[j] = 1.0f;
+      }
    }
    else if(num!=3)
    {
@@ -1419,7 +1426,8 @@ bool viParseFile(FILE *f)
 	 parseXform(f);
 	 break;
       case '}':
-	 viEndXform();
+    //TODO: Should viEndXform() be declared?
+	 //viEndXform();
 	 break;
       case 'a':  /* animation parameters */
 	 parseA(f);
