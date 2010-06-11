@@ -20,6 +20,9 @@
 
 #ifndef POINT3
 #define POINT3
+/**
+ * 3-Dimensional point.
+ */
 typedef struct 
 {
    double x, y, z;
@@ -28,7 +31,7 @@ Point3;
 #endif
 
 /**
- * TODO: What is this?
+ * Position key frame.
  */
 typedef struct
 {

@@ -2,11 +2,6 @@
  * This code originates from www.magic-software.com thanks to Dave 
  * Eberly for letting us use this.
  * 
- * Kochanek-Bartels tension-continuity-bias spline interpolation for
- * positional data.
- * 
- * (K-B Spline Position Functions).
- * 
  * Some modification (mostly comments by Jan Kroeze, 2010).
  */
 
@@ -29,7 +24,7 @@ static void InterpolateSingle2(double u, CubicPolynomial* poly,
    Point3* P);
 static void InvertIntegral(SplineInfo* info, double s, int* j,
    double* v);
-static double Speed (CubicPolynomial* poly, double u)
+static double Speed (CubicPolynomial* poly, double u);
 
 void* KB_PosInitialize(int numKeys, PositionKey* key)
 {
