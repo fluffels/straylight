@@ -1,34 +1,39 @@
-/*----------------------------------------------------------------------
-  File:    animation.c
-  Purpose: functions and data structures for animation
-           This file contains all functions you need to get the animted
-           transform out of an struct AnimationList
-----------------------------------------------------------------------*/
+/**
+ * Functions and data structures for animation.
+ * 
+ * This file contains all the functions you need to get the animated
+ * transform out of a struct AnimationList.
+ */
 
 #include <float.h>
 #include <math.h>
 #include <string.h>
+
 #include "animation.h"
 #include "quat.h"
 
+/* This fixes a problem in the source code probably caused by changing
+ * standards. The source code references a MAXFLOAT variable that
+ * doesn't seem to be avilable anymore.
+ */
 #define MAXFLOAT FLT_MAX
 
-/*----------------------------------------------------------------------
-  FindAnimation()
-  Purpose: uses a simple linear search in the AnimationList, and
-  returns the first Animation* with "name", else NULL
-----------------------------------------------------------------------*/
-Animation* FindAnimation(char* name,struct AnimationList *al)
+Animation* FindAnimation(char* name, struct AnimationList *al)
 {
    struct AnimationList* pObj = al;
    
    while(pObj != 0)
    {
       if(strcmp((pObj->animation).name, name) == 0)
-	 return &(pObj->animation);
+      {
+         return &(pObj->animation);
+      }
       else
-	 pObj = pObj->next;
+      {
+         pObj = pObj->next;
+      }
    }
+   
    return NULL;
 }
 
