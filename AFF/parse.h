@@ -22,7 +22,9 @@
  * 
  * @param f File handle for the AFF file.
  * @param scene The Scene class to populate with data from the NFF file.
+ * @param width The width to override the input file with.
+ * @param height The height to override the input file with.
  */
-bool viParseFile(FILE *f, Scene& scene);
+bool viParseFile(FILE *f, Scene& scene, int width, int height);
 
 #endif

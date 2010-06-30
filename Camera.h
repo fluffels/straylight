@@ -71,6 +71,26 @@ class Camera
        */
       const Vector& getCOP() const {return _cop;}
 
+      /**
+       * Get the height of the image produced by this Camera.
+       *
+       * @return The height in pixels.
+       */
+      int getHeight() const {return _height;}
+
+      /**
+       * Get the width of the image produced by this Camera.
+       *
+       * @return The width in pixels.
+       */
+      int getWidth() const {return _width;}
+
+      /**
+       * Get the ray that produces the information for a specific pixel.
+       *
+       * @param x The x coordinate for the pixel.
+       * @param y The y coordinate for the pixel.
+       */
       Ray getRayAt(int x, int y);
       
    private:

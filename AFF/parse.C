@@ -107,7 +107,7 @@ static void parseComment(FILE *f)
  * @param fp The file handle of the input file.
  * @param scene The Scene object to populate with the viewpoint.
  */
-static void parseViewpoint(FILE *fp, Scene& scene)
+static void parseViewpoint(FILE *fp, Scene& scene, int width, int height)
 {
    /* Initialize variables here to avoid crossing them with gotos. */
    Vector COP, AT, UP;
@@ -168,6 +168,17 @@ static void parseViewpoint(FILE *fp, Scene& scene)
 
    /* Convert the fovAngle, which is in degrees, to radians. */
    fovAngle /= 180.0 * PI;
+
+   /* Apply resolution overrides. */
+   if (width > 0)
+   {
+      resX = width;
+   }
+
+   if (height > 0)
+   {
+      resY = height;
+   }
 
    scene.cam = Camera(COP, AT, UP, resX, resY, fovAngle);
  
@@ -615,8 +626,10 @@ memerr:
  *
  * @param fp The NFF file pointer to read instructions from.
  * @param scene The Scene object to populate.
+ * @param width The width to override the input file with.
+ * @param height The height to override the input file with.
  */
-static void parseInclude(FILE *fp, Scene& scene)
+static void parseInclude(FILE *fp, Scene& scene, int width, int height)
 {
    int detail_level;
    char filename[100];
@@ -635,7 +648,7 @@ static void parseInclude(FILE *fp, Scene& scene)
       if(ifp = fopen(filename, "r"))
       {
          /* Parse the file recursively. */
-         viParseFile(ifp, scene);
+         viParseFile(ifp, scene, width, height);
          fclose(ifp);
       }
       else
@@ -1607,7 +1620,7 @@ static void parseMesh(FILE *fp)
     */
 }
 
-bool viParseFile(FILE *f, Scene& scene)
+bool viParseFile(FILE *f, Scene& scene, int width, int height)
 {
    int ch;
 
@@ -1629,13 +1642,13 @@ bool viParseFile(FILE *f, Scene& scene)
             break;
          /* View point. */
          case 'v':
-            parseViewpoint(f, scene);
+            parseViewpoint(f, scene, width, height);
             break;
          /* Light sources. */
          case 'l':
             parseLight(f, scene);
             break;
-         /* Background color. */
+         /* Background colour. */
          case 'b':
             parseBackground(f, scene);
             break;
@@ -1657,7 +1670,7 @@ bool viParseFile(FILE *f, Scene& scene)
             break;
          /* Include another file. */
          case 'i':   
-            parseInclude(f, scene);
+            parseInclude(f, scene, width, height);
             break;
          /* Detail level of file (used to exclude objects from
           * rendering). */

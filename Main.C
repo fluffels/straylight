@@ -46,17 +46,15 @@ Scene* scene;
 /** Title of the window. */
 const char* title = "Straylight";
 /** Whether to only cast rays and produce no input. */
-bool castOnly = false;
+bool noOutput = false;
 /** Whether rendering is done. */
 bool renderingDone = false;
-/** Whether to show the renderer's progress. */
-bool show = false;
 /** Whether to parse an NFF file. */
 bool parseNFF = false;
 /** The name of the NFF file to parse. */
-char nffFileName[255];
+char nffFileName[255] = "";
 /** Width of the image to produce. */
-int width = 1024;
+int width = 0;
 /** Height of the image to produce. */
 int height = width;
 /** Amount of threads to spin up. */
@@ -265,64 +263,9 @@ loadNFFFile()
       fprintf(stderr, "Could not open %s.\n", nffFileName);
    }
    
-   viParseFile(nffFile, *scene);
+   viParseFile(nffFile, *scene, width, height);
    
    fclose(nffFile);
-}
-
-void
-loadScene()
-{
-   if (parseNFF)
-   {
-      loadNFFFile();
-   }
-   else
-   {
-      loadStaticScene();
-   }
-}
-
-void
-loadStaticScene()
-{
-   Vector COP(0, 1, 4);
-   Vector AT(0, 2, 0);
-   Vector UP(0, 1, 0);
-   scene->cam = Camera(COP, AT, UP, width, height, Camera::DEFAULT_VIEW_ANGLE);
-   
-   Material mat;
-   mat.shininess = 15;
-   mat.specular = Colour(1.0, 1.0, 1.0);
-
-   mat.ambient = Colour(1.0, 0.0, 0.0);
-   mat.diffuse = Colour(1.0, 0.0, 0.0);
-   Sphere* redSphere = new Sphere(RED_SPHERE_POS, SPHERE_RADIUS, mat);
-   scene->addObject(redSphere);
-
-   mat.ambient = Colour(0.0, 1.0, 0.0);
-   mat.diffuse = Colour(0.0, 1.0, 0.0);
-   mat.reflective = true;
-   Sphere* greenSphere = new Sphere(GREEN_SPHERE_POS, SPHERE_RADIUS,
-      mat);
-   scene->addObject(greenSphere);
-
-   mat.ambient = Colour(0.0, 0.0, 1.0);
-   mat.diffuse = Colour(0.0, 0.0, 1.0);
-   mat.reflective = true;
-   Sphere* blueSphere = new Sphere(BLUE_SPHERE_POS, SPHERE_RADIUS, mat);
-   scene->addObject(blueSphere);
-
-   mat.ambient = Colour(0.8, 0.4, 0.0);
-   mat.diffuse = Colour(0.8, 0.4, 0.0);
-   mat.reflective = true;
-   Plane* plane = new Plane(PLANE_NORMAL, PLANE_D, mat);
-   scene->addObject(plane);
-
-   scene->light.ambient = Colour(0.5, 0.5, 0.5);
-   scene->light.diffuse = Colour(0.9, 0.9, 0.9);
-   scene->light.specular = Colour(1.0, 1.0, 1.0);
-   scene->light.pos = Vector(3.0, 3.0, 3.0);
 }
 
 void
@@ -330,73 +273,85 @@ parseArguments(int argc, char** argv)
 {
    for (int a = 1; a < argc; a++)
    {
-      if (strcmp(argv[a], "--cast-only") == 0)
+      if (strcmp(argv[a], "--no-output") == 0)
       {
-         castOnly = true;
+         noOutput = true;
       }
-      else if (strcmp(argv[a], "--show") == 0)
+      else if ((strcmp(argv[a], "-f") == 0)
+         || (strcmp(argv[a], "--file") == 0))
       {
-         show = true;
-      }
-      else if (strcmp(argv[a], "-f") == 0)
-      {
+         if (argc < a + 2)
+         {
+            printf("Option '--file / -f' requires an argument.\n\n");
+            printUsage();
+         }
+
          parseNFF = true;
          
          strcpy(nffFileName, argv[a + 1]);
          
          a++;
       }
-      else if (strcmp(argv[a], "-w") == 0)
+      else if ((strcmp(argv[a], "-w") == 0)
+         || (strcmp(argv[a], "--width") == 0))
       {
          if (argc < a + 2)
          {
+            printf("Option '--width / -w' requires an argument.\n\n");
             printUsage();
          }
          
          width = atoi(argv[a + 1]);
          a++;
       }
-      else if (strcmp(argv[a], "-h") == 0)
+      else if ((strcmp(argv[a], "-h") == 0)
+         || (strcmp(argv[a], "--height") == 0))
       {
          if (argc < a + 2)
          {
+            printf("Option '--height / -h' requires an argument.\n\n");
             printUsage();
          }
                   
          height = atoi(argv[a + 1]);
          a++;
       }
-      else if (strcmp(argv[a], "-o") == 0)
+      else if ((strcmp(argv[a], "-o") == 0)
+         || (strcmp(argv[a], "--output") == 0))
       {
          if (argc < a + 2)
          {
+            printf("Option '--output / -o' requires an argument.\n\n");
             printUsage();
          }
                   
          outFileName = argv[a + 1];
          a++;
       }
-      else if (strcmp(argv[a], "-h") == 0)
-      {
-         printUsage();
-      }
       else
       {
          printUsage();
       }
+   }
+
+   if (strcmp(nffFileName, "") == 0)
+   {
+      printf("You must specify a scene description file.\n\n");
+      printUsage();
    }
 }
 
 void
 printUsage()
 {
-   printf("Usage: ray [options]\n");
+   printf("Usage: ray (-f | --file) [options]\n");
    printf("\n");
-   printf("\t-w\t\tSet the horizontal resolution of the image to produce.\n");
-   printf("\t-h\t\tSet the vertical resolution of the image to produce.\n");
-   printf("\t-o\t\tSpecify the name of the output file (default 'out.tga').\n");
-   printf("\t--show\t\tPass this to view the image as it is being rendered.\n");
-   printf("\t--cast-only\tPass this to disable output to a file.\n");
+   printf("\t--help\t\tShow this help message.\n");
+   printf("\t-f --file\tThe scene description file.\n");
+   printf("\t-w --width\tSet the output image's horizontal resolution.\n");
+   printf("\t-h --height\tSet the output image's vertical resolution.\n");
+   printf("\t-o --output\tSpecify the output filename (default 'out.tga').\n");
+   printf("\t--no-output\tPass this to disable output to a file.\n");
 
    exit(-1);
 }
@@ -404,8 +359,8 @@ printUsage()
 void
 setup()
 {
-   scene = new Scene();
-
+   width = scene->cam.getWidth();
+   height = scene->cam.getHeight();
    image = new unsigned char[width * height * COLOURS_PER_PIXEL];
    
    outFile = fopen(outFileName, "wb");
@@ -459,11 +414,6 @@ teardown()
 void
 writeImage()
 {
-   if (castOnly)
-   {
-      return;
-   }
-   
    png_byte* rowPointers[height];
    for (int a = 0; a < height; a++)
    {
@@ -493,10 +443,11 @@ main(int argc, char** argv)
 {
    parseArguments(argc, argv);
 
+   scene = new Scene();
+   loadNFFFile();
+   
    setup();
 
-   loadScene();
-   
    castRays();
    
    writeImage();
