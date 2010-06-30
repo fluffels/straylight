@@ -11,7 +11,7 @@ class Material
 {
    public:
       /**
-       * Default constructor. Sets all colours to black and all
+       * Default constructor. Sets all colours to white and all
        * coefficients to zero. Sets the material as unreflective.
        */
       Material();

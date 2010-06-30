@@ -17,6 +17,21 @@ class Camera
 {
    public:
       /**
+       * Default centre of projection (0, 0, 0).
+       */
+      static const Vector DEFAULT_COP;
+
+      /**
+       * Default dir vector (0, 0, -1).
+       */
+      static const Vector DEFAULT_DIR;
+
+      /**
+       * Default up vector (0, 1, 0).
+       */
+      static const Vector DEFAULT_UP;
+
+      /**
        * Default width (in pixels) of the image produced by the Camera.
        */
       static const int DEFAULT_WIDTH = 640;
@@ -31,7 +46,12 @@ class Camera
        * 
        * 0.471 radians / 27 degrees
        */
-      static const double DEFAULT_VIEW_ANGLE;   
+      static const double DEFAULT_VIEW_ANGLE;
+
+      /**
+       * Default constructor. Uses default values for everything.
+       */
+      Camera();
    
       /**
        * Constructor.
@@ -41,19 +61,16 @@ class Camera
        * @param up The direction that must be up for the camera, 
        * as a vector.
        */
-      Camera(const Vector cop, const Vector at, const Vector up);
+      Camera(const Vector& cop, const Vector& at, const Vector& up, int width,
+            int height, double viewAngle);
       
       /**
-       * Sets the Camera's resolution, overriding the defaults.
-       * 
-       * @param width The width of the image produced by the Camera,
-       * in pixels.
-       * @param height The height of the image produced by the Camera,
-       * in pixels.
-       * @param viewAngle The viewing angle of the Camera in radians.
+       * Return the COP used by this camera.
+       *
+       * @return A Vector object.
        */
-      void setResolution(int width, int height, double viewAngle);
-      
+      const Vector& getCOP() const {return _cop;}
+
       Ray getRayAt(int x, int y);
       
    private:

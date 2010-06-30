@@ -1,11 +1,31 @@
 #include "Camera.h"
 
+const Vector Camera::DEFAULT_COP(0, 0, 0);
+const Vector Camera::DEFAULT_DIR(0, 0, -1);
+const Vector Camera::DEFAULT_UP(0, 1, 0);
 const double Camera::DEFAULT_VIEW_ANGLE = (27.0 / 180.0) * PI;
 
 Camera::
-Camera(const Vector cop, const Vector at, const Vector up):
-      _cop(cop)
+Camera():
+   _cop(DEFAULT_COP),
+   _dir(DEFAULT_DIR),
+   _up(DEFAULT_UP),
+   _width(DEFAULT_WIDTH),
+   _height(DEFAULT_HEIGHT),
+   _viewAngle(DEFAULT_VIEW_ANGLE)
 {
+   _right = _dir.cross(_up);
+}
+
+Camera::
+Camera(const Vector& cop, const Vector& at, const Vector& up,
+   int width, int height, double viewAngle) :
+   _cop(cop),
+   _width(width),
+   _height(height),
+   _viewAngle(viewAngle)
+{
+   //TODO: Test whether this does what you expect it to.
    _dir = at - _cop;
    _right = _dir.cross(up);
    _up = _dir.cross(_right);
@@ -13,17 +33,6 @@ Camera(const Vector cop, const Vector at, const Vector up):
    _dir = _dir.normalise();
    _right = _right.normalise();
    _up = _up.normalise();
-
-   setResolution(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_VIEW_ANGLE);
-}
-
-
-void Camera::
-setResolution(int width, int height, double viewAngle)
-{
-   _width = width;
-   _height = height;
-   _viewAngle = viewAngle;
 }
 
 Ray Camera::

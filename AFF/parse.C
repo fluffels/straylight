@@ -36,6 +36,8 @@ typedef float Vec4f[4];
 /* Detail level. Zero as default. */
 static int gDetailLevel = 0;
 
+/* Current material. */
+Material mat;
 
 /**
  * Parses an AFF comment. As soon as a "#" (or "%") character is
@@ -59,8 +61,6 @@ static void parseComment(FILE *f)
 
 /**
  * Parses an AFF viewpoint description.
- * 
- * @param fp The file handle of the input file.
  * 
  * Description:
  *    "v"
@@ -103,9 +103,15 @@ static void parseComment(FILE *f)
  * A view entity must be defined before any objects are defined (this
  * requirement is so that NFF files can be used by hidden surface
  * machines).
+ *
+ * @param fp The file handle of the input file.
+ * @param scene The Scene object to populate with the viewpoint.
  */
-static void parseViewpoint(FILE *fp)
+static void parseViewpoint(FILE *fp, Scene& scene)
 {
+   /* Initialize variables here to avoid crossing them with gotos. */
+   Vector COP, AT, UP;
+
    Vec3f from;
    if (fscanf(fp, " from %f %f %f", &from[X], &from[Y], &from[Z]) != 3)
    {
@@ -124,8 +130,8 @@ static void parseViewpoint(FILE *fp)
       goto fmterr;
    }
    
-   float fov_angle;
-   if (fscanf(fp, " angle %f", &fov_angle) != 1)
+   float fovAngle;
+   if (fscanf(fp, " angle %f", &fovAngle) != 1)
    {
       goto fmterr;
    }
@@ -141,16 +147,29 @@ static void parseViewpoint(FILE *fp)
       hither = 1.0f;
    }
    
-   int resx;
-   int resy;
-   if (fscanf(fp, " resolution %d %d", &resx, &resy) != 2)
+   int resX;
+   int resY;
+   if (fscanf(fp, " resolution %d %d", &resX, &resY) != 2)
    {
       goto fmterr;
    }
  
-   /* init your view point here: 
-    * e.g, viInitViewpoint(from, at, up, fov_angle, hither, resx, resy);
-    */
+   COP.x = from[0];
+   COP.y = from[1];
+   COP.z = from[2];
+
+   AT.x = at[0];
+   AT.y = at[1];
+   AT.z = at[2];
+
+   UP.x = up[0];
+   UP.y = up[1];
+   UP.z = up[2];
+
+   /* Convert the fovAngle, which is in degrees, to radians. */
+   fovAngle /= 180.0 * PI;
+
+   scene.cam = Camera(COP, AT, UP, resX, resY, fovAngle);
  
    return;
 
@@ -177,17 +196,13 @@ static void parseViewpoint(FILE *fp)
  * [this definition may change soon, with the addition of an intensity
  * and/or color]. The name of an animated light must not contain any
  * white spaces.
+ *
+ * @param fp The file to read the light's details from.
+ * @param scene The Scene object to populate with this light's details.
  */
-static void parseLight(FILE *fp)
+static void parseLight(FILE *fp, Scene& scene)
 {
-   Vec4f pos;
-   Vec4f col;
-   int num;
-   int is_animated;
-   char name[100];
-   strcpy(name,"");
-
-   is_animated = getc(fp);
+   int is_animated = getc(fp);
    if (is_animated != 'a')
    {
       ungetc(is_animated, fp);
@@ -195,11 +210,14 @@ static void parseLight(FILE *fp)
    }
 
    /* If it's an animated light, read its name. */
+   char name[100];
+   strcpy(name, "");
    if (is_animated)
    {
       fscanf(fp, "%s", name);
    }
 
+   Vec4f pos;
    if (fscanf(fp, "%f %f %f ", &pos[X], &pos[Y], &pos[Z]) != 3)
    {
       printf("Light source position syntax error");
@@ -208,7 +226,8 @@ static void parseLight(FILE *fp)
    pos[W]=1.0f;
 
    /* Read optional color of light. */
-   num = fscanf(fp, "%f %f %f ", &col[X], &col[Y], &col[Z]);
+   Vec4f col;
+   int num = fscanf(fp, "%f %f %f ", &col[X], &col[Y], &col[Z]);
    if(num == 0)
    {
       /* I have no idea what V4SET4 is, but I'm guessing it sets 4
@@ -228,13 +247,23 @@ static void parseLight(FILE *fp)
    }
    col[A] = 1.0f;
 
-   /* add light source here:
-    * e.g. viAddLight(name,pos,col);
-    */
+   /* NFF apparently only supports lights with a single colour, so this sets
+    * the ambient, diffuse and specular components of our light to the same
+    * values. We ignore the alpha value. */
+   scene.light.pos.x = pos[0];
+   scene.light.pos.y = pos[1];
+   scene.light.pos.z = pos[2];
+
+   scene.light.ambient.r = col[0];
+   scene.light.ambient.g = col[1];
+   scene.light.ambient.b = col[2];
+
+   scene.light.diffuse = scene.light.ambient;
+   scene.light.specular = scene.light.ambient;
 }
 
 /**
- * Parses the AFF background color. A color is simply RGB with values
+ * Parses the AFF background colour. A colour is simply RGB with values
  * between 0 and 1.
  * 
  * Description:
@@ -243,21 +272,23 @@ static void parseLight(FILE *fp)
  * Format:
  *    b %g %g %g
  * 
- * If no background color is set, assume RGB = {0,0,0}. 
+ * If no background colour is set, assume RGB = {0,0,0}.
+ *
+ * @param fp The file to parse the background colour from.
+ * @param scene The scene for which to populate the background colour.
  */
-static void parseBackground(FILE *fp)
+static void parseBackground(FILE *fp, Scene& scene)
 {
    Vec3f bgcolor;
-   if(fscanf(fp, "%f %f %f", &bgcolor[X], &bgcolor[Y], &bgcolor[Z])
-      != 3)
+   if (fscanf(fp, "%f %f %f", &bgcolor[X], &bgcolor[Y], &bgcolor[Z]) != 3)
    {
       printf("background color syntax error");
       exit(1);
    }
 
-   /* init you background color here
-    * e.g.  viInitBackgroundColor(bgcolor);
-    */
+   scene.background.r = bgcolor[X];
+   scene.background.g = bgcolor[Y];
+   scene.background.b = bgcolor[Z];
 }
 
 
@@ -336,9 +367,16 @@ static void parseFill(FILE *fp)
          exit(1);
       }
       
-      /* add your extended material here e.g.,
-       * viAddExtendedMaterial(amb, dif, spc, 4.0 * phong_pow, t, ior);
-       */
+      mat.ambient = Colour(amb[X], amb[Y], amb[Z]);
+      mat.diffuse = Colour(dif[X], dif[Y], dif[Z]);
+      mat.specular = Colour(spc[X], spc[Y], spc[Z]);
+      mat.shininess = phong_pow;
+
+      /* I assume that a material with Shine > 0 is considered reflective. */
+      if (phong_pow > 0)
+      {
+         mat.reflective = true;
+      }
    }
    /* Else, parse the old NFF description of a material. */
    else
@@ -356,9 +394,11 @@ static void parseFill(FILE *fp)
          exit(1);
       }
 
-      /* add the normal NFF material here 
-      * e.g., viAddMaterial(col, kd, ks, 4.0 * phong_pow, t, ior);
-      */
+      Colour colour(col[X], col[Y], col[Z]);
+      mat.ambient = colour;
+      mat.diffuse = colour;
+      mat.specular = colour;
+      mat.shininess = phong_pow;
    }
 }
 
@@ -423,8 +463,11 @@ static void parseCone(FILE *fp)
  * If the radius is negative, then only the sphere's inside is visible
  * (objects are normally considered one sided, with the outside
  * visible).
+ *
+ * @param fp The file to parse the sphere from.
+ * @param scene The Scene object to populate with the sphere.
  */
-static void parseSphere(FILE *fp)
+static void parseSphere(FILE *fp, Scene& scene)
 {
    float radius;
    Vec3f center;
@@ -436,7 +479,12 @@ static void parseSphere(FILE *fp)
       exit(1);
    }
 
-   /* add a sphere here e.g., viAddSphere(center, radius); */
+   Vector centre(center[X], center[Y], center[Z]);
+
+   Sphere* sphere = new Sphere(centre, radius);
+   sphere->mat = mat;
+
+   scene.addObject(sphere);
 }	
 
 
@@ -474,6 +522,8 @@ static void parseSphere(FILE *fp)
  * Format:
  *    pp %d
  *    [ %g %g %g %g %g %g ] <-- for total_vertices vertices
+ *
+ * @param fp The file from which to parse the polygon.
  */
 static void parsePoly(FILE *fp)
 {
@@ -562,8 +612,11 @@ memerr:
  *    i %d %s
  * 
  * The file name may not include any white spaces.
+ *
+ * @param fp The NFF file pointer to read instructions from.
+ * @param scene The Scene object to populate.
  */
-static void parseInclude(FILE *fp)
+static void parseInclude(FILE *fp, Scene& scene)
 {
    int detail_level;
    char filename[100];
@@ -582,7 +635,7 @@ static void parseInclude(FILE *fp)
       if(ifp = fopen(filename, "r"))
       {
          /* Parse the file recursively. */
-         viParseFile(ifp);
+         viParseFile(ifp, scene);
          fclose(ifp);
       }
       else
@@ -1554,7 +1607,7 @@ static void parseMesh(FILE *fp)
     */
 }
 
-bool viParseFile(FILE *f)
+bool viParseFile(FILE *f, Scene& scene)
 {
    int ch;
 
@@ -1572,19 +1625,19 @@ bool viParseFile(FILE *f)
          /* Comment. */
          case '#':  
          case '%':
-         	parseComment(f);
+            parseComment(f);
             break;
          /* View point. */
          case 'v':
-            parseViewpoint(f);
+            parseViewpoint(f, scene);
             break;
          /* Light sources. */
          case 'l':
-            parseLight(f);
+            parseLight(f, scene);
             break;
          /* Background color. */
          case 'b':
-            parseBackground(f);
+            parseBackground(f, scene);
             break;
          /* Fill material. */
          case 'f':
@@ -1596,7 +1649,7 @@ bool viParseFile(FILE *f)
             break;
          /* Sphere. */
          case 's':
-            parseSphere(f);
+            parseSphere(f, scene);
             break;
          /* Polygon or patch. */
          case 'p':
@@ -1604,7 +1657,7 @@ bool viParseFile(FILE *f)
             break;
          /* Include another file. */
          case 'i':   
-            parseInclude(f);
+            parseInclude(f, scene);
             break;
          /* Detail level of file (used to exclude objects from
           * rendering). */

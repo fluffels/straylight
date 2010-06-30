@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include "Camera.h"
+#include "Light.h"
 #include "Ray.h"
 #include "SceneObject.h"
 #include "Vector.h"
@@ -34,10 +36,26 @@ class Scene
 
       /**
        * Tests whether a Ray intersects a SceneObject.
+       * 
        * @param r The Ray to test.
        * @return True if the ray intersects an object, false otherwise.
        */
       bool testIntersection(Ray& r);
+
+      /**
+       * The background (default) colour of the scene.
+       */
+      Colour background;
+
+      /**
+       * The camera for the scene.
+       */
+      Camera cam;
+
+      /**
+       * Sole point-light for the scene.
+       */
+      Light light;
 
    private:
       /**

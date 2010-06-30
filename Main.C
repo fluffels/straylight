@@ -8,6 +8,8 @@
 #include <pthread.h>
 #include <png.h>
 
+#include "AFF/parse.h"
+
 #include "Camera.h"
 #include "Colour.h"
 #include "Light.h"
@@ -25,8 +27,6 @@ const Vector COP(0.0, 1.0, 4.0);
 const Vector AT(0.0, 2.0, 0.0);
 /** The "up" vector - the direction of "up" from the camera. */
 const Vector UP(0.0, 1.0, 0.0);
-/** The camera for the scene. */
-Camera cam(COP, AT, UP);
 /** The position of the red sphere. */
 const Vector RED_SPHERE_POS(-1.0, 1.0, 0.0);
 /** The position of the green sphere. */
@@ -41,9 +41,7 @@ const Vector PLANE_NORMAL(0.1, 1.0, 0.0);
 //TODO: Add something here.
 static const double PLANE_D = 0.0;
 /** The scene. */
-Scene scene;
-/** The point light source for the scene. */
-Light light;
+Scene* scene;
 
 /** Title of the window. */
 const char* title = "Straylight";
@@ -53,6 +51,10 @@ bool castOnly = false;
 bool renderingDone = false;
 /** Whether to show the renderer's progress. */
 bool show = false;
+/** Whether to parse an NFF file. */
+bool parseNFF = false;
+/** The name of the NFF file to parse. */
+char nffFileName[255];
 /** Width of the image to produce. */
 int width = 1024;
 /** Height of the image to produce. */
@@ -88,10 +90,12 @@ png_infop pngInfo;
 
 void castRays();
 void* castRaySubset(void* args);
+void loadNFFFile();
+void loadStaticScene();
 void printUsage();
-void teardown();
 Colour shootRay(Ray& r);
 bool shootShadowRay(Ray& r);
+void teardown();
 void writeImage();
 
 /**
@@ -106,30 +110,30 @@ void writeImage();
 void
 castRays()
 {
-	int cutoff = height / threadCount;
+   int cutoff = height / threadCount;
 
-	pthread_t thread[threadCount];
+   pthread_t thread[threadCount];
    int* coeffs = new int[threadCount];
 
    /* Since a pointer is being passed to each thread, we must store
-       * each coefficient individually. */
+    * each coefficient individually. */
    for (int i = 0; i < threadCount; i++)
    {
       coeffs[i] = i;
    }
-   
+
    for (int i = 0; i < threadCount; i++)
-	{ 
+   {
       int result = pthread_create(thread + i, NULL, castRaySubset,
-         (void*)(coeffs + i));
+         (void*) (coeffs + i));
       
-	   if (result != 0)
+      if (result != 0)
       {
          exit(-1);
       }
-	}
+   }
 
-	for (int i = 0; i < threadCount; i++)
+   for (int i = 0; i < threadCount; i++)
    {
       pthread_join(thread[i], NULL);
    }
@@ -165,7 +169,7 @@ castRaySubset(void* arg)
    {
       for (int x = 0; x < width; x++)
       {
-         Ray r = cam.getRayAt(x, y);
+         Ray r = scene->cam.getRayAt(x, y);
          Colour colour = shootRay(r);
          
          offset[0] = min<double>(colour.r, 1.0) * 255;
@@ -189,7 +193,7 @@ Colour shootRay(Ray& r)
 {
    Colour black(0.0, 0.0, 0.0);
 
-   if (scene.testIntersection(r) == true)
+   if (scene->testIntersection(r) == true)
    {
       const SceneObject* s = r.intersected;
       const Material& m = s->mat;
@@ -197,12 +201,12 @@ Colour shootRay(Ray& r)
       Colour localColour;
       if (shootShadowRay(r))
       {
-         Colour colour = light.getGlobalLightAt(r, COP);
+         Colour colour = scene->light.getGlobalLightAt(r, scene->cam.getCOP());
          localColour = colour / 2;
       }
       else
       {
-         localColour = light.getGlobalLightAt(r, COP);
+         localColour = scene->light.getGlobalLightAt(r, scene->cam.getCOP());
       }
 
       if ((r.depth != 0) && (m.reflective))
@@ -229,7 +233,7 @@ Colour shootRay(Ray& r)
    }
    else
    {
-      return black;
+      return scene->background;
    }
 }
 
@@ -243,18 +247,49 @@ Colour shootRay(Ray& r)
 bool shootShadowRay(Ray& r)
 {
    Vector p = r.intersection;
-   Vector l = (light.pos - p).normalise();
+   Vector l = (scene->light.pos - p).normalise();
 
    p += l * 0.01;
    Ray shadowRay(p, l);
 
-   return scene.testIntersection(shadowRay);
+   return scene->testIntersection(shadowRay);
+}
+
+void
+loadNFFFile()
+{
+   FILE* nffFile = fopen(nffFileName, "r");
+   
+   if (nffFile == NULL)
+   {
+      fprintf(stderr, "Could not open %s.\n", nffFileName);
+   }
+   
+   viParseFile(nffFile, *scene);
+   
+   fclose(nffFile);
 }
 
 void
 loadScene()
 {
-   cam.setResolution(width, height, Camera::DEFAULT_VIEW_ANGLE);
+   if (parseNFF)
+   {
+      loadNFFFile();
+   }
+   else
+   {
+      loadStaticScene();
+   }
+}
+
+void
+loadStaticScene()
+{
+   Vector COP(0, 1, 4);
+   Vector AT(0, 2, 0);
+   Vector UP(0, 1, 0);
+   scene->cam = Camera(COP, AT, UP, width, height, Camera::DEFAULT_VIEW_ANGLE);
    
    Material mat;
    mat.shininess = 15;
@@ -263,31 +298,31 @@ loadScene()
    mat.ambient = Colour(1.0, 0.0, 0.0);
    mat.diffuse = Colour(1.0, 0.0, 0.0);
    Sphere* redSphere = new Sphere(RED_SPHERE_POS, SPHERE_RADIUS, mat);
-   scene.addObject(redSphere);
+   scene->addObject(redSphere);
 
    mat.ambient = Colour(0.0, 1.0, 0.0);
    mat.diffuse = Colour(0.0, 1.0, 0.0);
    mat.reflective = true;
    Sphere* greenSphere = new Sphere(GREEN_SPHERE_POS, SPHERE_RADIUS,
       mat);
-   scene.addObject(greenSphere);
+   scene->addObject(greenSphere);
 
    mat.ambient = Colour(0.0, 0.0, 1.0);
    mat.diffuse = Colour(0.0, 0.0, 1.0);
    mat.reflective = true;
    Sphere* blueSphere = new Sphere(BLUE_SPHERE_POS, SPHERE_RADIUS, mat);
-   scene.addObject(blueSphere);
+   scene->addObject(blueSphere);
 
    mat.ambient = Colour(0.8, 0.4, 0.0);
-   mat.diffuse =Colour(0.8, 0.4, 0.0);
+   mat.diffuse = Colour(0.8, 0.4, 0.0);
    mat.reflective = true;
    Plane* plane = new Plane(PLANE_NORMAL, PLANE_D, mat);
-   scene.addObject(plane);
+   scene->addObject(plane);
 
-   light.ambient = Colour(0.5, 0.5, 0.5);
-   light.diffuse = Colour(0.9, 0.9, 0.9);
-   light.specular = Colour(1.0, 1.0, 1.0);
-   light.pos = Vector(3.0, 3.0, 3.0);
+   scene->light.ambient = Colour(0.5, 0.5, 0.5);
+   scene->light.diffuse = Colour(0.9, 0.9, 0.9);
+   scene->light.specular = Colour(1.0, 1.0, 1.0);
+   scene->light.pos = Vector(3.0, 3.0, 3.0);
 }
 
 void
@@ -302,6 +337,14 @@ parseArguments(int argc, char** argv)
       else if (strcmp(argv[a], "--show") == 0)
       {
          show = true;
+      }
+      else if (strcmp(argv[a], "-f") == 0)
+      {
+         parseNFF = true;
+         
+         strcpy(nffFileName, argv[a + 1]);
+         
+         a++;
       }
       else if (strcmp(argv[a], "-w") == 0)
       {
@@ -361,9 +404,9 @@ printUsage()
 void
 setup()
 {
+   scene = new Scene();
+
    image = new unsigned char[width * height * COLOURS_PER_PIXEL];
-   
-   cam.setResolution(width, height, Camera::DEFAULT_VIEW_ANGLE);
    
    outFile = fopen(outFileName, "wb");
    if (outFile == NULL)
@@ -399,14 +442,17 @@ setup()
       fprintf(stderr, "Could not write PNG header.\n");
 		exit(-1);
    }
-	png_set_IHDR(png, pngInfo, width, height, BIT_DEPTH, COLOUR_TYPE,
+
+   png_set_IHDR(png, pngInfo, width, height, BIT_DEPTH, COLOUR_TYPE,
       INTERLACE_TYPE, COMPRESSION_TYPE, FILTER_METHOD);
-	png_write_info(png, pngInfo);
+   png_write_info(png, pngInfo);
 }
 
 void
 teardown()
 {
+   delete scene;
+
    delete[] image;
 }
 
@@ -448,9 +494,9 @@ main(int argc, char** argv)
    parseArguments(argc, argv);
 
    setup();
-   
-   loadScene();
 
+   loadScene();
+   
    castRays();
    
    writeImage();

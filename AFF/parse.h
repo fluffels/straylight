@@ -7,6 +7,12 @@
 
 #include <stdio.h>
 
+#include "../Colour.h"
+#include "../Material.h"
+#include "../Scene.h"
+#include "../Sphere.h"
+#include "../Vector.h"
+
 /* This is not defined in parse.C, and it's not used anywhere. Commented
  * it out. Maybe it will be useful sometime. */
 //bool viParseArgs(int argc, char *argv[], char **filename);
@@ -15,7 +21,8 @@
  * Parse an AFF file.
  * 
  * @param f File handle for the AFF file.
+ * @param scene The Scene class to populate with data from the NFF file.
  */
-bool viParseFile(FILE *f);
+bool viParseFile(FILE *f, Scene& scene);
 
 #endif
