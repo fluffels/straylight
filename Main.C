@@ -86,15 +86,24 @@ png_structp png;
 /** libPNG info structure. */
 png_infop pngInfo;
 
-void castRays();
-void* castRaySubset(void* args);
-void loadNFFFile();
-void loadStaticScene();
-void printUsage();
-Colour shootRay(Ray& r);
-bool shootShadowRay(Ray& r);
-void teardown();
-void writeImage();
+void
+castRays();
+void*
+castRaySubset(void* args);
+void
+loadNFFFile();
+void
+loadStaticScene();
+void
+printUsage();
+Colour
+shootRay(Ray& r);
+bool
+shootShadowRay(Ray& r);
+void
+teardown();
+void
+writeImage();
 
 /**
  * The main loop for the program.
@@ -104,7 +113,7 @@ void writeImage();
  * 
  * @param interactive If true, the image will be output to the
  * screen while it is being calculated.
- */ 
+ */
 void
 castRays()
 {
@@ -155,8 +164,8 @@ castRays()
 void*
 castRaySubset(void* arg)
 {
-   int cutoff = height / threadCount;   
-   int* ip = (int*)arg;
+   int cutoff = height / threadCount;
+   int* ip = (int*) arg;
    int i = *ip;
    
    int low = i * cutoff;
@@ -170,9 +179,9 @@ castRaySubset(void* arg)
          Ray r = scene->cam.getRayAt(x, y);
          Colour colour = shootRay(r);
          
-         offset[0] = min<double>(colour.r, 1.0) * 255;
-         offset[1] = min<double>(colour.g, 1.0) * 255;
-         offset[2] = min<double>(colour.b, 1.0) * 255;
+         offset[0] = min<double> (colour.r, 1.0) * 255;
+         offset[1] = min<double> (colour.g, 1.0) * 255;
+         offset[2] = min<double> (colour.b, 1.0) * 255;
          
          offset += 3;
       }
@@ -187,7 +196,8 @@ castRaySubset(void* arg)
  * @param r The ray to shoot.
  * @return The colour returned by the ray.
  */
-Colour shootRay(Ray& r)
+Colour
+shootRay(Ray& r)
 {
    Colour black(0.0, 0.0, 0.0);
 
@@ -242,7 +252,8 @@ Colour shootRay(Ray& r)
  * @return True if the intersection point is in shadow, false
  * otherwise.
  */
-bool shootShadowRay(Ray& r)
+bool
+shootShadowRay(Ray& r)
 {
    Vector p = r.intersection;
    Vector l = (scene->light.pos - p).normalise();
@@ -262,7 +273,7 @@ loadNFFFile()
    {
       fprintf(stderr, "Could not open %s.\n", nffFileName);
    }
-   
+
    viParseFile(nffFile, *scene, width, height);
    
    fclose(nffFile);
@@ -277,8 +288,7 @@ parseArguments(int argc, char** argv)
       {
          noOutput = true;
       }
-      else if ((strcmp(argv[a], "-f") == 0)
-         || (strcmp(argv[a], "--file") == 0))
+      else if ((strcmp(argv[a], "-f") == 0) || (strcmp(argv[a], "--file") == 0))
       {
          if (argc < a + 2)
          {
@@ -293,38 +303,38 @@ parseArguments(int argc, char** argv)
          a++;
       }
       else if ((strcmp(argv[a], "-w") == 0)
-         || (strcmp(argv[a], "--width") == 0))
+               || (strcmp(argv[a], "--width") == 0))
       {
          if (argc < a + 2)
          {
             printf("Option '--width / -w' requires an argument.\n\n");
             printUsage();
          }
-         
+
          width = atoi(argv[a + 1]);
          a++;
       }
-      else if ((strcmp(argv[a], "-h") == 0)
-         || (strcmp(argv[a], "--height") == 0))
+      else if ((strcmp(argv[a], "-h") == 0) || (strcmp(argv[a], "--height")
+               == 0))
       {
          if (argc < a + 2)
          {
             printf("Option '--height / -h' requires an argument.\n\n");
             printUsage();
          }
-                  
+
          height = atoi(argv[a + 1]);
          a++;
       }
-      else if ((strcmp(argv[a], "-o") == 0)
-         || (strcmp(argv[a], "--output") == 0))
+      else if ((strcmp(argv[a], "-o") == 0) || (strcmp(argv[a], "--output")
+               == 0))
       {
          if (argc < a + 2)
          {
             printf("Option '--output / -o' requires an argument.\n\n");
             printUsage();
          }
-                  
+
          outFileName = argv[a + 1];
          a++;
       }
@@ -366,36 +376,35 @@ setup()
    outFile = fopen(outFileName, "wb");
    if (outFile == NULL)
    {
-      fprintf(stderr, "Could not open file \"%s\" for writing.\n",
-         outFileName);
+      fprintf(stderr, "Could not open file \"%s\" for writing.\n", outFileName);
       exit(-1);
    }
-   
+
    png = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
    if (png == NULL)
    {
       fprintf(stderr, "Could not create PNG struct.\n");
       exit(-1);
    }
-   
+
    pngInfo = png_create_info_struct(png);
    if (pngInfo == NULL)
    {
       fprintf(stderr, "Could not create PNG info struct.\n");
       exit(-1);
    }
-   
+
    if (setjmp(png_jmpbuf(png)))
    {
       fprintf(stderr, "Could not initialize libPNG input / output.\n");
-		exit(-1);
+      exit(-1);
    }
-	png_init_io(png, outFile);
+   png_init_io(png, outFile);
    
    if (setjmp(png_jmpbuf(png)))
    {
       fprintf(stderr, "Could not write PNG header.\n");
-		exit(-1);
+      exit(-1);
    }
 
    png_set_IHDR(png, pngInfo, width, height, BIT_DEPTH, COLOUR_TYPE,
@@ -418,22 +427,22 @@ writeImage()
    for (int a = 0; a < height; a++)
    {
       rowPointers[height - 1 - a] = (png_byte*) image + a * width
-         * COLOURS_PER_PIXEL;
+               * COLOURS_PER_PIXEL;
    }
-   
+
    if (setjmp(png_jmpbuf(png)))
    {
       fprintf(stderr, "Could not write image data.\n");
-		exit(-1);
+      exit(-1);
    }
    png_write_image(png, rowPointers);
 
    if (setjmp(png_jmpbuf(png)))
    {
       fprintf(stderr, "Could not finish write.\n");
-		exit(-1);
+      exit(-1);
    }
-	png_write_end(png, NULL);
+   png_write_end(png, NULL);
    
    fclose(outFile);
 }
