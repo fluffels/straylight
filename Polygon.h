@@ -1,0 +1,75 @@
+#ifndef POLYGON_H
+#define POLYGON_H
+
+#include "Material.h"
+#include "Plane.h"
+#include "SceneObject.h"
+#include "Ray.h"
+#include "Vector.h"
+
+/**
+ * Encapsulates a polyogon.
+ *
+ * A polygon is defined by n vertices where n >= 3. The order of the vertices
+ * must be counter-clockwise when looking at the polygon face-on. A polygon only
+ * has one side. The first and second faces must form a convex non-zero angle so
+ * that the polygon's normal & side visibility can be calculated from only this
+ * information. All vertices must be coplanar.
+ */
+class Polygon : public SceneObject
+{
+   public:
+      /**
+       * Constructor.
+       * 
+       * @param vertexCount The amount of vertices in this polygon.
+       * @param vertices An array of type Vector containing all the vertices in
+       * the polygon.
+       * @param newMat The material to use when rendering this Polygon.
+       */
+      Polygon(int vertexCount, Vector* vertices, const Material& newMat);
+      
+      /**
+       * Destructor.
+       * 
+       * Frees memory.
+       */
+      ~Polygon();
+
+      /**
+       * Tests for intersection between this Polygon and a given
+       * Ray.
+       * 
+       * @param r An object of class Ray to test against.
+       * @return True if the Ray intersects this Polygon, false otherwise.
+       */
+      virtual bool testIntersection(Ray& r) const;
+      
+      /**
+       * Returns the Polygon's normal at a specific point. This is always the
+       * same for a Polygon, since all its vertices are co-planar.
+       * 
+       * @param p A point on the Polygon.
+       * @return The Polygon's normal.
+       */
+      virtual Vector getNormalAt(const Vector& p) const;
+         
+   private:
+      /**
+       * The Plane containing this Polygon. This is a pointer since Plane has
+       * no default constructor. Therefore it must be allocated dynamically.
+       */
+      Plane* _plane;
+   
+      /**
+       * The amount of vertices in this Polygon.
+       */
+      int _vertexCount;
+      
+      /**
+       * The vertices in this Polygon.
+       */
+      Vector* _vertices;
+};
+
+#endif

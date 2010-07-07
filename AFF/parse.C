@@ -27,7 +27,7 @@ typedef float Vec4f[4];
 #define Y 1  
 #define Z 2  
 #define W 3  
-             
+
 #define R 0  
 #define G 1  
 #define B 2  
@@ -53,7 +53,8 @@ Material mat;
  * or
  *    % [ string ]
  */
-static void parseComment(FILE *f)
+static void
+parseComment(FILE *f)
 {
    char str[1000];
    fgets(str, 1000, f);
@@ -107,7 +108,8 @@ static void parseComment(FILE *f)
  * @param fp The file handle of the input file.
  * @param scene The Scene object to populate with the viewpoint.
  */
-static void parseViewpoint(FILE *fp, Scene& scene, int width, int height)
+static void
+parseViewpoint(FILE *fp, Scene& scene, int width, int height)
 {
    /* Initialize variables here to avoid crossing them with gotos. */
    Vector COP, AT, UP;
@@ -117,43 +119,43 @@ static void parseViewpoint(FILE *fp, Scene& scene, int width, int height)
    {
       goto fmterr;
    }
-   
+
    Vec3f at;
    if (fscanf(fp, " at %f %f %f", &at[X], &at[Y], &at[Z]) != 3)
    {
       goto fmterr;
    }
-   
+
    Vec3f up;
    if (fscanf(fp, " up %f %f %f", &up[X], &up[Y], &up[Z]) != 3)
    {
       goto fmterr;
    }
-   
+
    float fovAngle;
    if (fscanf(fp, " angle %f", &fovAngle) != 1)
    {
       goto fmterr;
    }
-   
+
    float hither;
    if (fscanf(fp, " hither %f", &hither) != 1)
    {
       goto fmterr;
    }
-   
+
    if (hither < 0.0001)
    {
       hither = 1.0f;
    }
-   
+
    int resX;
    int resY;
    if (fscanf(fp, " resolution %d %d", &resX, &resY) != 2)
    {
       goto fmterr;
    }
- 
+
    COP.x = from[0];
    COP.y = from[1];
    COP.z = from[2];
@@ -181,12 +183,11 @@ static void parseViewpoint(FILE *fp, Scene& scene, int width, int height)
    }
 
    scene.cam = Camera(COP, AT, UP, resX, resY, fovAngle);
- 
+
    return;
 
-   fmterr:
-      printf("Parser view syntax error");
-      exit(1);
+   fmterr: printf("Parser view syntax error");
+   exit(1);
 }
 
 /**
@@ -211,7 +212,8 @@ static void parseViewpoint(FILE *fp, Scene& scene, int width, int height)
  * @param fp The file to read the light's details from.
  * @param scene The Scene object to populate with this light's details.
  */
-static void parseLight(FILE *fp, Scene& scene)
+static void
+parseLight(FILE *fp, Scene& scene)
 {
    int is_animated = getc(fp);
    if (is_animated != 'a')
@@ -234,12 +236,12 @@ static void parseLight(FILE *fp, Scene& scene)
       printf("Light source position syntax error");
       exit(1);
    }
-   pos[W]=1.0f;
+   pos[W] = 1.0f;
 
    /* Read optional color of light. */
    Vec4f col;
    int num = fscanf(fp, "%f %f %f ", &col[X], &col[Y], &col[Z]);
-   if(num == 0)
+   if (num == 0)
    {
       /* I have no idea what V4SET4 is, but I'm guessing it sets 4
        * values of a length-4 vector. :P I commented it out and added
@@ -288,7 +290,8 @@ static void parseLight(FILE *fp, Scene& scene)
  * @param fp The file to parse the background colour from.
  * @param scene The scene for which to populate the background colour.
  */
-static void parseBackground(FILE *fp, Scene& scene)
+static void
+parseBackground(FILE *fp, Scene& scene)
 {
    Vec3f bgcolor;
    if (fscanf(fp, "%f %f %f", &bgcolor[X], &bgcolor[Y], &bgcolor[Z]) != 3)
@@ -301,7 +304,6 @@ static void parseBackground(FILE *fp, Scene& scene)
    scene.background.g = bgcolor[Y];
    scene.background.b = bgcolor[Z];
 }
-
 
 /**
  * Parse AFF fill color and shading parameters.
@@ -336,11 +338,12 @@ static void parseBackground(FILE *fp, Scene& scene)
  * The fill color is used to color the objects following it until a new
  * color is assigned.
  */
-static void parseFill(FILE *fp)
+static void
+parseFill(FILE *fp)
 {
    int moreparams;
    moreparams = getc(fp);
-   if(moreparams != 'm')
+   if (moreparams != 'm')
    {
       ungetc(moreparams, fp);
       moreparams = 0;
@@ -349,35 +352,35 @@ static void parseFill(FILE *fp)
    float kd, ks, phong_pow, t, ior;
    Vec3f col;
 
-   if(moreparams)  /* parse the extended material description */
+   if (moreparams) /* parse the extended material description */
    {
       Vec3f amb;
-      if(fscanf(fp, "%f %f %f", &amb[X], &amb[Y], &amb[Z]) != 3)
+      if (fscanf(fp, "%f %f %f", &amb[X], &amb[Y], &amb[Z]) != 3)
       {
          printf("fill material ambient syntax error");
          exit(1);
       }
-      
+
       Vec3f dif;
-      if(fscanf(fp, "%f %f %f", &dif[X], &dif[Y], &dif[Z]) != 3)
+      if (fscanf(fp, "%f %f %f", &dif[X], &dif[Y], &dif[Z]) != 3)
       {
          printf("fill material diffuse syntax error");
          exit(1);
       }
-      
+
       Vec3f spc;
-      if(fscanf(fp, "%f %f %f", &spc[X], &spc[Y], &spc[Z]) != 3)
+      if (fscanf(fp, "%f %f %f", &spc[X], &spc[Y], &spc[Z]) != 3)
       {
          printf("fill material specular syntax error");
          exit(1);
       }
-      
+
       if (fscanf(fp, "%f %f %f", &phong_pow, &t, &ior) != 3)
       {
          printf("fill material (phong, transp, IOR) syntax error");
          exit(1);
       }
-      
+
       mat.ambient = Colour(amb[X], amb[Y], amb[Z]);
       mat.diffuse = Colour(dif[X], dif[Y], dif[Z]);
       mat.specular = Colour(spc[X], spc[Y], spc[Z]);
@@ -398,8 +401,7 @@ static void parseFill(FILE *fp)
          exit(1);
       }
 
-      if (fscanf(fp, "%f %f %f %f %f", &kd, &ks, &phong_pow, &t, &ior)
-         != 5)
+      if (fscanf(fp, "%f %f %f %f %f", &kd, &ks, &phong_pow, &t, &ior) != 5)
       {
          printf("fill material syntax error");
          exit(1);
@@ -412,7 +414,6 @@ static void parseFill(FILE *fp)
       mat.shininess = phong_pow;
    }
 }
-
 
 /**
  * Parse a cylinder or cone.  A cylinder is defined as having a radius
@@ -437,21 +438,21 @@ static void parseFill(FILE *fp)
  * the outside visible). Note that the base and apex cannot be
  * coincident for a cylinder or cone.
  */
-static void parseCone(FILE *fp)
+static void
+parseCone(FILE *fp)
 {
    Vec3f base_pt;
    Vec3f apex_pt;
    float r0, r1;
 
-   if(fscanf(fp, " %f %f %f %f %f %f %f %f", &base_pt[X], &base_pt[Y],
-      &base_pt[Z], &r0, &apex_pt[X], &apex_pt[Y], &apex_pt[Z], &r1)
-      != 8)
+   if (fscanf(fp, " %f %f %f %f %f %f %f %f", &base_pt[X], &base_pt[Y],
+      &base_pt[Z], &r0, &apex_pt[X], &apex_pt[Y], &apex_pt[Z], &r1) != 8)
    {
       printf("cylinder or cone syntax error\n");
       exit(1);
    }
    
-   if(r0 < 0.0)
+   if (r0 < 0.0)
    {
       r0 = -r0;
       r1 = -r1;
@@ -459,7 +460,6 @@ static void parseCone(FILE *fp)
    
    /* add a cone here e.g., viAddCone(base_pt, r0, apex_pt, r1); */
 }
-
 
 /**
  * Parse an AFF sphere, which is defined by a radius and center
@@ -478,13 +478,14 @@ static void parseCone(FILE *fp)
  * @param fp The file to parse the sphere from.
  * @param scene The Scene object to populate with the sphere.
  */
-static void parseSphere(FILE *fp, Scene& scene)
+static void
+parseSphere(FILE *fp, Scene& scene)
 {
    float radius;
    Vec3f center;
 
-   if(fscanf(fp, "%f %f %f %f", &center[X], &center[Y], &center[Z],
-      &radius) != 4)
+   if (fscanf(fp, "%f %f %f %f", &center[X], &center[Y], &center[Z], &radius)
+            != 4)
    {
       printf("sphere syntax error");
       exit(1);
@@ -496,9 +497,7 @@ static void parseSphere(FILE *fp, Scene& scene)
    sphere->mat = mat;
 
    scene.addObject(sphere);
-}	
-
-
+}
 
 /**
  * Parse an AFF polygon. A polygon is defined by a set of vertices. With
@@ -536,11 +535,12 @@ static void parseSphere(FILE *fp, Scene& scene)
  *
  * @param fp The file from which to parse the polygon.
  */
-static void parsePoly(FILE *fp)
+static void
+parsePoly(FILE *fp, Scene& scene)
 {
    /* These have to be declared and initialized before any gotos. */
-   Vec3f* verts = NULL;
-   Vec3f *norms = NULL;
+   Vector* verts = NULL;
+   Vector* norms = NULL;
    
    int ispatch = getc(fp);
    if (ispatch != 'p')
@@ -548,69 +548,66 @@ static void parsePoly(FILE *fp)
       ungetc(ispatch, fp);
       ispatch = 0;
    }
-   
+
    int nverts;
    if (fscanf(fp, "%d", &nverts) != 1)
    {
-		goto fmterr;
+      goto fmterr;
    }
-	
-   verts = (Vec3f*) malloc(nverts * sizeof(Vec3f));
+
+   verts = new Vector[nverts];
    if (verts == NULL)
    {
       goto memerr;
    }
-	
-   if(ispatch)
+
+   if (ispatch)
    {
-      norms = (Vec3f*) malloc(nverts * sizeof(Vec3f));
+      norms = new Vector[nverts];
       if (norms == NULL)
       {
          goto memerr;
       }
    }
-	
+
    /* Read all the vertices. */
-   for(int q = 0; q < nverts; q++)
+   Vec3f temp;
+   for (int q = 0; q < nverts; q++)
    {
-      if (fscanf(fp, " %f %f %f", &verts[q][X], &verts[q][Y],
-         &verts[q][Z]) != 3)
+      if (fscanf(fp, " %lf %lf %lf", &verts[q].x, &verts[q].y, &verts[q].z)
+               != 3)
       {
          goto fmterr;
       }
-       
+
       if (ispatch)
       {
-         if (fscanf(fp, " %f %f %f", &norms[q][X], &norms[q][Y],
-            &norms[q][Z]) != 3)
+         if (fscanf(fp, " %lf %lf %lf", &norms[q].x, &norms[q].y, &norms[q].z)
+            != 3)
          {
             goto fmterr;
          }
       }
    }
 
-   if(ispatch)
+   if (ispatch)
    {
       /* add a polygon patch here
        * e.g.,  viAddPolyPatch(nverts,verts,norms); */
    }
    else
    {
-      /* add a polygon here
-       * e.g., viAddPolygon(nverts,verts); */
+      scene.addObject(new Polygon(nverts, verts, mat));
    }
 
    return;
-    
-fmterr:
-    printf("polygon or patch syntax error\n");
-    exit(1);
-    
-memerr:
-    printf("can't allocate memory for polygon or patch\n");
-    exit(1);
-}
 
+   fmterr: printf("polygon or patch syntax error\n");
+   exit(1);
+
+   memerr: printf("can't allocate memory for polygon or patch\n");
+   exit(1);
+}
 
 /**
  * Parse an include directive for including another AFF file (typically
@@ -629,7 +626,8 @@ memerr:
  * @param width The width to override the input file with.
  * @param height The height to override the input file with.
  */
-static void parseInclude(FILE *fp, Scene& scene, int width, int height)
+static void
+parseInclude(FILE *fp, Scene& scene, int width, int height)
 {
    int detail_level;
    char filename[100];
@@ -645,7 +643,7 @@ static void parseInclude(FILE *fp, Scene& scene, int width, int height)
    {
       FILE* ifp;
       
-      if(ifp = fopen(filename, "r"))
+      if (ifp = fopen(filename, "r"))
       {
          /* Parse the file recursively. */
          viParseFile(ifp, scene, width, height);
@@ -653,16 +651,14 @@ static void parseInclude(FILE *fp, Scene& scene, int width, int height)
       }
       else
       {
-         printf("Error: could not open include file: <%s>.\n",
-            filename);
+         printf("Error: could not open include file: <%s>.\n", filename);
          
          exit(1);
       }
    }
    else
    {
-      printf("Skipping include file: %s\n",
-         filename);
+      printf("Skipping include file: %s\n", filename);
    }
 }
 
@@ -683,9 +679,10 @@ static void parseInclude(FILE *fp, Scene& scene, int width, int height)
  * 
  * The detail level is 0 (zero) by default.
  */
-static void parseDetailLevel(FILE *fp)
+static void
+parseDetailLevel(FILE *fp)
 {
-   if(fscanf(fp, "%d", &gDetailLevel) != 1)
+   if (fscanf(fp, "%d", &gDetailLevel) != 1)
    {
       printf("Error: could not parse detail level.\n");
       exit(1);
@@ -721,12 +718,13 @@ static void parseDetailLevel(FILE *fp)
  * The texture name may not include any white spaces. Note that the
  * texturing works like OpenGL REPEAT mode.
  */
-static void parseTexturedTriangle(FILE *fp)
+static void
+parseTexturedTriangle(FILE *fp)
 {
    int q;
    Vec3f verts[3];
    Vec3f norms[3];
-   float tu[3],tv[3];
+   float tu[3], tv[3];
    char texturename[100];
 
    int is_patch = getc(fp);
@@ -735,21 +733,21 @@ static void parseTexturedTriangle(FILE *fp)
       ungetc(is_patch, fp);
       is_patch = 0;
    }
-   
-   fscanf(fp, "%s", texturename);
 
-   for(q = 0; q < 3; q++)
+   fscanf(fp, "%s", texturename);
+   
+   for (q = 0; q < 3; q++)
    {
-      if (fscanf(fp, " %f %f %f", &verts[q][X], &verts[q][Y],
-         &verts[q][Z]) != 3)
+      if (fscanf(fp, " %f %f %f", &verts[q][X], &verts[q][Y], &verts[q][Z])
+               != 3)
       {
          goto parseErr;
       }
 
       if (is_patch)
       {
-         if (fscanf(fp, " %f %f %f", &norms[q][X], &norms[q][Y],
-            &norms[q][Z]) != 3)
+         if (fscanf(fp, " %f %f %f", &norms[q][X], &norms[q][Y], &norms[q][Z])
+                  != 3)
          {
             goto parseErr;
          }
@@ -760,8 +758,8 @@ static void parseTexturedTriangle(FILE *fp)
          goto parseErr;
       }
    }
-   
-   if(is_patch)
+
+   if (is_patch)
    {
       /* add a textured triangle patch here
        * e.g., viAddTexturedTriPatch(texturename, verts, norms, tu, tv);
@@ -773,11 +771,10 @@ static void parseTexturedTriangle(FILE *fp)
        * e.g.,  viAddTexturedTriangle(texturename, verts, tu, tv);
        */
    }
-   
+
    return;
-   
-parseErr:
-   printf("Error: could not parse textured triangle\n");
+
+   parseErr: printf("Error: could not parse textured triangle\n");
    exit(1);
 }
 
@@ -826,7 +823,8 @@ parseErr:
  *       the animated triangle patch. See viGetAnimatedTriangle() in
  *       render.c
  */
-static void parseAnimatedTriangle(FILE *fp)
+static void
+parseAnimatedTriangle(FILE *fp)
 {
    int num_times;
    fscanf(fp, "%d", &num_times);
@@ -835,22 +833,22 @@ static void parseAnimatedTriangle(FILE *fp)
    Vec3f* verts = (Vec3f*) malloc(sizeof(Vec3f) * 3 * num_times);
    Vec3f* norms = (Vec3f*) malloc(sizeof(Vec3f) * 3 * num_times);
 
-   for(int q = 0; q < num_times; q++)
+   for (int q = 0; q < num_times; q++)
    {
-      if(fscanf(fp, " %f", &times[q]) != 1)
+      if (fscanf(fp, " %f", &times[q]) != 1)
       {
          goto parseErr;
       }
 
-      for(int w = 0; w < 3; w++)
+      for (int w = 0; w < 3; w++)
       {
-         if(fscanf(fp, " %f %f %f", &verts[q * 3 + w][X],
+         if (fscanf(fp, " %f %f %f", &verts[q * 3 + w][X],
             &verts[q * 3 + w][Y], &verts[q * 3 + w][Z]) != 3)
          {
             goto parseErr;
          }
          
-         if(fscanf(fp, " %f %f %f", &norms[q * 3 + w][X],
+         if (fscanf(fp, " %f %f %f", &norms[q * 3 + w][X],
             &norms[q * 3 + w][Y], &norms[q * 3 + w][Z]) != 3)
          {
             goto parseErr;
@@ -862,9 +860,8 @@ static void parseAnimatedTriangle(FILE *fp)
     * e.g., viAddAnimatedTriangle(num_times, times, verts, norms); 
     */
    return;
-   
-parseErr:
-   printf("Error: could not parse animated triangle (tpa)\n");
+
+   parseErr: printf("Error: could not parse animated triangle (tpa)\n");
    exit(1);
 }
 
@@ -873,7 +870,8 @@ parseErr:
  * 
  * @param fp The file handle of the input AFF file.
  */
-static void parseTextureStuff(FILE *fp)
+static void
+parseTextureStuff(FILE *fp)
 {
    int is_triangle;
 
@@ -888,7 +886,7 @@ static void parseTextureStuff(FILE *fp)
    else if (is_triangle == 'p')
    {
       is_triangle = getc(fp);
-      if (is_triangle == 'a')    /* tpa = triangle, patch, animated */
+      if (is_triangle == 'a') /* tpa = triangle, patch, animated */
       {
          parseAnimatedTriangle(fp);
       }
@@ -907,12 +905,12 @@ static void parseTextureStuff(FILE *fp)
  * 
  * @param f The file handle from which to 
  */
-static void eatWhitespace(FILE *f)
+static void
+eatWhitespace(FILE *f)
 {
    char ch = getc(f);
    
-   while (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\f'
-      || ch == '\r')
+   while (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\f' || ch == '\r')
    {
       ch = getc(f);
    }
@@ -1022,14 +1020,14 @@ static void eatWhitespace(FILE *f)
  * viewpoint should be animated after those key frames (only translation
  * and rotation). Light sources can also be animated (only translation).
  */
-static void parseKeyFrames(FILE *fp)
-{   
-   
+static void
+parseKeyFrames(FILE *fp)
+{
    
    char ch;
-   int  c;
+   int c;
    int visibility;
-   int  ret, nKeyFrames;
+   int ret, nKeyFrames;
    float time, x, y, z, angle, te, co, bi;
    RotationKey* RKeys;
    Animation* animation;
@@ -1041,20 +1039,20 @@ static void parseKeyFrames(FILE *fp)
       printf("Error: could not read name of animation.\n");
       exit(1);
    }
-   
+
    eatWhitespace(fp);
    
    ch = getc(fp);
    if (ch != '{')
    {
-      printf("Error: could not find a { in animation %s.\n",name);
+      printf("Error: could not find a { in animation %s.\n", name);
       exit(1);
    }
-   
-   /* Insert a new animation in the AnimationList. */
-   animationlist= 
-      (struct AnimationList*) calloc(1, sizeof(struct AnimationList));
 
+   /* Insert a new animation in the AnimationList. */
+   animationlist = (struct AnimationList*) calloc(1,
+      sizeof(struct AnimationList));
+   
    /* Put the newly allocated animation list somewhere, e.g.:
     *    animationlist->next = gScene.mAnimations;
     *    gScene.mAnimations = animationlist;
@@ -1066,7 +1064,7 @@ static void parseKeyFrames(FILE *fp)
    animation->translations = NULL;
    animation->rotations = NULL;
    animation->scales = NULL;
-   animation->name = (char *) malloc(sizeof(name)); 
+   animation->name = (char *) malloc(sizeof(name));
    strcpy(animation->name, name);
 
    eatWhitespace(fp);
@@ -1076,17 +1074,16 @@ static void parseKeyFrames(FILE *fp)
       char motion[200];
       
       ungetc(c, fp);
-      if (fscanf(fp, "%s %d", motion, &nKeyFrames)!=2)
+      if (fscanf(fp, "%s %d", motion, &nKeyFrames) != 2)
       {
-	      printf("Error: could not read name of motion or number of ");
+         printf("Error: could not read name of motion or number of ");
          printf("keyframes for animation.\n");
          exit(1);
       }
-      
+
       if (nKeyFrames < 4 && strcmp("visibility", motion))
-      { 
-	      printf("Error: there must be at least 4 keyframes for %s.\n",
-            name);
+      {
+         printf("Error: there must be at least 4 keyframes for %s.\n", name);
          exit(1);
       }
 
@@ -1094,21 +1091,21 @@ static void parseKeyFrames(FILE *fp)
        * "scale". */
       if (strcmp(motion, "transl") == 0)
       {
-         PositionKey* PKeys = (PositionKey*)
-            calloc(nKeyFrames, sizeof(PositionKey));
+         PositionKey* PKeys = (PositionKey*) calloc(nKeyFrames,
+            sizeof(PositionKey));
          
          for (int i = 0; i < nKeyFrames; i++)
          {
-            ret = fscanf(fp, " %f %f %f %f %f %f %f", &time, &x, &y, &z, 
-               &te, &co, &bi);
+            ret = fscanf(fp, " %f %f %f %f %f %f %f", &time, &x, &y, &z, &te,
+               &co, &bi);
             
-            if(ret != 7)
+            if (ret != 7)
             {
                printf("error in parsing translation keyframes for %s\n",
                   animation->name);
                exit(1);
             }
-            
+
             PKeys[i].t = time;
             PKeys[i].P.x = x;
             PKeys[i].P.y = y;
@@ -1117,17 +1114,17 @@ static void parseKeyFrames(FILE *fp)
             PKeys[i].continuity = co;
             PKeys[i].bias = bi;
          }
-         
+
          animation->translations = KB_PosInitialize(nKeyFrames, PKeys);
          free(PKeys);
       }
       else if (strcmp(motion, "rot") == 0)
       {
          RKeys = (RotationKey*) calloc(nKeyFrames, sizeof(RotationKey));
-         for(int i = 0; i < nKeyFrames; i++)
+         for (int i = 0; i < nKeyFrames; i++)
          {
-            ret = fscanf(fp," %f %f %f %f %f %f %f %f", &time, &x, &y,
-               &z, &angle, &te, &co, &bi);
+            ret = fscanf(fp, " %f %f %f %f %f %f %f %f", &time, &x, &y, &z,
+               &angle, &te, &co, &bi);
             
             if (ret != 8)
             {
@@ -1135,12 +1132,12 @@ static void parseKeyFrames(FILE *fp)
                   animation->name);
                exit(1);
             }
-            
+
             RKeys[i].t = time;
             RKeys[i].Rot.x = x;
             RKeys[i].Rot.y = y;
             RKeys[i].Rot.z = z;
-            RKeys[i].Rot.angle = angle*M_PI/180.0;
+            RKeys[i].Rot.angle = angle * M_PI / 180.0;
             RKeys[i].tension = te;
             RKeys[i].continuity = co;
             RKeys[i].bias = bi;
@@ -1150,13 +1147,13 @@ static void parseKeyFrames(FILE *fp)
       }
       else if (strcmp(motion, "scale") == 0)
       {
-         PositionKey* PKeys = (PositionKey*)
-            calloc(nKeyFrames, sizeof(PositionKey));
+         PositionKey* PKeys = (PositionKey*) calloc(nKeyFrames,
+            sizeof(PositionKey));
          
          for (int i = 0; i < nKeyFrames; i++)
          {
-            ret = fscanf(fp, " %f %f %f %f %f %f %f", &time, &x, &y, &z, 
-               &te, &co, &bi);
+            ret = fscanf(fp, " %f %f %f %f %f %f %f", &time, &x, &y, &z, &te,
+               &co, &bi);
             
             if (ret != 7)
             {
@@ -1164,7 +1161,7 @@ static void parseKeyFrames(FILE *fp)
                   animation->name);
                exit(1);
             }
-            
+
             PKeys[i].t = time;
             PKeys[i].P.x = x;
             PKeys[i].P.y = y;
@@ -1173,7 +1170,7 @@ static void parseKeyFrames(FILE *fp)
             PKeys[i].continuity = co;
             PKeys[i].bias = bi;
          }
-         
+
          animation->scales = KB_PosInitialize(nKeyFrames, PKeys);
          free(PKeys);
       }
@@ -1185,17 +1182,17 @@ static void parseKeyFrames(FILE *fp)
          {
             ret = fscanf(fp, " %f %d", &time, &visibility);
             
-            if(ret != 2)
+            if (ret != 2)
             {
                printf("error in parsing visibility keyframes for %s\n",
                   animation->name);
                exit(1);
             }
-            
+
             viskeys[i].time = time;
-            viskeys[i].visibility = visibility;	    
+            viskeys[i].visibility = visibility;
          }
-         
+
          animation->visibilities = viskeys;
          animation->numVisibilities += nKeyFrames;
       }
@@ -1207,7 +1204,7 @@ static void parseKeyFrames(FILE *fp)
       }
       
       eatWhitespace(fp);
-   }   
+   }
 }
 
 /**
@@ -1236,7 +1233,8 @@ static void parseKeyFrames(FILE *fp)
  * transformed, and are thus in its own coordinate system (in a
  * subtree).
  */
-static void parseXform(FILE *f)
+static void
+parseXform(FILE *f)
 {
    char name[100];
    char ch;
@@ -1254,15 +1252,14 @@ static void parseXform(FILE *f)
       Vec3f scale, trans, rot;
       float deg;
       
-      if (fscanf(f," %f %f %f %f %f %f %f %f %f %f",
-         &scale[0], &scale[1], &scale[2],
-         &rot[0], &rot[1], &rot[2], &deg,
-         &trans[0], &trans[1], &trans[2]) != 10)
+      if (fscanf(f, " %f %f %f %f %f %f %f %f %f %f", &scale[0], &scale[1],
+         &scale[2], &rot[0], &rot[1], &rot[2], &deg, &trans[0], &trans[1],
+         &trans[2]) != 10)
       {
          printf("Error: could not read static transform.\n");
          exit(1);
       }
-      
+
       eatWhitespace(f);
       
       ch = getc(f);
@@ -1270,7 +1267,7 @@ static void parseXform(FILE *f)
       {
          printf("Error: { expected.\n");
          exit(1);
-      } 
+      }
 
       /* add a static transform here
        * e.g.,viAddStaticXform(scale, rot, deg, trans);
@@ -1279,16 +1276,16 @@ static void parseXform(FILE *f)
    /* Keyframe animated transform. */
    else
    {
-      if(fscanf(f, "%s", name) != 1)
+      if (fscanf(f, "%s", name) != 1)
       {
          printf("Error: could not read transform name.\n");
          exit(1);
       }
-      
+
       eatWhitespace(f);
       
       ch = getc(f);
-      if(ch != '{')
+      if (ch != '{')
       {
          printf("Error: { expected.\n");
          exit(1);
@@ -1316,7 +1313,8 @@ static void parseXform(FILE *f)
  * Note: the step time (from one frame to the next) is then equal to
  * (end_time - start_time) / (num_frames - 1)
  */
-static void parseAnimParams(FILE *fp)
+static void
+parseAnimParams(FILE *fp)
 {
    float start, end;
    int num_frames;
@@ -1344,22 +1342,23 @@ static void parseAnimParams(FILE *fp)
  * There is one global ambient light source in the scene, and it can be
  * set with, e.g., "am 0.5 0.5 0.5". Default value is "am 1.0 1.0 1.0".
  */
-static void parseA(FILE *f)
+static void
+parseA(FILE *f)
 {
    int is_ambient;
 
    is_ambient = getc(f);
-   if(is_ambient != 'm')
+   if (is_ambient != 'm')
    {
       ungetc(is_ambient, f);
       is_ambient = 0;
    }
    
    /* We got "am" = global ambient light. */
-   if (is_ambient)  
+   if (is_ambient)
    {
       Vec3f amb;
-      if(fscanf(f, "%f %f %f", &amb[0], &amb[1], &amb[2]) != 3)
+      if (fscanf(f, "%f %f %f", &amb[0], &amb[1], &amb[2]) != 3)
       {
          printf("Error: could not parse ambient light (am).\n");
          exit(1);
@@ -1384,33 +1383,33 @@ static void parseA(FILE *f)
  * @param vecs The vectors parsed from the file. This is an output 
  * parameter.
  */
-static void getVectors(FILE *fp, char *type, int *num_vecs,
-   Vec3f **vecs)
+static void
+getVectors(FILE *fp, char *type, int *num_vecs, Vec3f **vecs)
 {
    int num;
-   if(fscanf(fp, "%d", &num) != 1)
+   if (fscanf(fp, "%d", &num) != 1)
    {
       printf("Error: could not parse mesh (expected ");
-      printf("'num_%s').\n", type);   
+      printf("'num_%s').\n", type);
       exit(1);
    }
-   
+
    Vec3f* v = (Vec3f*) malloc(sizeof(Vec3f) * num);
    if (v == NULL)
    {
       printf("Error: could not allocate memory for vertices of mesh.\n");
-      exit(1); 
+      exit(1);
    }
-   
+
    for (int q = 0; q < num; q++)
    {
-      if(fscanf(fp, "%f %f %f ", &v[q][X], &v[q][Y], &v[q][Z]) != 3)
+      if (fscanf(fp, "%f %f %f ", &v[q][X], &v[q][Y], &v[q][Z]) != 3)
       {
          printf("Error: could not read %d %s of mesh.\n", num, type);
-         exit(1);      
+         exit(1);
       }
    }
-   
+
    *vecs = v;
    *num_vecs = num;
 }
@@ -1426,35 +1425,35 @@ static void getVectors(FILE *fp, char *type, int *num_vecs,
  * @param vecs The texture coordinate vectors retrived. This is an
  * output parameter.
  */
-static void getTextureCoords(FILE* fp, char* texturename, int* num,
-   Vec2f** vecs)
+static void
+getTextureCoords(FILE* fp, char* texturename, int* num, Vec2f** vecs)
 {
    int num_txts;
    if (fscanf(fp, "%d", &num_txts) != 1)
    {
-      printf("Error: could not parse mesh (expected 'num_txts').\n");   
+      printf("Error: could not parse mesh (expected 'num_txts').\n");
       exit(1);
    }
-   
+
    Vec2f* txts = (Vec2f*) malloc(sizeof(Vec2f) * num_txts);
    if (txts == NULL)
    {
       printf("Error: could not allocate memory for texturecoords of mesh.\n");
-      exit(1); 
+      exit(1);
    }
-   
+
    fscanf(fp, "%s", texturename);
    
    for (int q = 0; q < num_txts; q++)
    {
-      if(fscanf(fp, "%f %f", &txts[q][X], &txts[q][Y]) != 2)
+      if (fscanf(fp, "%f %f", &txts[q][X], &txts[q][Y]) != 2)
       {
-	      printf("Error: could not read %d texturecoords ", num_txts);
-         printf("of mesh.\n",num_txts);
-	      exit(1);      
-      }	 
+         printf("Error: could not read %d texturecoords ", num_txts);
+         printf("of mesh.\n", num_txts);
+         exit(1);
+      }
    }
-   
+
    *num = num_txts;
    *vecs = txts;
 }
@@ -1473,17 +1472,18 @@ static void getTextureCoords(FILE* fp, char* texturename, int* num,
  * @param txts Not used. Pass in a non-null argument to retrieve
  * texture coordinates.
  */
-static void getTriangles(FILE *fp, int *num_tris,
-   unsigned short **indices, Vec3f *verts, Vec3f *norms, Vec2f *txts)
+static void
+getTriangles(FILE *fp, int *num_tris, unsigned short **indices, Vec3f *verts,
+   Vec3f *norms, Vec2f *txts)
 {
    int num;
    if (fscanf(fp, "%d", &num) != 1)
    {
       printf("Error: could not parse mesh (expected ");
-      printf("'num_triangles').\n");   
-      exit(1);      
+      printf("'num_triangles').\n");
+      exit(1);
    }
-   
+
    int allocsize = 3;
    if (norms)
    {
@@ -1494,23 +1494,22 @@ static void getTriangles(FILE *fp, int *num_tris,
       allocsize += 3;
    }
 
-   unsigned short* idx = (unsigned short*)
-      malloc(num * allocsize * sizeof(unsigned short));
+   unsigned short* idx = (unsigned short*) malloc(num * allocsize
+            * sizeof(unsigned short));
    if (idx == NULL)
    {
       printf("Error: could not allocate memory for indices of mesh.\n");
-      exit(1); 
+      exit(1);
    }
-   
+
    int i = 0;
    for (int q = 0; q < num; q++)
    {
       int v[3];
       if (fscanf(fp, "%d %d %d", &v[0], &v[1], &v[2]) != 3)
       {
-         printf("Error: could not read %d vertex indices of mesh.\n",
-            num);
-         exit(1);   
+         printf("Error: could not read %d vertex indices of mesh.\n", num);
+         exit(1);
       }
 
       int n[3];
@@ -1520,18 +1519,18 @@ static void getTriangles(FILE *fp, int *num_tris,
          {
             printf("Error: could not read %d set of normal ", num);
             printf("indices of mesh.\n");
-            exit(1);   
+            exit(1);
          }
       }
-      
+
       int t[3];
       if (txts)
       {
-         if(fscanf(fp, "%d %d %d", &t[0], &t[1], &t[2]) != 3)
+         if (fscanf(fp, "%d %d %d", &t[0], &t[1], &t[2]) != 3)
          {
             printf("Error: could not read %d texturecoord ", num);
             printf("indices of mesh.\n");
-            exit(1);   
+            exit(1);
          }
       }
       
@@ -1541,7 +1540,7 @@ static void getTriangles(FILE *fp, int *num_tris,
          {
             idx[i++] = t[w];
          }
-         
+
          if (norms)
          {
             idx[i++] = n[w];
@@ -1550,7 +1549,7 @@ static void getTriangles(FILE *fp, int *num_tris,
          idx[i++] = v[w];
       }
    }
-   
+
    *indices = idx;
    *num_tris = num;
 }
@@ -1560,7 +1559,8 @@ static void getTriangles(FILE *fp, int *num_tris,
  * 
  * @param fp The file handler.
  */
-static void parseMesh(FILE *fp)
+static void
+parseMesh(FILE *fp)
 {
    char str[200];
    
@@ -1570,13 +1570,13 @@ static void parseMesh(FILE *fp)
       printf("'vertices').\n");
       exit(1);
    }
-   
+
    if (strcmp(str, "vertices"))
    {
       printf("Error: could not parse mesh (expected 'vertices').\n");
       exit(1);
    }
-   
+
    int num_verts;
    Vec3f *verts = NULL;
    char type[10];
@@ -1592,7 +1592,7 @@ static void parseMesh(FILE *fp)
       getVectors(fp, type, &num_norms, &norms);
       fscanf(fp, "%s", str);
    }
-   
+
    char texturename[200];
    int num_txts;
    Vec2f *txts = NULL;
@@ -1601,7 +1601,7 @@ static void parseMesh(FILE *fp)
       getTextureCoords(fp, texturename, &num_txts, &txts);
       fscanf(fp, "%s", str);
    }
-   
+
    int num_tris;
    unsigned short *indices;
    if (!strcmp(str, "triangles"))
@@ -1620,69 +1620,70 @@ static void parseMesh(FILE *fp)
     */
 }
 
-bool viParseFile(FILE *f, Scene& scene, int width, int height)
+bool
+viParseFile(FILE *f, Scene& scene, int width, int height)
 {
    int ch;
 
-   while((ch = getc(f)) != EOF)
-   {  
-      switch(ch)
+   while ((ch = getc(f)) != EOF)
+   {
+      switch (ch)
       {
          /* White space. */
-         case ' ':   
+         case ' ':
          case '\t':
          case '\n':
          case '\f':
          case '\r':
             continue;
-         /* Comment. */
-         case '#':  
+            /* Comment. */
+         case '#':
          case '%':
             parseComment(f);
             break;
-         /* View point. */
+            /* View point. */
          case 'v':
             parseViewpoint(f, scene, width, height);
             break;
-         /* Light sources. */
+            /* Light sources. */
          case 'l':
             parseLight(f, scene);
             break;
-         /* Background colour. */
+            /* Background colour. */
          case 'b':
             parseBackground(f, scene);
             break;
-         /* Fill material. */
+            /* Fill material. */
          case 'f':
             parseFill(f);
             break;
-         /* Cylinder or cone. */
+            /* Cylinder or cone. */
          case 'c':
             parseCone(f);
             break;
-         /* Sphere. */
+            /* Sphere. */
          case 's':
             parseSphere(f, scene);
             break;
-         /* Polygon or patch. */
+            /* Polygon or patch. */
          case 'p':
-            parsePoly(f);
+            parsePoly(f, scene);
             break;
-         /* Include another file. */
-         case 'i':   
+            /* Include another file. */
+         case 'i':
             parseInclude(f, scene, width, height);
             break;
-         /* Detail level of file (used to exclude objects from
-          * rendering). */
+            /* Detail level of file (used to exclude objects from
+             * rendering). */
          case 'd':
             parseDetailLevel(f);
             break;
-         /* Textured triangle, or texture tripatch, or animated
-          * triangle. */
-         case 't':  
+            /* Textured triangle, or texture tripatch, or animated
+             * triangle. */
+         case 't':
             parseTextureStuff(f);
             break;
-         /* Transform. */
+            /* Transform. */
          case 'x':
             parseXform(f);
             break;
@@ -1690,23 +1691,23 @@ bool viParseFile(FILE *f, Scene& scene, int width, int height)
             //TODO: Should viEndXform() be declared?
             //viEndXform();
             break;
-         /* Animation parameters. */
+            /* Animation parameters. */
          case 'a':
             parseA(f);
             break;
-         /* Key frames for transform (or the camera). */
-         case 'k':  
+            /* Key frames for transform (or the camera). */
+         case 'k':
             parseKeyFrames(f);
             break;
-         /* Triangle mesh. */
-         case 'm':  
+            /* Triangle mesh. */
+         case 'm':
             parseMesh(f);
             break;
-         /* Unknown. */
-         default:    
-            printf("unknown NFF primitive code: %c\n",ch);
+            /* Unknown. */
+         default:
+            printf("unknown NFF primitive code: %c\n", ch);
             exit(1);
-      
+
       }
    }
    return true;

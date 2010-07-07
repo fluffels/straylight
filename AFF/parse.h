@@ -9,6 +9,7 @@
 
 #include "../Colour.h"
 #include "../Material.h"
+#include "../Polygon.h"
 #include "../Scene.h"
 #include "../Sphere.h"
 #include "../Vector.h"

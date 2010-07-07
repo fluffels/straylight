@@ -1,0 +1,97 @@
+#include "Polygon.h"
+
+#include <cstdio>
+
+Polygon::
+Polygon(int vertexCount, Vector* vertices, const Material& newMat):
+   _vertexCount(vertexCount)
+{
+   mat = newMat;
+   
+   _vertices = new Vector[_vertexCount];
+   for (int a = 0; a < vertexCount; a++)
+   {
+      _vertices[a] = vertices[a];
+   }
+   
+   /* Construct the Plane containing this Polygon. */
+   Vector face1 = vertices[1] - vertices[0];
+   Vector face2 = vertices[2] - vertices[0];
+   Vector normal = face1.cross(face2).normalise();
+   /* The constant "d" is used as a value in the parametric definition of a
+    * plane. */
+   double d = -normal.dot(vertices[0]);
+   _plane = new Plane(normal, d, mat);
+}
+
+Polygon::
+~Polygon()
+{
+   delete _plane;
+   delete[] _vertices;
+}
+
+bool Polygon::
+testIntersection(Ray& r) const
+{
+   bool intersectPlane = _plane->testIntersection(r);
+   
+   if (!intersectPlane)
+   {
+      return false;
+   }
+   else
+   {
+      Vector p = r.intersection;
+      Vector n = getNormalAt(p);
+      
+      /* Determine i0, the dominant axis of the surface normal. */
+      int i0 = -1;
+      double max = -1;
+      for (int a = 0; a < 3; a++)
+      {
+         if (abs(n[a]) > max)
+         {
+            i0 = a;
+            max = abs(n[a]);
+         }
+      }
+      
+      /* Set i1 & i2 to the other two axes. */
+      int i1 = (i0 + 1) % 3;
+      int i2 = (i0 + 2) % 3;
+      
+      /* Project each triangle onto the plane i1 i2. */
+      for (int a = 0; a < _vertexCount - 2; a++)
+      {
+         Vector t0 = _vertices[a];
+         Vector t1 = _vertices[a + 1];
+         Vector t2 = _vertices[a + 2];
+         
+         double u0 = p[i1] - t0[i1];
+         double v0 = p[i2] - t0[i2];
+         double u1 = t1[i1] - t0[i1];
+         double v1 = t1[i2] - t0[i2];
+         double u2 = t2[i1] - t0[i1];
+         double v2 = t2[i2] - t0[i2];
+         
+         /* Calculate alpha and beta and determine whether the point is a convex
+          * combination of vector V0V1 and vector V0V2. */
+         double alpha = (u0 * v2 - u2 * v0) / (u1 * v2 - u2 * v1);
+         double beta = (u1 * v0 - u0 * v1) / (u1 * v2 - u2 * v1);
+         
+         if ((alpha >= 0) and (beta >= 0) and (alpha + beta <= 1))
+         {
+            r.intersected = this;
+            return true;
+         }
+      }
+   }
+}
+
+Vector Polygon::
+getNormalAt(const Vector& p) const 
+{
+   return _plane->getNormalAt(p);
+}
+
