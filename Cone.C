@@ -22,6 +22,10 @@ Cone(Vector& base, double baseRadius, Vector& apex, double apexRadius):
 Vector Cone::
 getNormalAt(const Vector& p) const
 {
+   /* To calculate the normal at a point, we project that point onto the
+    * direction vector of the cone and add it to the apex. Now we have a point
+    * on the central axis of the cone. We can simply subract this from the point
+    * on the surface to obtain the normal. */
    Vector v = p - _apex;
    Vector proj = _dir * (v.dot(_dir) / _dir.dot(_dir));
    
@@ -46,75 +50,43 @@ testIntersection(Ray& r) const
    
    double disc = c1 * c1 - c0 * c2;
    
-   if (disc < 0)
+   /* We ignore cases where disc == 0 / disc < 0. The former has no visible
+    * impact on image quality, and the latter indicates an abscence of
+    * intersections. False will be returned for both occurrences. */
+   if (disc > 0)
    {
-      return false;
-   }
-   else if (disc == 0)
-   {
-      Vector point = r.pos +  r.dir * (c1 / c2);
+      double t0 = (-c1 - sqrt(disc)) * (1 / c2);
+      double t1 = (-c1 + sqrt(disc)) * (1 / c2);
+      double t[2];
       
-      if ((point - _extendedApex).dot(A) > 0)
+      if (t0 < t1)
       {
-         r.intersected = this;
-         r.intersection = point;
-         
-         return true;
+         t[0] = t0;
+         t[1] = t1;
       }
       else
       {
-         return false;
+         t[0] = t1;
+         t[1] = t0;
+      }
+      
+      for (int a = 0; a < 2; a++)
+      {
+         Vector point = r.pos + r.dir * t[a];
+         
+         /* This ensures that the point is within the stated apex & base
+          * coordinates. */
+         if (((point - _apex).dot(A) > 0) && ((point - _base).dot(A) < 0))
+         {
+            r.intersection = point;
+            r.intersected = this;
+            
+            return true;
+         }
       }
    }
    else
    {
-      int count = 0;
-      double t[2];
-      Vector point[2];
-      
-      double t1 = (-c1 - sqrt(disc)) * (1 / c2);
-      Vector point1 = r.pos + r.dir * t1;
-      if ((point1 - _apex).dot(A) > 0 && (point1 - _base).dot(A) < 0)
-      {
-         t[count] = t1;
-         point[count] = point1;
-         count++;
-      }
-      
-      double t2 = (-c1 + sqrt(disc)) * (1 / c2);
-      Vector point2 = r.pos + r.dir * t2;
-      if ((point2 - _apex).dot(A) > 0 && (point2 - _base).dot(A) < 0)
-      {
-         t[count] = t1;
-         point[count] = point2;
-         count++;
-      }
-      
-      if (count == 0)
-      {
-         return false;
-      }
-      else if (count == 1)
-      {
-         r.intersected = this;
-         r.intersection = point[0];
-         
-         return true;
-      }
-      else if (count == 2)
-      {
-         r.intersected = this;
-         
-         if (t[0] < t[1])
-         {
-            r.intersection = point[0];
-         }
-         else
-         {
-            r.intersection = point[1];
-         }
-         
-         return true;
-      }
+      return false;
    }
 }
