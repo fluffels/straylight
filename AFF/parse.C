@@ -437,28 +437,35 @@ parseFill(FILE *fp)
  * object is visible (objects are normally considered one sided, with
  * the outside visible). Note that the base and apex cannot be
  * coincident for a cylinder or cone.
+ * 
+ * @param fp The file to parse the cone from.
+ * @param scene The scene to which to add the cone.
  */
 static void
-parseCone(FILE *fp)
+parseCone(FILE *fp, Scene& scene)
 {
-   Vec3f base_pt;
-   Vec3f apex_pt;
-   float r0, r1;
+   Vector base;
+   Vector apex;
+   double baseRadius, apexRadius;
 
-   if (fscanf(fp, " %f %f %f %f %f %f %f %f", &base_pt[X], &base_pt[Y],
-      &base_pt[Z], &r0, &apex_pt[X], &apex_pt[Y], &apex_pt[Z], &r1) != 8)
+   if (fscanf(fp, " %lf %lf %lf %lf %lf %lf %lf %lf",
+      &base.x, &base.y, &base.z, &baseRadius,
+      &apex.x, &apex.y, &apex.z, &apexRadius) != 8)
    {
       printf("cylinder or cone syntax error\n");
       exit(1);
    }
    
-   if (r0 < 0.0)
+   if (baseRadius < 0.0)
    {
-      r0 = -r0;
-      r1 = -r1;
+      baseRadius = -baseRadius;
+      apexRadius = -apexRadius;
    }
    
-   /* add a cone here e.g., viAddCone(base_pt, r0, apex_pt, r1); */
+   Cone* c = new Cone(base, baseRadius, apex, apexRadius);
+   c->mat = mat;
+   
+   scene.addObject(c);
 }
 
 /**
@@ -1659,7 +1666,7 @@ viParseFile(FILE *f, Scene& scene, int width, int height)
             break;
             /* Cylinder or cone. */
          case 'c':
-            parseCone(f);
+            parseCone(f, scene);
             break;
             /* Sphere. */
          case 's':

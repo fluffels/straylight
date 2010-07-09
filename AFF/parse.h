@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 
+#include "../Cone.h"
 #include "../Colour.h"
 #include "../Material.h"
 #include "../Polygon.h"
