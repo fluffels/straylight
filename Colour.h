@@ -62,6 +62,14 @@ class Colour
       Colour operator/(double rhs);
       
       /**
+       * Multiplication operator.
+       * 
+       * @param rhs The right hand side of the operation.
+       * @return The Colour.
+       */
+      Colour operator*(double rhs);
+      
+      /**
        * Sets a specific component by its index.
        * 
        * @param index The index of the component to get: 0 for red, 1
