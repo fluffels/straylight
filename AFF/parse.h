@@ -11,6 +11,7 @@
 #include "../Colour.h"
 #include "../Material.h"
 #include "../Polygon.h"
+#include "../PolygonPatch.h"
 #include "../Scene.h"
 #include "../Sphere.h"
 #include "../Vector.h"

@@ -34,7 +34,7 @@ class Polygon : public SceneObject
        * 
        * Frees memory.
        */
-      ~Polygon();
+      virtual ~Polygon();
 
       /**
        * Tests for intersection between this Polygon and a given
@@ -54,7 +54,7 @@ class Polygon : public SceneObject
        */
       virtual Vector getNormalAt(const Vector& p) const;
          
-   private:
+   protected:
       /**
        * The Plane containing this Polygon. This is a pointer since Plane has
        * no default constructor. Therefore it must be allocated dynamically.

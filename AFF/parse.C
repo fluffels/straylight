@@ -409,8 +409,8 @@ parseFill(FILE *fp)
 
       Colour colour(col[X], col[Y], col[Z]);
       mat.ambient = colour;
-      mat.diffuse = colour;
-      mat.specular = colour;
+      mat.diffuse = colour * kd;
+      mat.specular = colour * ks;
       mat.shininess = phong_pow;
    }
 }
@@ -592,6 +592,7 @@ parsePoly(FILE *fp, Scene& scene)
          if (fscanf(fp, " %lf %lf %lf", &norms[q].x, &norms[q].y, &norms[q].z)
             != 3)
          {
+            norms[q] = norms[q].normalise();
             goto fmterr;
          }
       }
@@ -599,8 +600,7 @@ parsePoly(FILE *fp, Scene& scene)
 
    if (ispatch)
    {
-      /* add a polygon patch here
-       * e.g.,  viAddPolyPatch(nverts,verts,norms); */
+      scene.addObject(new PolygonPatch(nverts, verts, norms, mat));
    }
    else
    {

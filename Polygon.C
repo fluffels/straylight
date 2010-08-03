@@ -86,6 +86,8 @@ testIntersection(Ray& r) const
             return true;
          }
       }
+
+      return false;
    }
 }
 
