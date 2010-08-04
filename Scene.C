@@ -24,36 +24,26 @@ bool Scene::
 testIntersection(Ray& r)
 {
    bool found = false;
-   double distance = FLT_MAX;
-   Ray intersection(r);
-   
+   double bestDistance = FLT_MAX;
+
    vector<SceneObject*>::iterator i;
    for (i = objects.begin(); i != objects.end(); i++)
    {
       SceneObject* s = *i;
       
       Ray temp(r);
-      
       if (s->testIntersection(temp) == true)
       {
-         double newDistance = (temp.intersection - temp.pos).getMagnitude();
+         double distance = (temp.intersection - temp.pos).getMagnitude();
          
-         if (newDistance < distance)
+         if (distance < bestDistance)
          {
             found = true;
-            distance = newDistance;
-            intersection = temp;
+            bestDistance = distance;
+            r = temp;
          }
       }
    }
    
-   if (found)
-   {
-      r = intersection;
-      return true;
-   }
-   else
-   {
-      return false;
-   }
+   return found;
 }
