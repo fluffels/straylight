@@ -255,19 +255,21 @@ shootRay(Ray& r)
       {
          /* 3D Computer Graphics by Alan Watt, p. 24 */
          Vector p = r.intersection;
-         Vector n = r.intersected->getNormalAt(p);
+         Vector n = r.normal;
          Vector l = r.dir * -1;
 
          Vector reflect = n * (n.dot(l) * 2) - l;
-
          reflect = reflect.normalise();
+
          /* Move the ray origin slightly forward to avoid precision errors. */
          p += reflect * 0.01;
+
+         /* Construct and shoot the reflected ray. */
          Ray newRay(p, reflect);
          newRay.depth = r.depth + 1;
 
-         Colour Lri = shootRay(newRay);
-         return localColour.combine(Lri);
+         Colour reflection = shootRay(newRay);
+         return localColour.combine(reflection);
       }
       else
       {
