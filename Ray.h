@@ -27,12 +27,19 @@ class Ray
        * @param newDir The direction of the ray.
        */
       Ray(const Vector& newPos, const Vector& newDir);
-      
+
       /**
-       * The ray's position.
+       * Has the ray reached its maximum trace depth?
+       *
+       * @return True or false.
        */
-      Vector pos;
-      
+      bool shouldTerminate() const;
+
+      /**
+       * The current trace depth of this ray.
+       */
+      int depth;
+
       /**
        * The ray's direction.
        */
@@ -44,14 +51,19 @@ class Ray
       Vector intersection;
       
       /**
-       * The current trace depth of this ray.
-       */
-      int depth;
-      
-      /**
        * The most recently intersected object for this ray.
        */
       const SceneObject* intersected;
+      
+      /**
+       * The normal at the most recent intersection point.
+       */
+      Vector normal;
+
+      /**
+       * The ray's position.
+       */
+      Vector pos;
 };
 
 #endif /*RAY_H_*/

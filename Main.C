@@ -251,7 +251,7 @@ shootRay(Ray& r)
          localColour = scene->light.getGlobalLightAt(r, scene->cam.getCOP());
       }
 
-      if ((r.depth != 0) && (m.reflective))
+      if ((r.shouldTerminate() == false) && (m.reflective))
       {
          /* 3D Computer Graphics by Alan Watt, p. 24 */
          Vector p = r.intersection;
@@ -261,9 +261,10 @@ shootRay(Ray& r)
          Vector reflect = n * (n.dot(l) * 2) - l;
 
          reflect = reflect.normalise();
+         /* Move the ray origin slightly forward to avoid precision errors. */
          p += reflect * 0.01;
          Ray newRay(p, reflect);
-         newRay.depth = r.depth - 1;
+         newRay.depth = r.depth + 1;
 
          Colour Lri = shootRay(newRay);
          return localColour.combine(Lri);
