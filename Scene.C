@@ -32,7 +32,7 @@ testIntersection(Ray& r)
       SceneObject* s = *i;
       
       Ray temp(r);
-      if (s->testIntersection(temp) == true)
+      if (s->intersect(temp) == true)
       {
          double distance = (temp.intersection - temp.pos).getMagnitude();
          

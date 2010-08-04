@@ -32,9 +32,9 @@ Polygon::
 }
 
 bool Polygon::
-testIntersection(Ray& r) const
+intersect(Ray& r) const
 {
-   bool intersectPlane = _plane->testIntersection(r);
+   bool intersectPlane = _plane->intersect(r);
    
    if (!intersectPlane)
    {
@@ -43,7 +43,7 @@ testIntersection(Ray& r) const
    else
    {
       Vector p = r.intersection;
-      Vector n = getNormalAt(p);
+      Vector n = r.normal;
       
       /* Determine i0, the dominant axis of the surface normal. */
       int i0 = -1;
@@ -83,6 +83,9 @@ testIntersection(Ray& r) const
          if ((alpha >= 0) and (beta >= 0) and (alpha + beta <= 1))
          {
             r.intersected = this;
+            /* The normal has already been set by the plane-ray intersection
+             * earlier. */
+
             return true;
          }
       }
@@ -90,10 +93,3 @@ testIntersection(Ray& r) const
       return false;
    }
 }
-
-Vector Polygon::
-getNormalAt(const Vector& p) const 
-{
-   return _plane->getNormalAt(p);
-}
-

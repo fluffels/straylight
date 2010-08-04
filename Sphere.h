@@ -34,23 +34,13 @@ class Sphere : public SceneObject
       Sphere(const Vector& pos, double r, const Material& mat);
 
       /**
-       * Returns the normal to this Sphere's surface at any point.
-       * 
-       * @param point The point on this Sphere's surface to get the
-       * normal for as an object of class Vector.
-       * 
-       * @return An object of class Vector containing the normal.
-       */
-      virtual Vector getNormalAt(const Vector& point) const;
-
-      /**
        * Tests for intersection between this Sphere and a given Ray.
        * 
        * @param ray A Ray to test against.
        * @return True if the Ray intersects this Sphere, false
        * otherwise.
        */
-      virtual bool testIntersection(Ray& ray) const;
+      virtual bool intersect(Ray& ray) const;
 
       /**
        * The centre of this Sphere.

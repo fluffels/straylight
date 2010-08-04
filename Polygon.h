@@ -43,16 +43,7 @@ class Polygon : public SceneObject
        * @param r An object of class Ray to test against.
        * @return True if the Ray intersects this Polygon, false otherwise.
        */
-      virtual bool testIntersection(Ray& r) const;
-      
-      /**
-       * Returns the Polygon's normal at a specific point. This is always the
-       * same for a Polygon, since all its vertices are co-planar.
-       * 
-       * @param p A point on the Polygon.
-       * @return The Polygon's normal.
-       */
-      virtual Vector getNormalAt(const Vector& p) const;
+      virtual bool intersect(Ray& r) const;
          
    protected:
       /**

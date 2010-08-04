@@ -21,14 +21,6 @@ class Cone : public SceneObject
        * @param apexRadius The radius of the Cone's apex.
        */
       Cone(Vector& base, double baseRadius, Vector& apex, double apexRadius);
-      
-      /**
-       * Returns the Cone's normal at a specific point.
-       * 
-       * @param p A point on the Cone.
-       * @return The normal to the Cone at the given point.
-       */
-      virtual Vector getNormalAt(const Vector& p) const;
 
       /**
        * Tests for intersection between this Cone and a given Ray.
@@ -36,7 +28,7 @@ class Cone : public SceneObject
        * @param r An object of class Ray to test against.
        * @return True if the Ray intersects this Cone, false otherwise.
        */
-      virtual bool testIntersection(Ray& r) const;
+      virtual bool intersect(Ray& r) const;
    
    private:
       /**

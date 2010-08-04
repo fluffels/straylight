@@ -23,22 +23,13 @@ class SceneObject
       Material mat;
 
       /**
-       * Returns the SceneObject's normal at a specific point.
-       * 
-       * @param p A point on the SceneObject.
-       * @return The normal to the SceneObject at the given point.
-       */
-      virtual Vector getNormalAt(const Vector& p) const = 0;
-
-      /**
        * Tests for intersection between this SceneObject and a given
        * Ray.
        * 
-       * @param r An object of class Ray to test against.
-       * @return True if the Ray intersects this SceneObject, false
-       * otherwise.
+       * @param r The ray to intersect with.
+       * @return True if there is an intersection, false otherwise.
        */
-      virtual bool testIntersection(Ray& r) const = 0;
+      virtual bool intersect(Ray& r) const = 0;
 };
 
 #endif /*SCENEOBJECT_H_*/

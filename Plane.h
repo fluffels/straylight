@@ -14,37 +14,26 @@ class Plane : public SceneObject
        * Constructor.
        * 
        * @param normal The normal to this Plane.
-       * @param d 
+       * @param d Parametric description of the Plane's location.
        */
-      //TODO: Add something here.
       Plane(const Vector& normal, const double d);
       
       /**
        * Constructor.
        * 
        * @param normal The normal to this Plane.
-       * @param d 
+       * @param d Parametric description of the Plane's location.
        * @param newMat The material of this Plane.
        */
-      //TODO: Add something here.
-      Plane(const Vector& normal, const double d,
-         const Material& newMat);
-
-      /**
-       * Get the normal to this plane.
-       * 
-       * @param p The point on the plane to get the normal at.
-       * @return The normal at the point as an object of class Vector.
-       */
-      virtual Vector getNormalAt(const Vector& p) const;
+      Plane(const Vector& normal, const double d, const Material& newMat);
       
       /**
-       * Tests whether a ray intersects this plane.
+       * Intersect a ray with this plane.
        * 
        * @param r The ray to test against.
        * @return True if the ray intersects the plane, false otherwise.
        */
-      virtual bool testIntersection(Ray& r) const;
+      virtual bool intersect(Ray& r) const;
 
    private:
       /**
@@ -53,10 +42,9 @@ class Plane : public SceneObject
        */
       Vector _normal;
       
-      //TODO: Add something here.
       /**
-       * This is private because there's no need to change it at the
-       * moment.
+       * Parametric description of the Plane's location. This is private
+       * because there's no need to change it at the moment.
        */
       double _d;
 };

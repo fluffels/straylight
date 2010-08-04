@@ -19,21 +19,8 @@ Cone(Vector& base, double baseRadius, Vector& apex, double apexRadius):
    _extendedApex = _apex - _dir * _apexRadius / tan(_theta);
 }
 
-Vector Cone::
-getNormalAt(const Vector& p) const
-{
-   /* To calculate the normal at a point, we project that point onto the
-    * direction vector of the cone and add it to the apex. Now we have a point
-    * on the central axis of the cone. We can simply subract this from the point
-    * on the surface to obtain the normal. */
-   Vector v = p - _apex;
-   Vector proj = _dir * (v.dot(_dir) / _dir.dot(_dir));
-   
-   return (p - (_apex + proj)).normalise();
-}
-
 bool Cone::
-testIntersection(Ray& r) const
+intersect(Ray& r) const
 {
    /* This intersection test is taken from:
     * http://www.geometrictools.com/LibMathematics/Intersection/Wm5IntrLine3Cone3.cpp
@@ -81,6 +68,15 @@ testIntersection(Ray& r) const
             r.intersection = point;
             r.intersected = this;
             
+            /* To calculate the normal at a point, we project that point onto
+             * the direction vector of the cone and add it to the apex. Now we
+             * have a point on the central axis of the cone. We can simply
+             * subtract this from the point on the surface to obtain the
+             * normal. */
+            Vector v = point - _apex;
+            Vector proj = _dir * (v.dot(_dir) / _dir.dot(_dir));
+            r.normal = (point - (_apex + proj)).normalise();
+
             return true;
          }
       }

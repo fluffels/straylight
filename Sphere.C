@@ -14,19 +14,8 @@ Sphere(const Vector& newPos, double newR, const Material& newMat):
    mat = newMat;
 }
 
-Vector Sphere::
-getNormalAt(const Vector& point) const
-{
-   /* See p. 19 of 3D Computer Graphics by Alan Watt (3rd Edition). */
-   Vector n((point.x - pos.x) / r,
-            (point.y - pos.y) / r,
-            (point.z - pos.z) / r);
-
-   return n.normalise();
-}
-
 bool Sphere::
-testIntersection(Ray& ray) const
+intersect(Ray& ray) const
 {
    /* See p. 18 of 3D Computer Graphics by Alan Watt, 3rd Edition. */
 
@@ -71,8 +60,16 @@ testIntersection(Ray& ray) const
          }
       }
 
+      Vector point = ray.pos + ray.dir * t;
+
+      Vector normal((point.x - pos.x) / r,
+         (point.y - pos.y) / r,
+         (point.z - pos.z) / r);
+      normal = normal.normalise();
+
       ray.intersected = this;
-      ray.intersection = ray.pos + ray.dir * t;
+      ray.intersection = point;
+      ray.normal = normal;
 
       return true;
    }

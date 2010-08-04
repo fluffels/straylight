@@ -36,15 +36,7 @@ class PolygonPatch : public Polygon
        */
       virtual ~PolygonPatch();
 
-      /**
-       * Returns the polygon patch's normal at a specific point. This normal is
-       * calculated by interpolating among the normals at each vertex of the
-       * polygon patch.
-       *
-       * @param p A point on the polygon patch.
-       * @return The polygon patch's normal at the given point.
-       */
-      virtual Vector getNormalAt(const Vector& p) const;
+      virtual bool intersect(Ray& r) const;
 
    private:
       /**

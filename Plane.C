@@ -17,14 +17,8 @@ Plane(const Vector& normal, const double d, const Material& newMat):
    mat = newMat;
 }
 
-Vector Plane::
-getNormalAt(const Vector& p) const
-{
-   return _normal;
-}
-
 bool Plane::
-testIntersection(Ray& r) const
+intersect(Ray& r) const
 {
    double Vd = _normal.dot(r.dir);
    
@@ -47,6 +41,7 @@ testIntersection(Ray& r) const
          
          r.intersected = this;
          r.intersection = p;
+         r.normal = _normal;
          
          return true;
       }

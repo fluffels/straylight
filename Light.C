@@ -28,7 +28,7 @@ getGlobalLightAt(Ray& ray, const Vector& COP)
    
    const Vector& point = ray.intersection;
    const Vector light = (pos - point).normalise();
-   const Vector normal = object->getNormalAt(point);
+   const Vector normal = ray.normal;
    const Colour& mDiffuse = material.diffuse;
    
    for (int a = 0; a < 3; a++)
