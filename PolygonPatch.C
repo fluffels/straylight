@@ -65,26 +65,27 @@ getNormalAt(const Vector& p) const
        * http://www.flipcode.com/archives/Interpolating_Normals_For_Ray-Tracing.shtml */
       if ((alpha >= 0) and (beta >= 0) and (alpha + beta <= 1))
       {
-         float distances[3];
+         double distances[3];
          distances[0] = (_vertices[a] - point).getMagnitude();
          distances[1] = (_vertices[a + 1] - point).getMagnitude();
          distances[2] = (_vertices[a + 2] - point).getMagnitude();
 
          /* Find the point furthest from our intersection point. */
-         int j0 = -1;
+         int b0 = -1;
          double max = -1;
-         for (int b = a; b < a + 3; b++)
+         for (int b = 0; b < 3; b++)
          {
             if (distances[b] > max)
             {
                max = distances[b];
-               j0 = b;
+               b0 = b;
             }
          }
 
          /* Set the other two points. */
-         int j1 = (j0 + 1) % 3;
-         int j2 = (j0 + 2) % 3;
+         int j0 = a + b0;
+         int j1 = a + ((b0 + 1) % 3);
+         int j2 = a + ((b0 + 2) % 3);
 
          Vector edgePlaneNormal = (_vertices[j2] - _vertices[j1]).cross(n);
          edgePlaneNormal = edgePlaneNormal.normalise();
