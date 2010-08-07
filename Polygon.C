@@ -4,7 +4,7 @@
 
 Polygon::
 Polygon(int vertexCount, Vector* vertices, const Material& newMat):
-   _vertexCount(vertexCount)
+   _vertexCount(vertexCount + 1)
 {
    mat = newMat;
    
@@ -13,6 +13,9 @@ Polygon(int vertexCount, Vector* vertices, const Material& newMat):
    {
       _vertices[a] = vertices[a];
    }
+
+   /* Close the triangle loop. */
+   _vertices[_vertexCount - 1] = _vertices[0];
    
    /* Construct the Plane containing this Polygon. */
    Vector face1 = vertices[1] - vertices[0];

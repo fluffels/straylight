@@ -63,6 +63,29 @@ castRaySubset(void* arg)
    pthread_exit(NULL);
 }
 
+bool
+inShadow(Ray& r, Light light)
+{
+   /* If we shoot a shadow ray in the traditional way (from the intersection
+    * point to the light source) we may intersect objects on the ray after the
+    * light source. To solve this in the easiest way, we instead shoot a
+    * shadow ray from the light source to the intersection point. */
+
+   Vector p = light.pos;
+   Vector l = (r.intersection - light.pos);
+
+   Ray shadowRay(p, l);
+
+   if (scene->testIntersection(shadowRay))
+   {
+      return shadowRay.intersected != r.intersected;
+   }
+   else
+   {
+      return false;
+   }
+}
+
 void
 loadNFFFile()
 {
@@ -240,16 +263,22 @@ shootRay(Ray& r)
       const SceneObject* s = r.intersected;
       const Material& m = s->mat;
 
-      Colour localColour;
-      if (shootShadowRay(r))
+      Colour localColour = black;
+
+      vector<Light>::iterator i = scene->lights.begin();
+      while (i != scene->lights.end())
       {
-         Colour colour = scene->light.getGlobalLightAt(r, scene->cam.getCOP());
-         localColour = colour / 2;
+         Light light = *i;
+
+         if (inShadow(r, light) == false)
+         {
+            Colour contrib = light.getLocalLightAt(r, scene->cam.getCOP());
+            localColour += contrib;
+         }
+
+         i++;
       }
-      else
-      {
-         localColour = scene->light.getGlobalLightAt(r, scene->cam.getCOP());
-      }
+
 
       if ((r.shouldTerminate() == false) && (m.reflective))
       {
@@ -280,18 +309,6 @@ shootRay(Ray& r)
    {
       return scene->background;
    }
-}
-
-bool
-shootShadowRay(Ray& r)
-{
-   Vector p = r.intersection;
-   Vector l = (scene->light.pos - p).normalise();
-
-   p += l * 0.01;
-   Ray shadowRay(p, l);
-
-   return scene->testIntersection(shadowRay);
 }
 
 void

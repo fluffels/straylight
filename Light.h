@@ -34,7 +34,7 @@ class Light
        * @return A vector describing the light intensity in terms of its
        * red, green and blue components.
        */
-      Colour getGlobalLightAt(Ray& ray, const Vector& COP);
+      Colour getLocalLightAt(Ray& ray, const Vector& COP);
       
       /**
        * The light's ambient colour.

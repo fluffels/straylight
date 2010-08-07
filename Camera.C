@@ -28,11 +28,11 @@ Camera(const Vector& cop, const Vector& at, const Vector& up,
    //TODO: Test whether this does what you expect it to.
    _dir = at - _cop;
    _right = _dir.cross(up);
-   _up = _dir.cross(_right);
+   _up = _right.cross(_dir);
    
    _dir = _dir.normalise();
    _right = _right.normalise();
-   _up = _up.normalise();
+   _up = _up.normalise() * height / width;
 }
 
 Ray Camera::
@@ -52,7 +52,8 @@ getRayAt(int x, int y)
    const double X_MAG = (HIGH - LOW) * (x / MAX_X) + LOW;
    const double Y_MAG = (HIGH - LOW) * (y / MAX_Y) + LOW;
    
-   Vector p = _cop + (_dir + (_right * X_MAG) + (_up * Y_MAG));
+   Vector direction = (_dir + (_right * X_MAG) + (_up * Y_MAG)).normalise();
+   Vector p = _cop - direction;
    
    /* Subtracting the COP from p gives a zoom effect when the camera is
     * moved further away, but it flips the image upside down. This is
@@ -60,10 +61,10 @@ getRayAt(int x, int y)
     * upside down, as this code simulates a pinhole camera. That is why
     * the y-coordinate is flipped around below.
     */
-   p = (p - _cop).normalise();
-   p.y = -1 * p.y;
+   //p = (p - _cop).normalise();
+   //p.y = -1 * p.y;
    
-   Ray r(_cop, p);
+   Ray r(p, direction);
    
    return r;
 }

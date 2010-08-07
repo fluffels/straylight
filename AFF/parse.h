@@ -9,6 +9,7 @@
 
 #include "../Cone.h"
 #include "../Colour.h"
+#include "../Light.h"
 #include "../Material.h"
 #include "../Polygon.h"
 #include "../PolygonPatch.h"

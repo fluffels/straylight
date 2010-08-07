@@ -62,6 +62,16 @@ operator*(double rhs)
    return Colour(r * rhs, g * rhs, b * rhs);
 }
 
+Colour Colour::
+operator+=(Colour& rhs)
+{
+   r += rhs.r;
+   g += rhs.g;
+   b += rhs.b;
+
+   return (*this);
+}
+
 void Colour::
 set(int index, double value)
 {

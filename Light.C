@@ -9,7 +9,7 @@ Light():
 {}
 
 Colour Light::
-getGlobalLightAt(Ray& ray, const Vector& COP)
+getLocalLightAt(Ray& ray, const Vector& COP)
 {
    Colour result;
    
@@ -53,7 +53,10 @@ getGlobalLightAt(Ray& ray, const Vector& COP)
    for (int a = 0; a < 3; a++)
    {
       double coeff = mSpecular.get(a) * specular.get(a);
-      double rv = pow(reflect.dot(viewer), material.shininess);
+      /* When r . v < 0 and shininess is not an integer we cannot perform the
+       * pow() below. Therefore, we simply round the shininess. */
+      double rv = pow(reflect.dot(viewer), round(material.shininess));
+      //printf("(r . v) ^ s = (%lf) ^ %lf = %lf\n", reflect.dot(viewer), material.shininess, rv);
       double c = result.get(a) + coeff * max<double>(rv, 0);
       
       result.set(a, c);

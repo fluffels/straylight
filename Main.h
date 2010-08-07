@@ -94,6 +94,19 @@ void*
 castRaySubset(void* args);
 
 /**
+ * Shoots a ray to determine if an intersection point struck by
+ * a ray is in shadow from the perspective of a particular light source.
+ *
+ * @param r The ray.
+ * @param light The light source.
+ *
+ * @return True if the intersection point is in shadow, false
+ * otherwise.
+ */
+bool
+inShadow(Ray& r, Light light);
+
+/**
  * Load the NFF file specified by nffFileName into the scene object.
  */
 void
@@ -132,16 +145,6 @@ setup();
  */
 Colour
 shootRay(Ray& r);
-
-/**
- * Shoots a ray to determine if an intersection point struck by
- * a ray is in shadow.
- *
- * @return True if the intersection point is in shadow, false
- * otherwise.
- */
-bool
-shootShadowRay(Ray& r);
 
 /**
  * Free any global memory, close file handles and perform any cleanup that must

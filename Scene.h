@@ -54,9 +54,10 @@ class Scene
       Camera cam;
 
       /**
-       * Sole point-light for the scene.
+       * Point lights in the scene.
        */
-      Light light;
+      vector<Light> lights;
+
 
    private:
       /**

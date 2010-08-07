@@ -246,11 +246,13 @@ parseLight(FILE *fp, Scene& scene)
       /* I have no idea what V4SET4 is, but I'm guessing it sets 4
        * values of a length-4 vector. :P I commented it out and added
        * alternative code that should do this since VSET4 is only used
-       * once. */
+       * once.
+       *
+       * This is the default light colour. */
       //V4SET4(col,1.0f,1.0f,1.0f,1.0f);
       for (int j = 0; j < 4; j++)
       {
-         col[j] = 1.0f;
+         col[j] = 0.3f;
       }
    }
    else if (num != 3)
@@ -263,16 +265,20 @@ parseLight(FILE *fp, Scene& scene)
    /* NFF apparently only supports lights with a single colour, so this sets
     * the ambient, diffuse and specular components of our light to the same
     * values. We ignore the alpha value. */
-   scene.light.pos.x = pos[0];
-   scene.light.pos.y = pos[1];
-   scene.light.pos.z = pos[2];
+   Light l;
 
-   scene.light.ambient.r = col[0];
-   scene.light.ambient.g = col[1];
-   scene.light.ambient.b = col[2];
+   l.pos.x = pos[0];
+   l.pos.y = pos[1];
+   l.pos.z = pos[2];
 
-   scene.light.diffuse = scene.light.ambient;
-   scene.light.specular = scene.light.ambient;
+   l.ambient.r = col[0];
+   l.ambient.g = col[1];
+   l.ambient.b = col[2];
+
+   l.diffuse = l.ambient;
+   l.specular = l.ambient;
+
+   scene.lights.push_back(l);
 }
 
 /**
@@ -375,7 +381,7 @@ parseFill(FILE *fp)
          exit(1);
       }
 
-      if (fscanf(fp, "%f %f %f", &phong_pow, &t, &ior) != 3)
+      if (fscanf(fp, "%lf %f %f", &phong_pow, &t, &ior) != 3)
       {
          printf("fill material (phong, transp, IOR) syntax error");
          exit(1);
@@ -412,6 +418,8 @@ parseFill(FILE *fp)
       mat.diffuse = colour * kd;
       mat.specular = colour * ks;
       mat.shininess = phong_pow;
+
+      //printf("%f = %lf\n", mat.shininess, phong_pow);
    }
 }
 
