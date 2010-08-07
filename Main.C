@@ -96,6 +96,7 @@ loadNFFFile()
    if (nffFile == NULL)
    {
       fprintf(stderr, "Could not open %s.\n", nffFileName);
+      exit(-1);
    }
 
    viParseFile(nffFile, *scene, width, height);
