@@ -19,20 +19,24 @@ Camera():
 
 Camera::
 Camera(const Vector& cop, const Vector& at, const Vector& up,
-   int width, int height, double viewAngle) :
+   int width, int height, double viewAngle):
    _cop(cop),
    _width(width),
    _height(height),
    _viewAngle(viewAngle)
 {
-   //TODO: Test whether this does what you expect it to.
    _dir = at - _cop;
    _right = _dir.cross(up);
    _up = _right.cross(_dir);
    
    _dir = _dir.normalise();
-   _right = _right.normalise();
-   _up = _up.normalise() * height / width;
+
+   /* Take the view angle into account. This is derived from the formula to get
+    * the viewing angle for a lense with a focal length of 1. */
+   _right = _right.normalise() * 2 * tan(_viewAngle / 2);
+
+   /* Take the aspect ratio of non-square resolutions into account. */
+   _up = _up.normalise() * _right.getMagnitude() * _height / _width;
 }
 
 Ray Camera::
@@ -53,18 +57,8 @@ getRayAt(int x, int y)
    const double Y_MAG = (HIGH - LOW) * (y / MAX_Y) + LOW;
    
    Vector direction = (_dir + (_right * X_MAG) + (_up * Y_MAG)).normalise();
-   Vector p = _cop - direction;
    
-   /* Subtracting the COP from p gives a zoom effect when the camera is
-    * moved further away, but it flips the image upside down. This is
-    * likely for the same reason that our eyes and cameras see images
-    * upside down, as this code simulates a pinhole camera. That is why
-    * the y-coordinate is flipped around below.
-    */
-   //p = (p - _cop).normalise();
-   //p.y = -1 * p.y;
-   
-   Ray r(p, direction);
+   Ray r(_cop, direction);
    
    return r;
 }
