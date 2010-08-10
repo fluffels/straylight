@@ -114,32 +114,29 @@ parseViewpoint(FILE *fp, Scene& scene, int width, int height)
    /* Initialize variables here to avoid crossing them with gotos. */
    Vector COP, AT, UP;
 
-   Vec3f from;
-   if (fscanf(fp, " from %f %f %f", &from[X], &from[Y], &from[Z]) != 3)
+   if (fscanf(fp, " from %lf %lf %lf", &COP.x, &COP.y, &COP.z) != 3)
+   {
+      goto fmterr;
+   }
+;
+   if (fscanf(fp, " at %lf %lf %lf", &AT.x, &AT.y, &AT.z) != 3)
    {
       goto fmterr;
    }
 
-   Vec3f at;
-   if (fscanf(fp, " at %f %f %f", &at[X], &at[Y], &at[Z]) != 3)
+   if (fscanf(fp, " up %lf %lf %lf", &UP.x, &UP.y, &UP.z) != 3)
    {
       goto fmterr;
    }
 
-   Vec3f up;
-   if (fscanf(fp, " up %f %f %f", &up[X], &up[Y], &up[Z]) != 3)
+   double fovAngle;
+   if (fscanf(fp, " angle %lf", &fovAngle) != 1)
    {
       goto fmterr;
    }
 
-   float fovAngle;
-   if (fscanf(fp, " angle %f", &fovAngle) != 1)
-   {
-      goto fmterr;
-   }
-
-   float hither;
-   if (fscanf(fp, " hither %f", &hither) != 1)
+   double hither;
+   if (fscanf(fp, " hither %lf", &hither) != 1)
    {
       goto fmterr;
    }
@@ -156,20 +153,8 @@ parseViewpoint(FILE *fp, Scene& scene, int width, int height)
       goto fmterr;
    }
 
-   COP.x = from[0];
-   COP.y = from[1];
-   COP.z = from[2];
-
-   AT.x = at[0];
-   AT.y = at[1];
-   AT.z = at[2];
-
-   UP.x = up[0];
-   UP.y = up[1];
-   UP.z = up[2];
-
    /* Convert the fovAngle, which is in degrees, to radians. */
-   fovAngle /= 180.0 * PI;
+   fovAngle = fovAngle / 180.0 * PI;
 
    /* Apply resolution overrides. */
    if (width > 0)
