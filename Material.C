@@ -2,9 +2,9 @@
 
 Material::
 Material():
-   ambient(1.0, 1.0, 1.0),
-   diffuse(1.0, 1.0, 1.0),
-   specular(1.0, 1.0, 1.0),
-   shininess(0),
-   reflective(false)
+   colour(1.0, 1.0, 1.0),
+   kS(1.0),
+   kD(1.0),
+   kT(1.0),
+   shininess(0)
 {}

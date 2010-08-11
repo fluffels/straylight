@@ -215,17 +215,16 @@ parseLight(FILE *fp, Scene& scene)
       fscanf(fp, "%s", name);
    }
 
-   Vec4f pos;
-   if (fscanf(fp, "%f %f %f ", &pos[X], &pos[Y], &pos[Z]) != 3)
+   Light l;
+
+   if (fscanf(fp, "%lf %lf %lf ", &l.pos.x, &l.pos.y, &l.pos.z) != 3)
    {
       printf("Light source position syntax error");
       exit(1);
    }
-   pos[W] = 1.0f;
 
    /* Read optional color of light. */
-   Vec4f col;
-   int num = fscanf(fp, "%f %f %f ", &col[X], &col[Y], &col[Z]);
+   int num = fscanf(fp, "%lf %lf %lf ", &l.colour.r, &l.colour.g, &l.colour.b);
    if (num == 0)
    {
       /* I have no idea what V4SET4 is, but I'm guessing it sets 4
@@ -235,9 +234,9 @@ parseLight(FILE *fp, Scene& scene)
        *
        * This is the default light colour. */
       //V4SET4(col,1.0f,1.0f,1.0f,1.0f);
-      for (int j = 0; j < 4; j++)
+      for (int j = 0; j < 3; j++)
       {
-         col[j] = 0.3f;
+         l.colour.set(j, 0.5f);
       }
    }
    else if (num != 3)
@@ -245,23 +244,6 @@ parseLight(FILE *fp, Scene& scene)
       printf("Light source color syntax error");
       exit(1);
    }
-   col[A] = 1.0f;
-
-   /* NFF apparently only supports lights with a single colour, so this sets
-    * the ambient, diffuse and specular components of our light to the same
-    * values. We ignore the alpha value. */
-   Light l;
-
-   l.pos.x = pos[0];
-   l.pos.y = pos[1];
-   l.pos.z = pos[2];
-
-   l.ambient.r = col[0];
-   l.ambient.g = col[1];
-   l.ambient.b = col[2];
-
-   l.diffuse = l.ambient;
-   l.specular = l.ambient;
 
    scene.lights.push_back(l);
 }
@@ -329,81 +311,24 @@ parseBackground(FILE *fp, Scene& scene)
  * The fill color is used to color the objects following it until a new
  * color is assigned.
  */
+//TODO: Update the above when eliminating AFF statements.
 static void
 parseFill(FILE *fp)
 {
-   int moreparams;
-   moreparams = getc(fp);
-   if (moreparams != 'm')
+   /* Ignore fm for now. */
+   Colour& col = mat.colour;
+   if (fscanf(fp, "%lf %lf %lf", &col.r, &col.g, &col.b) != 3)
    {
-      ungetc(moreparams, fp);
-      moreparams = 0;
+      printf("fill color syntax error");
+      exit(1);
    }
 
-   float kd, ks, phong_pow, t, ior;
-   Vec3f col;
-
-   if (moreparams) /* parse the extended material description */
+   double kD, kS, kT, shininess, ior;
+   if (fscanf(fp, "%lf %lf %lf %lf %lf", &mat.kD, &mat.kS, &mat.shininess,
+      &mat.kT, &mat.ior) != 5)
    {
-      Vec3f amb;
-      if (fscanf(fp, "%f %f %f", &amb[X], &amb[Y], &amb[Z]) != 3)
-      {
-         printf("fill material ambient syntax error");
-         exit(1);
-      }
-
-      Vec3f dif;
-      if (fscanf(fp, "%f %f %f", &dif[X], &dif[Y], &dif[Z]) != 3)
-      {
-         printf("fill material diffuse syntax error");
-         exit(1);
-      }
-
-      Vec3f spc;
-      if (fscanf(fp, "%f %f %f", &spc[X], &spc[Y], &spc[Z]) != 3)
-      {
-         printf("fill material specular syntax error");
-         exit(1);
-      }
-
-      if (fscanf(fp, "%f %f %f", &phong_pow, &t, &ior) != 3)
-      {
-         printf("fill material (phong, transp, IOR) syntax error");
-         exit(1);
-      }
-
-      mat.ambient = Colour(amb[X], amb[Y], amb[Z]);
-      mat.diffuse = Colour(dif[X], dif[Y], dif[Z]);
-      mat.specular = Colour(spc[X], spc[Y], spc[Z]);
-      mat.shininess = phong_pow;
-
-      if (!(spc[X] == spc[Y] == spc[Z] == 0))
-      {
-         mat.reflective = true;
-      }
-   }
-   /* Else, parse the old NFF description of a material. */
-   else
-   {
-      if (fscanf(fp, "%f %f %f", &col[X], &col[Y], &col[Z]) != 3)
-      {
-         printf("fill color syntax error");
-         exit(1);
-      }
-
-      if (fscanf(fp, "%f %f %f %f %f", &kd, &ks, &phong_pow, &t, &ior) != 5)
-      {
-         printf("fill material syntax error");
-         exit(1);
-      }
-
-      Colour colour(col[X], col[Y], col[Z]);
-      mat.ambient = colour;
-      mat.diffuse = colour * kd;
-      mat.specular = colour * ks;
-      mat.shininess = phong_pow;
-
-      mat.reflective = ks > 0;
+      printf("fill material syntax error");
+      exit(1);
    }
 }
 

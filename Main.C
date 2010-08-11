@@ -60,7 +60,29 @@ inShadow(Ray& r, Light light)
 
    if (scene->testIntersection(shadowRay))
    {
-      return shadowRay.intersected != r.intersected;
+      if (shadowRay.intersected != r.intersected)
+      {
+         return true;
+      }
+      /* This means the light source can reach the object. We still need to
+       * test whether the light source can reach the specific point /on/ the
+       * object that the original ray intersected. We do this by checking the
+       * intersection of the shadow ray against the intersection of the normal
+       * ray. */
+      else
+      {
+         double d = (shadowRay.intersection - r.intersection).getMagnitude();
+         const double EPSILON = 0.00000001;
+
+         if (d < EPSILON)
+         {
+            return false;
+         }
+         else
+         {
+            return true;
+         }
+      }
    }
    else
    {
@@ -262,14 +284,14 @@ shootRay(Ray& r)
          i++;
       }
 
-      if ((r.shouldTerminate() == false) && (m.reflective))
+      if ((r.shouldTerminate() == false) && (m.kS > 0))
       {
          /* 3D Computer Graphics by Alan Watt, p. 24 */
          Vector p = r.intersection;
-         Vector n = r.normal;
-         Vector l = r.dir * -1;
 
-         Vector reflect = n * (n.dot(l) * 2) - l;
+         Vector v = r.dir;
+         Vector n = r.normal;
+         Vector reflect = v - n * 2 * (v.dot(n));
          reflect = reflect.normalise();
 
          /* Move the ray origin slightly forward to avoid precision errors. */
@@ -279,8 +301,10 @@ shootRay(Ray& r)
          Ray newRay(p, reflect);
          newRay.depth = r.depth + 1;
 
-         Colour reflection = shootRay(newRay);
-         return localColour.combine(reflection);
+         Colour reflection = shootRay(newRay) * r.intersected->mat.kS;
+         localColour += reflection;
+
+         return localColour;
       }
       else
       {
@@ -289,7 +313,16 @@ shootRay(Ray& r)
    }
    else
    {
-      return scene->background;
+      /* This ensures that reflective objects do not pick up the background
+       * colour of the scene. */
+      if (r.depth > 0)
+      {
+         return black;
+      }
+      else
+      {
+         return scene->background;
+      }
    }
 }
 

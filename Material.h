@@ -17,29 +17,34 @@ class Material
       Material();
       
       /**
-       * The material's ambient colour.
+       * The material's colour.
        */
-      Colour ambient;
+      Colour colour;
       
       /**
-       * The material's diffuse colour.
+       * The material's diffuse component.
        */
-      Colour diffuse;
+      double kD;
       
       /**
-       * The material's specular colour.
+       * The material's specular component.
        */
-      Colour specular;
+      double kS;
+
+      /**
+       * The material's transmissive component.
+       */
+      double kT;
 
       /**
        * The material's shininess coefficient.
        */
       double shininess;
-      
+
       /**
-       * Whether the material is reflective or not.
+       * The index of reflection for this material.
        */
-      bool reflective;
+      double ior;
 };
 
 #endif /*MATERIAL_H_*/

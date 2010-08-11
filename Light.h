@@ -18,8 +18,7 @@ class Light
       /**
        * Default constructor.
        * 
-       * Sets ambient, diffuse and specular colours to black, and
-       * position to the origin (0, 0, 0).
+       * Sets colour to black, and position to the origin (0, 0, 0).
        */
       Light();
 
@@ -37,19 +36,9 @@ class Light
       Colour getLocalLightAt(Ray& ray, const Vector& COP);
       
       /**
-       * The light's ambient colour.
+       * The light's colour.
        */
-      Colour ambient;
-      
-      /**
-       * The light's diffuse colour.
-       */      
-      Colour diffuse;
-      
-      /**
-       * The light's specular colour.
-       */
-      Colour specular;
+      Colour colour;
       
       /**
        * The light's position.
