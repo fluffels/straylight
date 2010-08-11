@@ -366,7 +366,7 @@ parseFill(FILE *fp)
          exit(1);
       }
 
-      if (fscanf(fp, "%lf %f %f", &phong_pow, &t, &ior) != 3)
+      if (fscanf(fp, "%f %f %f", &phong_pow, &t, &ior) != 3)
       {
          printf("fill material (phong, transp, IOR) syntax error");
          exit(1);
@@ -376,12 +376,6 @@ parseFill(FILE *fp)
       mat.diffuse = Colour(dif[X], dif[Y], dif[Z]);
       mat.specular = Colour(spc[X], spc[Y], spc[Z]);
       mat.shininess = phong_pow;
-
-      /* I assume that a material with Shine > 0 is considered reflective. */
-      if (phong_pow > 0)
-      {
-         mat.reflective = true;
-      }
    }
    /* Else, parse the old NFF description of a material. */
    else
@@ -403,8 +397,12 @@ parseFill(FILE *fp)
       mat.diffuse = colour * kd;
       mat.specular = colour * ks;
       mat.shininess = phong_pow;
+   }
 
-      //printf("%f = %lf\n", mat.shininess, phong_pow);
+   /* I assume that a material with shininess > 0 is considered reflective. */
+   if (phong_pow > 0)
+   {
+      mat.reflective = true;
    }
 }
 
