@@ -179,3 +179,22 @@ core idle.
 
 This should be addressed in the next version with a better multithreading
 algorithm.
+
+
+Version 2
+=========
+
+This version adds several fixes, new features and NFF file parsing. A recon-
+struction of the old scene in the NFF file format renders in 6 seconds
+unoptimized on 2048x2048 pixels. Optimized runs take only 2.5 seconds.
+
+Note that this is not a perfect reconstruction and as such cannot be used to
+compare performance exactly. Given the small performance delta and the number
+of variables changed, no conclusion can be drawn from these measurements.
+
+A bigger scene is now required to gather sufficient data. The ray tracer was
+run over 1024x1024 pixels on the "Spherflake" scene from the SPD (unoptimized).
+
+The run took 47m25.520s real time, 160m45.650s user time and 0m0.040s system
+time.
+
