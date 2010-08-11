@@ -198,3 +198,17 @@ run over 1024x1024 pixels on the "Spherflake" scene from the SPD (unoptimized).
 The run took 47m25.520s real time, 160m45.650s user time and 0m0.040s system
 time.
 
+
+Version 2.1
+===========
+
+This version fixes the job dispatch of the multithreaded rendered. Instead of
+dividing the image up into bands, which caused some threads to stop rendering
+long before the others, it now uses long-lived threads that grab pixels using
+an atomic counter. This approach is inspired by Aila & Lain (2009).
+
+The Sphereflake run above now takes 40m real time and 160m user time indicating
+that all four threads were busy for the duration.
+
+A render of "Mount" was also run at 1024x1024 with 2 bounces per ray and no
+refractions, this took 28m1.38s real and 112m2.830s system time. 
