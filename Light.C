@@ -21,7 +21,7 @@ getLocalLightAt(Ray& ray, const Vector& COP)
 
    Colour result = Colour(0, 0, 0);
 
-   Colour diff = m.colour * l.dot(n);
+   Colour diff = m.colour * l.dot(n) * m.kD;
    diff.r *= colour.r;
    diff.g *= colour.g;
    diff.b *= colour.b;
