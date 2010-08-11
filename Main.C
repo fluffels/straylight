@@ -3,22 +3,11 @@
 void
 castRays()
 {
-   int cutoff = height / threadCount;
-
    pthread_t thread[threadCount];
-   int* coeffs = new int[threadCount];
-
-   /* Since a pointer is being passed to each thread, we must store
-    * each coefficient individually. */
-   for (int i = 0; i < threadCount; i++)
-   {
-      coeffs[i] = i;
-   }
 
    for (int i = 0; i < threadCount; i++)
    {
-      int result = pthread_create(thread + i, NULL, castRaySubset,
-         (void*) (coeffs + i));
+      int result = pthread_create(thread + i, NULL, castRaySubset, NULL);
       
       if (result != 0)
       {
@@ -30,36 +19,29 @@ castRays()
    {
       pthread_join(thread[i], NULL);
    }
-   
-   delete[] coeffs;
 }
 
 void*
 castRaySubset(void* arg)
 {
-   int cutoff = height / threadCount;
-   int* ip = (int*) arg;
-   int i = *ip;
+   int pixel = __sync_fetch_and_add(&nextPixel, 1);
    
-   int low = i * cutoff;
-   int high = (i + 1) * cutoff;
-   
-   unsigned char* offset = image + low * (width * COLOURS_PER_PIXEL);
-   for (int y = low; y < high; y++)
+   while (pixel < width * height)
    {
-      for (int x = 0; x < width; x++)
-      {
-         Ray r = scene->cam.getRayAt(x, y);
-         Colour colour = shootRay(r);
-         
-         offset[0] = min<double> (colour.r, 1.0) * 255;
-         offset[1] = min<double> (colour.g, 1.0) * 255;
-         offset[2] = min<double> (colour.b, 1.0) * 255;
-         
-         offset += 3;
-      }
+      int y = pixel / width;
+      int x = pixel % width;
+
+      Ray r = scene->cam.getRayAt(x, y);
+      Colour colour = shootRay(r);
+
+      int index = pixel * 3;
+      image[index] = min<double> (colour.r, 1.0) * 255;
+      image[index + 1] = min<double> (colour.g, 1.0) * 255;
+      image[index + 2] = min<double> (colour.b, 1.0) * 255;
+
+      pixel = __sync_fetch_and_add(&nextPixel, 1);
    }
-   
+
    pthread_exit(NULL);
 }
 
@@ -279,7 +261,6 @@ shootRay(Ray& r)
 
          i++;
       }
-
 
       if ((r.shouldTerminate() == false) && (m.reflective))
       {

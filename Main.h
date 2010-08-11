@@ -65,6 +65,8 @@ png_structp png;
 /** libPNG info structure. */
 png_infop pngInfo;
 
+int nextPixel;
+
 /**
  * The main loop for the program.
  *
