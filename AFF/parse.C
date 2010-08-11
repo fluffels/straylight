@@ -376,6 +376,11 @@ parseFill(FILE *fp)
       mat.diffuse = Colour(dif[X], dif[Y], dif[Z]);
       mat.specular = Colour(spc[X], spc[Y], spc[Z]);
       mat.shininess = phong_pow;
+
+      if (!(spc[X] == spc[Y] == spc[Z] == 0))
+      {
+         mat.reflective = true;
+      }
    }
    /* Else, parse the old NFF description of a material. */
    else
@@ -397,12 +402,8 @@ parseFill(FILE *fp)
       mat.diffuse = colour * kd;
       mat.specular = colour * ks;
       mat.shininess = phong_pow;
-   }
 
-   /* I assume that a material with shininess > 0 is considered reflective. */
-   if (phong_pow > 0)
-   {
-      mat.reflective = true;
+      mat.reflective = ks > 0;
    }
 }
 
