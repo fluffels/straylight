@@ -18,12 +18,6 @@ Colour(const Colour& rhs)
    b = rhs.b;
 }
 
-Colour Colour::
-combine(const Colour& rhs)
-{
-   return Colour(r + rhs.r * 0.6, g + rhs.g * 0.6, b + rhs.b * 0.6);
-}
-
 double Colour::
 get(int index) const
 {

@@ -28,14 +28,6 @@ class Colour
       Colour(const Colour& rhs);
       
       /**
-       * Mixes two colours together to get a new one.
-       * 
-       * @param rhs The colour to combine this one with.
-       * @return The new colour.
-       */
-      Colour combine(const Colour& rhs);
-      
-      /**
        * Gets a specific component by its index.
        * 
        * @param index The index of the component to get: 0 for red, 1
