@@ -28,12 +28,15 @@ getLocalLightAt(Ray& ray, const Vector& COP)
    result += diff;
 
    Vector r = l  - n * 2 * l.dot(n);
+   double dot = v.dot(r);
 
-   Colour spec = m.colour * powf(v.dot(r), m.shininess) * m.kS;
-   spec.r *= colour.r;
-   spec.g *= colour.g;
-   spec.b *= colour.b;
-   result += diff;
+   if (dot > 0)
+   {
+      Colour spec = colour * pow(dot, m.shininess) * m.kS;
+      result += spec;
+   }
+
+
 
    return result;
 }

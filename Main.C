@@ -28,6 +28,11 @@ castRaySubset(void* arg)
    
    while (pixel < width * height)
    {
+      if (pixel % 1000 == 0)
+      {
+         printf("%f%% complete...\n", (float)pixel / (width * height) * 100);
+      }
+
       int y = pixel / width;
       int x = pixel % width;
 
@@ -261,14 +266,12 @@ setup()
 Colour
 shootRay(Ray& r)
 {
-   Colour black(0.0, 0.0, 0.0);
-
    if (scene->testIntersection(r) == true)
    {
       const SceneObject* s = r.intersected;
       const Material& m = s->mat;
 
-      Colour localColour = black;
+      Colour localColour(0, 0, 0);
 
       vector<Light>::iterator i = scene->lights.begin();
       while (i != scene->lights.end())
@@ -284,25 +287,94 @@ shootRay(Ray& r)
          i++;
       }
 
-      if ((r.shouldTerminate() == false) && (m.kS > 0))
+      if (r.shouldTerminate() == false)
       {
-         /* 3D Computer Graphics by Alan Watt, p. 24 */
+         /* Partially based on code found at:
+          * http://www.devmaster.net/articles/raytracing_series/part2.php */
          Vector p = r.intersection;
-
          Vector v = r.dir;
          Vector n = r.normal;
-         Vector reflect = v - n * 2 * (v.dot(n));
-         reflect = reflect.normalise();
 
-         /* Move the ray origin slightly forward to avoid precision errors. */
-         p += reflect * 0.01;
+         double cosI = v.dot(n);
 
-         /* Construct and shoot the reflected ray. */
-         Ray newRay(p, reflect);
-         newRay.depth = r.depth + 1;
+         if (m.kS > 0)
+         {
+            Vector reflect = v - n * 2 * cosI;
+            reflect = reflect.normalise();
 
-         Colour reflection = shootRay(newRay) * r.intersected->mat.kS;
-         localColour += reflection;
+            /* Move the ray origin slightly forward to avoid precision
+             * errors. */
+            p += reflect * 0.01;
+
+            /* Construct and shoot the reflected ray. */
+            Ray newRay(p, reflect);
+            newRay.depth = r.depth + 1;
+
+            Colour reflection = shootRay(newRay) * m.kS;
+            localColour += reflection;
+         }
+
+         if (m.kT > 0)
+         {
+            /* Based on code found at:
+             * http://www.devmaster.net/articles/raytracing_series/part3.php */
+
+            double eta = 0;
+            Ray newRay;
+
+            /* Entering object. */
+            if (r.normal.dot(r.dir) < 0)
+            {
+               eta = r.ior / m.ior;
+
+               newRay.ior = m.ior;
+               newRay.inside = r.inside + 1;
+            }
+            /* Exiting object. */
+            else
+            {
+               /* We default to the IOR of air if the ray is exiting the last
+                * object that contained it. */
+               double newIOR = Ray::AIR_IOR;
+               /* Otherwise, we use the IOR stored in the ray, which is the IOR
+                * of the last object it /entered/, which should give us the IOR
+                * outside the object being exited. This assumes that the exit
+                * from this object is contained within the other object. I see
+                * no way for this not to be true in the case of rays, unless the
+                * ray is exiting at a point that is the boundary for both
+                * objects. This feels like a really rare corner case though, so
+                * it will remain ignored. */
+               if (r.inside > 1)
+               {
+                  newIOR = r.ior;
+               }
+
+               eta = m.ior / newIOR;
+
+               newRay.ior = newIOR;
+               newRay.inside = r.inside - 1;
+            }
+
+            double sinI2 = eta * eta * (1.0f - cosI * cosI);
+
+            if (sinI2 <= 1)
+            {
+               Vector transmit = (v * eta) + (n * (eta * cosI - sqrt(1.0f - sinI2)));
+               //Vector transmit = (v * eta) - (n * (eta * cosI + sqrt(1.0f - sinI2) / (eta * eta)));
+               transmit = transmit.normalise();
+
+               /* Move the ray origin slightly forward to avoid precision
+                * errors. */
+               p += transmit * 0.01f;
+
+               newRay.pos = p;
+               newRay.dir = transmit;
+               newRay.depth = r.depth + 1;
+
+               Colour transmittance = shootRay(newRay) * m.kT;
+               localColour += transmittance;
+            }
+         }
 
          return localColour;
       }
@@ -313,16 +385,7 @@ shootRay(Ray& r)
    }
    else
    {
-      /* This ensures that reflective objects do not pick up the background
-       * colour of the scene. */
-      if (r.depth > 0)
-      {
-         return black;
-      }
-      else
-      {
-         return scene->background;
-      }
+      return scene->background;
    }
 }
 
