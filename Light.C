@@ -17,6 +17,11 @@ getLocalLightAt(Ray& ray, const Vector& COP)
    Vector n = ray.normal;
    Vector l = (pos - ray.intersection).normalise();
 
+   if (v.dot(n) >= 0)
+   {
+      n = n * -1;
+   }
+
    Material m = ray.intersected->mat;
 
    Colour result = Colour(0, 0, 0);
