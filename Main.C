@@ -273,6 +273,13 @@ shootRay(Ray& r)
 
       Colour localColour(0, 0, 0);
 
+      Vector n = r.normal;
+      /* Reverse the normal when we are striking the object from inside. */
+      if (r.normal.dot(r.dir) >= 0)
+      {
+         n = n * -1;
+      }
+
       vector<Light>::iterator i = scene->lights.begin();
       while (i != scene->lights.end())
       {
@@ -293,7 +300,6 @@ shootRay(Ray& r)
           * http://www.devmaster.net/articles/raytracing_series/part2.php */
          Vector p = r.intersection;
          Vector v = r.dir;
-         Vector n = r.normal;
 
          double cosI = v.dot(n);
 
@@ -304,7 +310,7 @@ shootRay(Ray& r)
 
             /* Move the ray origin slightly forward to avoid precision
              * errors. */
-            p += reflect * 0.01;
+            p = r.intersection + reflect * 0.001f;
 
             /* Construct and shoot the reflected ray. */
             Ray newRay(p, reflect);
@@ -355,17 +361,18 @@ shootRay(Ray& r)
                newRay.inside = r.inside - 1;
             }
 
-            double sinI2 = eta * eta * (1.0f - cosI * cosI);
+            double eta2 = eta * eta;
+            double sinI2 = eta2 * (1.0f - cosI * cosI);
 
             if (sinI2 <= 1)
             {
-               Vector transmit = (v * eta) + (n * (eta * cosI - sqrt(1.0f - sinI2)));
-               //Vector transmit = (v * eta) - (n * (eta * cosI + sqrt(1.0f - sinI2) / (eta * eta)));
+               Vector transmit = (v * eta) + (n * (eta * cosI - (sqrt(1.0f - sinI2) / eta2)));
+               //Vector transmit = (v * eta) + (n * (eta * cosI - sqrt(1.0f - sinI2)));
                transmit = transmit.normalise();
 
                /* Move the ray origin slightly forward to avoid precision
                 * errors. */
-               p += transmit * 0.01f;
+               p = r.intersection + transmit * 0.001f;
 
                newRay.pos = p;
                newRay.dir = transmit;
