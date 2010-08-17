@@ -8,9 +8,9 @@ Polygon(int vertexCount, Vector* vertices, const Material& newMat):
 {
    mat = newMat;
    
-   max.x = FLT_MIN;
-   max.y = FLT_MIN;
-   max.z = FLT_MIN;
+   max.x = -FLT_MAX;
+   max.y = -FLT_MAX;
+   max.z = -FLT_MAX;
 
    min.x = FLT_MAX;
    min.y = FLT_MAX;
