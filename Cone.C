@@ -17,6 +17,14 @@ Cone(Vector& base, double baseRadius, Vector& apex, double apexRadius):
    /* The negation below is because the apex must be extended in the negative
     * direction to the cone's direction. */
    _extendedApex = _apex - _dir * _apexRadius / tan(_theta);
+
+   max.x = std::max(base.x, apex.x);
+   max.y = std::max(base.y, apex.y);
+   max.z = std::max(base.z, apex.z);
+
+   min.x = std::min(base.x, apex.x);
+   min.y = std::min(base.y, apex.y);
+   min.z = std::min(base.z, apex.z);
 }
 
 bool Cone::

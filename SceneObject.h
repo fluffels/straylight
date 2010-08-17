@@ -30,6 +30,16 @@ class SceneObject
        * @return True if there is an intersection, false otherwise.
        */
       virtual bool intersect(Ray& r) const = 0;
+
+      /**
+       * Top-front-right corner of this object's extents.
+       */
+      Vector max;
+
+      /**
+       * Bottom-back-left corner of this object's extents.
+       */
+      Vector min;
 };
 
 #endif /*SCENEOBJECT_H_*/

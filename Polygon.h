@@ -1,6 +1,8 @@
 #ifndef POLYGON_H
 #define POLYGON_H
 
+#include <cfloat>
+
 #include "Material.h"
 #include "Plane.h"
 #include "SceneObject.h"

@@ -28,7 +28,7 @@ castRaySubset(void* arg)
    
    while (pixel < width * height)
    {
-      if (pixel % 1000 == 0)
+      if ((progress == true) && (pixel % 1000 == 0))
       {
          printf("%f%% complete...\n", (float)pixel / (width * height) * 100);
       }
@@ -98,7 +98,14 @@ inShadow(Ray& r, Light light)
 void
 loadNFFFile()
 {
-   scene = new Scene();
+   if (naive)
+   {
+      scene = new SimpleScene();
+   }
+   else
+   {
+      scene = new BoxedScene();
+   }
 
    FILE* nffFile = fopen(nffFileName, "r");
    
@@ -188,6 +195,15 @@ parseArguments(int argc, char** argv)
          outFileName = argv[a + 1];
          a++;
       }
+      else if ((strcmp(argv[a], "-n") == 0) || strcmp(argv[a], "--naive") == 0)
+      {
+         naive = true;
+      }
+      else if ((strcmp(argv[a], "-p") == 0) || strcmp(argv[a], "--progress")
+         == 0)
+      {
+         progress = true;
+      }
       else
       {
          printUsage();
@@ -211,6 +227,8 @@ printUsage()
    printf("\t-w --width\tSet the output image's horizontal resolution.\n");
    printf("\t-h --height\tSet the output image's vertical resolution.\n");
    printf("\t-o --output\tSpecify the output filename (default 'out.tga').\n");
+   printf("\t-n --naive\tPass this to disable acceleration methods.\n");
+   printf("\t-p --progress\tPass this to enable progress updates..\n");
    printf("\t--no-output\tPass this to disable output to a file.\n");
 
    exit(-1);

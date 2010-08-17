@@ -1,6 +1,7 @@
 #ifndef CONE_H
 #define CONE_H
 
+#include <algorithm>
 #include <cmath>
 
 #include "SceneObject.h"

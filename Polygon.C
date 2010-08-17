@@ -8,10 +8,46 @@ Polygon(int vertexCount, Vector* vertices, const Material& newMat):
 {
    mat = newMat;
    
+   max.x = FLT_MIN;
+   max.y = FLT_MIN;
+   max.z = FLT_MIN;
+
+   min.x = FLT_MAX;
+   min.y = FLT_MAX;
+   min.z = FLT_MAX;
+
    _vertices = new Vector[_vertexCount];
    for (int a = 0; a < vertexCount; a++)
    {
       _vertices[a] = vertices[a];
+
+      Vector vertex = vertices[a];
+
+      if (vertex.x > max.x)
+      {
+         max.x = vertex.x;
+      }
+      if (vertex.y > max.y)
+      {
+         max.y = vertex.y;
+      }
+      if (vertex.z > max.z)
+      {
+         max.z = vertex.z;
+      }
+
+      if (vertex.x < min.x)
+      {
+         min.x = vertex.x;
+      }
+      if (vertex.y < min.y)
+      {
+         min.y = vertex.y;
+      }
+      if (vertex.z < min.z)
+      {
+         min.z = vertex.z;
+      }
    }
 
    /* Close the triangle loop. */

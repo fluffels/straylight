@@ -4,7 +4,15 @@ Sphere::
 Sphere(const Vector& newPos, double newR):
       pos(newPos),
       r(newR)
-{}
+{
+   min.x = newPos.x - newR;
+   min.y = newPos.y - newR;
+   min.z = newPos.z - newR;
+
+   max.x = newPos.x + newR;
+   max.y = newPos.y + newR;
+   max.z = newPos.z + newR;
+}
 
 Sphere::
 Sphere(const Vector& newPos, double newR, const Material& newMat):

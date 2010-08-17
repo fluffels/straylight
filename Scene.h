@@ -1,47 +1,51 @@
-#ifndef SCENE_H_
-#define SCENE_H_
+#ifndef SCENE_H
+#define SCENE_H
 
-#include <cfloat>
 #include <vector>
 
 #include "Camera.h"
+#include "Colour.h"
 #include "Light.h"
-#include "Ray.h"
-#include "SceneObject.h"
-#include "Vector.h"
 
 using namespace std;
 
 /**
- * Models a collection of Spheres that represent a graphics scene.
+ * Virtual scene class that describes the minimum methods that such a class
+ * must have.
  */
 class Scene
 {
    public:
       /**
-       * Default constructor.
+       * Default constructor. Creates a default camera, empty light list and
+       * sets a black background colour.
        */
       Scene();
-      
+
       /**
-       * Default destructor.
+       * Virtual destructor.
        */
       ~Scene();
 
       /**
        * Add an object to the scene.
-       * 
-       * @param s A pointer to the SceneObject to add.
+       *
+       * @param s A pointer to a SceneObject to add.
        */
-      void addObject(SceneObject* s);
+      virtual void addObject(SceneObject* s) = 0;
 
       /**
-       * Tests whether a Ray intersects a SceneObject.
-       * 
-       * @param r The Ray to test.
+       * Find the closest SceneObject intersected by the given Ray.
+       *
+       * @param r The Ray object. This will be altered to reflect the
+       * information gathered from the intersection test. The Ray's normal,
+       * intersected and intersection properties will be set to the normal of
+       * the intersected object at the intersection point, a pointer to the
+       * intersected object and the intersection point, respectively.
+       *
        * @return True if the ray intersects an object, false otherwise.
        */
-      bool testIntersection(Ray& r);
+      virtual bool testIntersection(Ray& r) = 0;
 
       /**
        * The background (default) colour of the scene.
@@ -58,12 +62,6 @@ class Scene
        */
       vector<Light> lights;
 
-
-   private:
-      /**
-       * The list of SceneObjects in this Scene.
-       */
-      vector<SceneObject*> objects;
 };
 
-#endif /*SCENE_H_*/
+#endif
