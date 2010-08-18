@@ -4,7 +4,7 @@
 
 Polygon::
 Polygon(int vertexCount, Vector* vertices, const Material& newMat):
-   _vertexCount(vertexCount + 1)
+   _vertexCount(vertexCount)
 {
    mat = newMat;
    
@@ -21,7 +21,7 @@ Polygon(int vertexCount, Vector* vertices, const Material& newMat):
    {
       _vertices[a] = vertices[a];
 
-      Vector vertex = vertices[a];
+      Vector& vertex = vertices[a];
 
       if (vertex.x > max.x)
       {
@@ -49,9 +49,6 @@ Polygon(int vertexCount, Vector* vertices, const Material& newMat):
          min.z = vertex.z;
       }
    }
-
-   /* Close the triangle loop. */
-   _vertices[_vertexCount - 1] = _vertices[0];
    
    /* Construct the Plane containing this Polygon. */
    Vector face1 = vertices[1] - vertices[0];
@@ -95,40 +92,96 @@ intersect(Ray& r) const
             max = abs(n[a]);
          }
       }
+      //i0 = 2;
       
       /* Set i1 & i2 to the other two axes. */
       int i1 = (i0 + 1) % 3;
       int i2 = (i0 + 2) % 3;
       
-      /* Project each triangle onto the plane i1 i2. */
-      for (int a = 0; a < _vertexCount - 2; a++)
-      {
-         Vector t0 = _vertices[a];
-         Vector t1 = _vertices[a + 1];
-         Vector t2 = _vertices[a + 2];
-         
-         double u0 = p[i1] - t0[i1];
-         double v0 = p[i2] - t0[i2];
-         double u1 = t1[i1] - t0[i1];
-         double v1 = t1[i2] - t0[i2];
-         double u2 = t2[i1] - t0[i1];
-         double v2 = t2[i2] - t0[i2];
-         
-         /* Calculate alpha and beta and determine whether the point is a convex
-          * combination of vector V0V1 and vector V0V2. */
-         double alpha = (u0 * v2 - u2 * v0) / (u1 * v2 - u2 * v1);
-         double beta = (u1 * v0 - u0 * v1) / (u1 * v2 - u2 * v1);
-         
-         if ((alpha >= 0) and (beta >= 0) and (alpha + beta <= 1))
-         {
-            r.intersected = this;
-            /* The normal has already been set by the plane-ray intersection
-             * earlier. */
+      //p.x = 0.5;
+      //p.y = -0.5;
 
-            return true;
+      /* Throw away the dominant axes, projecting the polygon onto the two
+       * remaining axes. */
+      const int U = 0;
+      const int V = 1;
+
+      const double INTERSECT_U = p[i1];
+      const double INTERSECT_V = p[i2];
+
+      double verts[_vertexCount][2];
+
+      for (int i = 0; i < _vertexCount; i++)
+      {
+         Vector& vertex = _vertices[i];
+
+         /* Centre the new vertices around the intersection point by subtracting
+          * it from them. */
+         verts[i][U] = vertex[i1] - INTERSECT_U;
+         verts[i][V] = vertex[i2] - INTERSECT_V;
+      }
+
+      /* Count the amount of times a ray along the +U axis crosses the polygon,
+       * if this number is odd, the point is inside the polygon, otherwise it is
+       * outside. This is known as the Jordan curve theorem. */
+      int crossings = 0;
+
+      /* "sign" holds the sign of the current vertex's V value. "nextSign" holds
+       * the same for the next vertex. */
+      int sign, nextSign;
+
+      for (int i = 0; i < _vertexCount; i++)
+      {
+         double Ua = verts[i][U];
+         double Ub = verts[(i + 1) % _vertexCount][U];
+
+         double Va = verts[i][V];
+         double Vb = verts[(i + 1) % _vertexCount][V];
+
+         //printf("Ua = %f, Va = %f\n", Ua, Va);
+         //printf("Ub = %f, Vb = %f\n", Ub, Vb);
+
+         if (Va >= 0) sign = +1;
+         else sign = -1;
+
+         if (Vb >= 0) nextSign = +1;
+         else nextSign = -1;
+
+         //printf("sign = %d, nextSign = %d\n", sign, nextSign);
+
+         /* If sign != nextSign, the face between vertices i and i + 1 might
+          * cross the +U axis. */
+         if (sign != nextSign)
+         {
+            /* If both U-values are positive then it must cross +U. */
+            if ((Va > 0) && (Vb > 0))
+            {
+               //printf("pos, so ++\n");
+               crossings++;
+            }
+
+            //double x = i % 2;
+            //printf("test: %d\n", (1.0/x) > 0);
+            /* If at least either is positive, then we must compute the
+             * intersection with the +U axis. */
+            if ((Ua > 0) || (Ub > 0))
+            {
+               double result = Ua - Va * (Ub - Ua) / (Vb - Va);
+
+               //printf("result = %f\n", result);
+               if (result > 0)
+               {
+                  crossings++;
+               }
+            }
+
+
          }
       }
 
-      return false;
+      //printf("crossings = %d\n", crossings);
+      //printf("----------------\n");
+
+      return crossings % 2 == 1;
    }
 }
