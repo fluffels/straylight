@@ -46,29 +46,29 @@ intersect(Ray& ray) const
    {
       double t1 = (-b - sqrt(delta)) / (2 * a);
       double t2 = (-b + sqrt(delta)) / (2 * a);
-      double t;
 
-      if ((t1 < 0) && (t2 < 0))
+      double t_final = t1;
+      if (t1 < 0)
       {
-         return false;
-      }
-      else if (t1 > t2)
-      {
-         return false;
-      }
-      else
-      {
-         if (t1 >= 0)
+         if (t2 < 0)
          {
-            t = t1;
+            return false;
          }
          else
          {
-            t = t2;
+            t_final = t2;
+         }
+      }
+      else
+      {
+         if (t2 < t1)
+         {
+            t_final = t2;
          }
       }
 
-      Vector point = ray.pos + ray.dir * t;
+
+      Vector point = ray.pos + ray.dir * t_final;
 
       Vector normal((point.x - pos.x) / r,
          (point.y - pos.y) / r,
