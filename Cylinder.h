@@ -9,6 +9,11 @@
 
 /**
  * Encapsulates a cylinder defined by a radius and a base and apex vector.
+ *
+ * This cylinder does not support negative radii as defined in the NFF spec,
+ * because there are none in the SPD definitions.
+ *
+ * Note that this cylinder is considered one-sided (the inside is not visible).
  */
 class Cylinder : public SceneObject
 {

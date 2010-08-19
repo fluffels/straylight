@@ -51,6 +51,8 @@ intersect(Ray& r) const
    double t_in = t - s;
    double t_out = t + s;
 
+   /* Note that this object is one-sided. As such, we are only interested in
+    * the first intersection that is in front of the ray origin. */
    double t_final = t_in;
    if (t_in < 0)
    {
