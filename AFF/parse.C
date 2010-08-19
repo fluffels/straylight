@@ -379,16 +379,19 @@ parseCone(FILE *fp, Scene& scene)
       apexRadius = -apexRadius;
    }
    
-   if (baseRadius != apexRadius)
-   {
-      printf("cones are not supported by this program\n");
-      exit(1);
-   }
+   SceneObject* o;
 
-   Cylinder* c = new Cylinder(base, apex, baseRadius);
-   c->mat = mat;
+   if (baseRadius == apexRadius)
+   {
+      o = new Cylinder(base, apex, baseRadius);
+   }
+   else
+   {
+      o = new Cone(base, baseRadius, apex, apexRadius);
+   }
+   o->mat = mat;
    
-   scene.addObject(c);
+   scene.addObject(o);
 }
 
 /**

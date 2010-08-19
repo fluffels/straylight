@@ -3,9 +3,9 @@ CFLAGS = -fmessage-length=0 -std=c++0x -pipe
 LDFLAGS = -pipe
 LDLIBS = -L/usr/X11R6/lib -lpng -lpthread
 OBJS = Colour.o GraphicsLibrary/SimpleVector.o Camera.o Ray.o \
-Material.o SceneObject.o Sphere.o Plane.o Polygon.o PolygonPatch.o Cylinder.o \
-Light.o Scene.o SimpleScene.o BoxedScene.o AABB.o \
-Main.o AFF/parse.o AFF/texture.o AFF/animation.o AFF/quat.o AFF/kbsplpos.o \
+Material.o SceneObject.o Sphere.o Plane.o Polygon.o PolygonPatch.o Cone.o \
+Cylinder.o Light.o Scene.o SimpleScene.o BoxedScene.o AABB.o Main.o \
+AFF/parse.o AFF/texture.o AFF/animation.o AFF/quat.o AFF/kbsplpos.o \
 AFF/kbsplrot.o
 TARGET = straylight
 

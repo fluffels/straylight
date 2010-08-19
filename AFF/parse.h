@@ -8,6 +8,7 @@
 #include <stdio.h>
 
 #include "../Colour.h"
+#include "../Cone.h"
 #include "../Cylinder.h"
 #include "../Light.h"
 #include "../Material.h"
