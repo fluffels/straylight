@@ -22,9 +22,9 @@ Cone(Vector& base, double baseRadius, Vector& apex, double apexRadius):
    max.y = std::max(base.y, apex.y) + std::max(baseRadius, apexRadius);
    max.z = std::max(base.z, apex.z) + std::max(baseRadius, apexRadius);
 
-   min.x = std::min(base.x, apex.x) + std::max(baseRadius, apexRadius);
-   min.y = std::min(base.y, apex.y) + std::max(baseRadius, apexRadius);
-   min.z = std::min(base.z, apex.z) + std::max(baseRadius, apexRadius);
+   min.x = std::min(base.x, apex.x) - std::max(baseRadius, apexRadius);
+   min.y = std::min(base.y, apex.y) - std::max(baseRadius, apexRadius);
+   min.z = std::min(base.z, apex.z) - std::max(baseRadius, apexRadius);
 }
 
 bool Cone::
