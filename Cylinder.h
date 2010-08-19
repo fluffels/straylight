@@ -1,5 +1,5 @@
-#ifndef CONE_H
-#define CONE_H
+#ifndef CYLINDER_H
+#define CYLINDER_H
 
 #include <algorithm>
 #include <cmath>

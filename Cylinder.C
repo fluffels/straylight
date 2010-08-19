@@ -35,14 +35,14 @@ intersect(Ray& r) const
    Vector D = (R.cross(A)).normalise();
    double d = abs((Br - Bc).dot(D));
 
-   if (d > _radius)
+   if (d >= _radius)
    {
       return false;
    }
 
    /* The formula for "t" below does not include the minus in the body of the
     * text. The attached code shows it, so it's probably a misprint. */
-   double t = (-(Br - Bc).cross(A).dot(D)) / R.cross(A).getMagnitude();
+   double t = -((Br - Bc).cross(A).dot(D)) / R.cross(A).getMagnitude();
 
    Vector O = D.cross(A).normalise();
 
@@ -51,25 +51,37 @@ intersect(Ray& r) const
    double t_in = t - s;
    double t_out = t + s;
 
-   Vector H = Br + R * t_in;
+   double t_final = t_in;
+   if (t_in < 0)
+   {
+      if (t_out < 0)
+      {
+         return false;
+      }
+      else
+      {
+         t_final = t_out;
+      }
+   }
 
-   /* This section contains a bug. It uses the cosine between the rays going
-    * from the apex / base to the point to determine whether this point is part
-    * of the finite cylinder. When viewing a cylinder on its own, this doesn't
-    * seem to work properly. However, it doesn't cause any errors on the "rings"
-    * scene, so it's low priority to fix. */
+   Vector H = Br + R * t_final;
+
+   /* The if statement below makes sure the cylinder is between the apex and
+    * basis vectors using dot products. The idea is that a line drawn from the
+    * base to a point on the cylinder will form a sharp angle (cos > 0) with the
+    * direction vector, while the line between that point and the apex will form
+    * an obtuse angle (cos < 0) with the direction vector. */
    Vector Ha = (H - _apex).normalise();
    Vector Hb = (H - _base).normalise();
 
    if ((Hb.dot(A) > 0) && (Ha.dot(A) < 0))
    {
-      Vector HB = H - Bc;
-
+      Vector HB = (H - Bc);
       Vector N = (HB - (A * HB.dot(A))) / _radius;
 
       r.intersected = this;
       r.intersection = H;
-      r.normal = N.normalise();
+      r.normal = N;
 
       return true;
    }
