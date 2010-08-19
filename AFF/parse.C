@@ -236,7 +236,7 @@ parseLight(FILE *fp, Scene& scene)
       //V4SET4(col,1.0f,1.0f,1.0f,1.0f);
       for (int j = 0; j < 3; j++)
       {
-         l.colour.set(j, 0.5f);
+         l.colour.set(j, 0.3f);
       }
    }
    else if (num != 3)
@@ -373,12 +373,18 @@ parseCone(FILE *fp, Scene& scene)
       exit(1);
    }
    
-   if (baseRadius < 0.0)
+   if ((baseRadius < 0) || (apexRadius < 0))
    {
-      baseRadius = -baseRadius;
-      apexRadius = -apexRadius;
+      printf("negative radii are not supported\n");
+      exit(1);
    }
    
+   if (apexRadius > baseRadius)
+   {
+      printf("apex radii cannot be bigger than base radii (see NFF spec)\n");
+      exit(1);
+   }
+
    SceneObject* o;
 
    if (baseRadius == apexRadius)
