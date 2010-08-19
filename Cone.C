@@ -7,24 +7,22 @@ Cone(Vector& base, double baseRadius, Vector& apex, double apexRadius):
    _apex(apex),
    _apexRadius(apexRadius)
 {
-   _dir = _base - _apex;
+   _dir = _apex - _base;
    _length = _dir.getMagnitude();
    
    _dir = _dir.normalise();
    
-   _theta = atan(_baseRadius / _length);
-   
-   /* The negation below is because the apex must be extended in the negative
-    * direction to the cone's direction. */
-   _extendedApex = _apex - _dir * _apexRadius / tan(_theta);
+   _theta = atan((_baseRadius - _apexRadius) / _length);
 
-   max.x = std::max(base.x, apex.x) + std::max(baseRadius, apexRadius);
-   max.y = std::max(base.y, apex.y) + std::max(baseRadius, apexRadius);
-   max.z = std::max(base.z, apex.z) + std::max(baseRadius, apexRadius);
+   _extendedApex = _apex + _dir * (_apexRadius / tan(_theta));
 
-   min.x = std::min(base.x, apex.x) - std::max(baseRadius, apexRadius);
-   min.y = std::min(base.y, apex.y) - std::max(baseRadius, apexRadius);
-   min.z = std::min(base.z, apex.z) - std::max(baseRadius, apexRadius);
+   max.x = std::max(base.x, apex.x) + baseRadius;
+   max.y = std::max(base.y, apex.y) + baseRadius;
+   max.z = std::max(base.z, apex.z) + baseRadius;
+
+   min.x = std::min(base.x, apex.x) - baseRadius;
+   min.y = std::min(base.y, apex.y) - baseRadius;
+   min.z = std::min(base.z, apex.z) - baseRadius;
 }
 
 bool Cone::
@@ -52,41 +50,48 @@ intersect(Ray& r) const
    {
       double t0 = (-c1 - sqrt(disc)) * (1 / c2);
       double t1 = (-c1 + sqrt(disc)) * (1 / c2);
-      double t[2];
-      
-      if (t0 < t1)
+
+      /* Note that this object is one-sided. As such, we are only interested in
+       * the first intersection that is in front of the ray origin. */
+      double t_final = t0;
+      if (t0 < 0)
       {
-         t[0] = t0;
-         t[1] = t1;
+         if (t1 < 0)
+         {
+            return false;
+         }
+         else
+         {
+            t_final = t1;
+         }
       }
       else
       {
-         t[0] = t1;
-         t[1] = t0;
+         if (t1 < t0)
+         {
+            t_final = t1;
+         }
       }
       
-      for (int a = 0; a < 2; a++)
-      {
-         Vector point = r.pos + r.dir * t[a];
-         
-         /* This ensures that the point is within the stated apex & base
-          * coordinates. */
-         if (((point - _apex).dot(A) > 0) && ((point - _base).dot(A) < 0))
-         {
-            r.intersection = point;
-            r.intersected = this;
-            
-            /* To calculate the normal at a point, we project that point onto
-             * the direction vector of the cone and add it to the apex. Now we
-             * have a point on the central axis of the cone. We can simply
-             * subtract this from the point on the surface to obtain the
-             * normal. */
-            Vector v = point - _apex;
-            Vector proj = _dir * (v.dot(_dir) / _dir.dot(_dir));
-            r.normal = (point - (_apex + proj)).normalise();
+      Vector point = r.pos + r.dir * t_final;
 
-            return true;
-         }
+      /* This ensures that the point is within the stated apex & base
+       * coordinates. */
+      if (((point - _apex).dot(A) <= 0) && ((point - _base).dot(A) >= 0))
+      {
+         r.intersection = point;
+         r.intersected = this;
+         
+         /* To calculate the normal at a point, we project that point onto
+          * the direction vector of the cone and add it to the apex. Now we
+          * have a point on the central axis of the cone. We can simply
+          * subtract this from the point on the surface to obtain the
+          * normal. */
+         Vector v = point - _apex;
+         Vector proj = _dir * (v.dot(_dir) / _dir.dot(_dir));
+         r.normal = (point - (_apex + proj)).normalise();
+
+         return true;
       }
    }
    else

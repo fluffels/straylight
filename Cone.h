@@ -9,6 +9,11 @@
 
 /**
  * Encapsulates a cone defined by base and an apex vertices and radii.
+ *
+ * This cone does not support negative radii as defined in the NFF spec, because
+ * there are none in the SPD definitions
+ *
+ * Note that this cone is considered one-sided (the inside is not visible).
  */
 class Cone : public SceneObject
 {
