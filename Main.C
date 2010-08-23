@@ -343,42 +343,28 @@ shootRay(Ray& r)
             /* Entering object. */
             if (r.normal.dot(r.dir) < 0)
             {
-               eta = r.ior / m.ior;
+               double eta1 = r.iorStack.back();
+               double eta2 = m.ior;
+               eta = eta1 / eta2;
 
-               newRay.ior = m.ior;
-               newRay.inside = r.inside + 1;
+               r.iorStack.push_back(eta2);
             }
             /* Exiting object. */
             else
             {
-               /* We default to the IOR of air if the ray is exiting the last
-                * object that contained it. */
-               double newIOR = Ray::AIR_IOR;
-               /* Otherwise, we use the IOR stored in the ray, which is the IOR
-                * of the last object it /entered/, which should give us the IOR
-                * outside the object being exited. This assumes that the exit
-                * from this object is contained within the other object. I see
-                * no way for this not to be true in the case of rays, unless the
-                * ray is exiting at a point that is the boundary for both
-                * objects. This feels like a really rare corner case though, so
-                * it will remain ignored. */
-               if (r.inside > 1)
-               {
-                  newIOR = r.ior;
-               }
+               double eta1 = r.iorStack.back();
+               r.iorStack.pop_back();
+               double eta2 = r.iorStack.back();
 
-               eta = m.ior / newIOR;
-
-               newRay.ior = newIOR;
-               newRay.inside = r.inside - 1;
+               eta = eta1 / eta2;
             }
 
-            double eta2 = eta * eta;
-            double sinI2 = eta2 * (1.0f - cosI * cosI);
+            double etaSq = eta * eta;
+            double sinI2 = etaSq * (1.0f - cosI * cosI);
 
             if (sinI2 <= 1)
             {
-               Vector transmit = (v * eta) + (n * (eta * cosI - (sqrt(1.0f - sinI2) / eta2)));
+               Vector transmit = (v * eta) + (n * (eta * cosI - (sqrt(1.0f - sinI2) / etaSq)));
                //Vector transmit = (v * eta) + (n * (eta * cosI - sqrt(1.0f - sinI2)));
                transmit = transmit.normalise();
 
@@ -386,6 +372,7 @@ shootRay(Ray& r)
                 * errors. */
                p = r.intersection + transmit * 0.001f;
 
+               newRay.iorStack = r.iorStack;
                newRay.pos = p;
                newRay.dir = transmit;
                newRay.depth = r.depth + 1;

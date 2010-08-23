@@ -6,11 +6,17 @@
 class SceneObject;
 
 #include <map>
+#include <vector>
 
 #include "SceneObject.h"
 #include "Vector.h"
 
 using namespace std;
+
+/**
+ * The index of refractivity for air (approximated).
+ */
+static const double AIR_IOR = 1.0003;
 
 /**
  * Encapsulates the mathematical concept of a ray. A ray has a position
@@ -20,19 +26,18 @@ class Ray
 {
    public:
       /**
-       * The index of refractivity for air (approximated).
-       */
-      static const double AIR_IOR = 1.0003;
-
-      /**
        * This sets how many bounces to trace a ray through.
        */
       static const int TRACE_DEPTH = 4;
       
-      Ray(): depth(0) {}
+      /*
+       * Default constructor. Initializes pos to (0, 0, 0), dir to (0, 0, 1) and
+       * depth to 0. Pushes AIR_IOR onto iorStack.
+       */
+      Ray();
 
       /**
-       * Constructor.
+       * Constructor. Initializes depth to 0 and pushes AIR_IOR onto iorStack.
        * 
        * @param newPos The position of the ray.
        * @param newDir The direction of the ray.
@@ -55,12 +60,6 @@ class Ray
        * The ray's direction.
        */
       Vector dir;
-      
-      /*
-       * //TODO: Write this
-       */
-      //map<const SceneObject*, > containers;
-      int inside;
 
       /**
        * The location of the ray's last intersection with an object.
@@ -68,11 +67,11 @@ class Ray
       Vector intersection;
       
       /**
-       * The index of refractivity of the substance the ray is currently
-       * passing through. This is 1.00 by default, which is roughly the IOR for
-       * air.
+       * A history of the IORs of objects the ray passed through, the most
+       * recent at the top of the stack. This will be initialised to contain
+       * the IOR of air.
        */
-      double ior;
+      vector<double> iorStack;
 
       /**
        * The most recently intersected object for this ray.
