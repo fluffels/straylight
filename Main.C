@@ -291,13 +291,6 @@ shootRay(Ray& r)
 
       Colour localColour(0, 0, 0);
 
-      Vector n = r.normal;
-      /* Reverse the normal when we are striking the object from inside. */
-      if (r.normal.dot(r.dir) >= 0)
-      {
-         n = n * -1;
-      }
-
       vector<Light>::iterator i = scene->lights.begin();
       while (i != scene->lights.end())
       {
@@ -316,8 +309,9 @@ shootRay(Ray& r)
       {
          /* Partially based on code found at:
           * http://www.devmaster.net/articles/raytracing_series/part2.php */
-         Vector p = r.intersection;
-         Vector v = r.dir;
+         Vector& n = r.normal;
+         Vector& p = r.intersection;
+         Vector& v = r.dir;
 
          double cosI = v.dot(n);
 
