@@ -24,3 +24,6 @@ time_graph.png
 old.png
 out.png
 *.png
+pov.log
+straylight.log
+straylight_naive.log

@@ -3,20 +3,48 @@
 echo Starting test...
 
 PREV_TIME=$TIME
-rm times.log
+export TIME="%e"
 
-WIDTH=1920
-HEIGHT=1080
+WIDTH=10
+HEIGHT=10
 
-echo "FILE\t\tTIME" >> times.log
-echo "----\t\t----\n" >> times.log
+rm straylight_naive.log straylight.log pov.log
+rm straylight*.png
+rm mount.png balls.png tetra.png tree.png rings.png gears.png
 
-for f in *.nff
+echo "FILE\t\tTIME" >> straylight_naive.log
+echo "----\t\t----\n" >> straylight_naive.log
+
+echo "FILE\t\tTIME" >> straylight.log
+echo "----\t\t----\n" >> straylight.log
+
+echo "FILE\t\tTIME" >> pov.log
+echo "----\t\t----\n" >> pov.log
+
+SCENES="mount balls tetra tree rings gears"
+
+for s in $SCENES
 do
-	echo "Rendering $f..."
-	export TIME="$f\t%e"
-	time -a -o times.log ../../../straylight -w $WIDTH -h $HEIGHT -f $f -o $f.png
-	echo "Finished $f."
+	echo "Rendering $s using Straylight in naïve mode..."
+	echo -n "$s\t\t" >> straylight_naive.log
+	time -a -o straylight_naive.log ../../../straylight -n -w $WIDTH -h $HEIGHT -f $s.nff -o straylight_naive_$s.png
+	echo "Finished $s."
+done
+
+for s in $SCENES
+do
+        echo "Rendering $s using Straylight in AABB mode..."
+        echo -n "$s\t\t" >> straylight.log
+        time -a -o straylight.log ../../../straylight -w $WIDTH -h $HEIGHT -f $s.nff -o straylight_$s.png
+        echo "Finished $s."
+done
+
+for s in $SCENES
+do
+        echo "Rendering $s using POVRay..."
+        echo -n "$s\t\t" >> pov.log
+        time -a -o pov.log povray -W$WIDTH -H$HEIGHT -UV Version=3.1 Display=False POVRay/$s.pov 2> /dev/null
+        echo "Finished $s."
 done
 
 export TIME=$PREV_TIME
