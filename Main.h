@@ -44,7 +44,7 @@ int width = 0;
 /** Height of the image to produce. */
 int height = width;
 /** Amount of threads to spin up. */
-int threadCount = 4;
+int threadCount = 1;
 
 /** Name of the output file. */
 const char* outFileName = "out.png";
