@@ -5,8 +5,8 @@ echo Starting test...
 PREV_TIME=$TIME
 export TIME="%e"
 
-WIDTH=10
-HEIGHT=10
+WIDTH=512
+HEIGHT=512
 
 rm straylight_naive.log straylight.log pov.log
 rm straylight*.png
