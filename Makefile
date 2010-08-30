@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -fmessage-length=0 -std=c++0x -pipe
 LDFLAGS = -pipe
-LDLIBS = -L/usr/X11R6/lib -lpng -lpthread
+LDLIBS = -lpng -lpthread
 OBJS = Colour.o GraphicsLibrary/SimpleVector.o Camera.o Ray.o \
 Material.o SceneObject.o Sphere.o Plane.o Polygon.o PolygonPatch.o Cone.o \
 Cylinder.o Light.o Scene.o SimpleScene.o BoxedScene.o AABB.o Main.o \
