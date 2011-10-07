@@ -385,10 +385,12 @@ shootRay(Ray& r)
                 * errors. */
                p = r.intersection + transmit * 0.001f;
 
-               newRay.iorStack = r.iorStack;
-               newRay.pos = p;
-               newRay.dir = transmit;
-               newRay.depth = r.depth + 1;
+               /* Re-use our old ray. It gets copied later on anyway, and isn't
+                * used again in this method. This is done for optimization
+                * purposes. */
+               r.pos = p;
+               r.dir = transmit;
+               r.depth += 1;
 
                Colour transmittance = shootRay(newRay) * m.kT;
                localColour += transmittance;
