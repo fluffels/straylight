@@ -40,9 +40,9 @@ bool progress = false;
 /** The name of the NFF file to parse. */
 char nffFileName[255] = "";
 /** Width of the image to produce. */
-int width = 0;
+int width = 640;
 /** Height of the image to produce. */
-int height = width;
+int height = 480;
 /** Amount of threads to spin up. */
 int threadCount = 1;
 

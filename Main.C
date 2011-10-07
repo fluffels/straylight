@@ -183,6 +183,18 @@ parseArguments(int argc, char** argv)
          height = atoi(argv[a + 1]);
          a++;
       }
+      else if ((strcmp(argv[a], "-t") == 0) || (strcmp(argv[a], "--threads")
+               == 0))
+      {
+         if (argc < a + 2)
+         {
+            printf("Option '--threads / -t' requires an argument.\n\n");
+            printUsage();
+         }
+
+         threadCount = atoi(argv[a + 1]);
+         a++;
+      }
       else if ((strcmp(argv[a], "-o") == 0) || (strcmp(argv[a], "--output")
                == 0))
       {
@@ -220,13 +232,14 @@ parseArguments(int argc, char** argv)
 void
 printUsage()
 {
-   printf("Usage: ray (-f | --file) [options]\n");
+   printf("Usage: straylight (-f | --file) [options]\n");
    printf("\n");
    printf("\t--help\t\tShow this help message.\n");
-   printf("\t-f --file\tThe scene description file.\n");
-   printf("\t-w --width\tSet the output image's horizontal resolution.\n");
-   printf("\t-h --height\tSet the output image's vertical resolution.\n");
-   printf("\t-o --output\tSpecify the output filename (default 'out.tga').\n");
+   printf("\t-f --file\tThe scene description file (required).\n");
+   printf("\t-w --width\tSet the output image's horizontal resolution (default: 640).\n");
+   printf("\t-h --height\tSet the output image's vertical resolution (default: 480).\n");
+   printf("\t-t --threads\tSet the amount of threads to spin up (default: 1).\n");
+   printf("\t-o --output\tSpecify the output filename (default: 'out.png').\n");
    printf("\t-n --naive\tPass this to disable acceleration methods.\n");
    printf("\t-p --progress\tPass this to enable progress updates..\n");
    printf("\t--no-output\tPass this to disable output to a file.\n");
