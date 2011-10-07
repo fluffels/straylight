@@ -92,15 +92,11 @@ intersect(Ray& r) const
             max = abs(n[a]);
          }
       }
-      //i0 = 2;
       
       /* Set i1 & i2 to the other two axes. */
       int i1 = (i0 + 1) % 3;
       int i2 = (i0 + 2) % 3;
       
-      //p.x = 0.5;
-      //p.y = -0.5;
-
       /* Throw away the dominant axes, projecting the polygon onto the two
        * remaining axes. */
       const int U = 0;
@@ -138,16 +134,11 @@ intersect(Ray& r) const
          double Va = verts[i][V];
          double Vb = verts[(i + 1) % _vertexCount][V];
 
-         //printf("Ua = %f, Va = %f\n", Ua, Va);
-         //printf("Ub = %f, Vb = %f\n", Ub, Vb);
-
          if (Va >= 0) sign = +1;
          else sign = -1;
 
          if (Vb >= 0) nextSign = +1;
          else nextSign = -1;
-
-         //printf("sign = %d, nextSign = %d\n", sign, nextSign);
 
          /* If sign != nextSign, the face between vertices i and i + 1 might
           * cross the +U axis. */
@@ -156,19 +147,15 @@ intersect(Ray& r) const
             /* If both U-values are positive then it must cross +U. */
             if ((Va > 0) && (Vb > 0))
             {
-               //printf("pos, so ++\n");
                crossings++;
             }
 
-            //double x = i % 2;
-            //printf("test: %d\n", (1.0/x) > 0);
             /* If at least either is positive, then we must compute the
              * intersection with the +U axis. */
             if ((Ua > 0) || (Ub > 0))
             {
                double result = Ua - Va * (Ub - Ua) / (Vb - Va);
 
-               //printf("result = %f\n", result);
                if (result > 0)
                {
                   crossings++;
@@ -178,9 +165,6 @@ intersect(Ray& r) const
 
          }
       }
-
-      //printf("crossings = %d\n", crossings);
-      //printf("----------------\n");
 
       return crossings % 2 == 1;
    }
