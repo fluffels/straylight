@@ -351,7 +351,6 @@ shootRay(Ray& r)
              * http://www.devmaster.net/articles/raytracing_series/part3.php */
 
             double eta = 0;
-            Ray newRay;
 
             /* Entering object. */
             if (r.normal.dot(r.dir) < 0)
@@ -392,7 +391,7 @@ shootRay(Ray& r)
                r.dir = transmit;
                r.depth += 1;
 
-               Colour transmittance = shootRay(newRay) * m.kT;
+               Colour transmittance = shootRay(r) * m.kT;
                localColour += transmittance;
             }
          }
