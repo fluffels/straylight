@@ -18,6 +18,29 @@ light_source
 
 sphere
 {
+   <0.0, 0.0, 0.0>, 0.5
+
+   texture
+   {
+      pigment {color rgb <1.0, 0.0, 0.0> transmit 1.0}
+
+      finish
+      {
+         ambient 0
+         diffuse 0
+         phong 0 phong_size 0
+         reflection 0
+      }
+   }
+
+   interior
+   {
+      ior 1.33
+   }
+}
+
+sphere
+{
    <0.0, 0.0, -2.0>, 0.5
 
    texture
