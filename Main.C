@@ -335,10 +335,10 @@ shootRay(Ray& r)
 
             /* Move the ray origin slightly forward to avoid precision
              * errors. */
-            p = r.intersection + reflect * 0.001f;
+            Vector p_new = r.intersection + reflect * 0.001f;
 
             /* Construct and shoot the reflected ray. */
-            Ray newRay(p, reflect);
+            Ray newRay(p_new, reflect);
             newRay.depth = r.depth + 1;
 
             Colour reflection = shootRay(newRay) * m.kS;
@@ -372,22 +372,21 @@ shootRay(Ray& r)
             }
 
             double etaSq = eta * eta;
-            double sinI2 = etaSq * (1.0f - cosI * cosI);
+            double sinT2 = etaSq * (1.0f - cosI * cosI);
 
-            if (sinI2 <= 1)
+            if (sinT2 <= 1)
             {
-               Vector transmit = (v * eta) + (n * (eta * cosI - (sqrt(1.0f - sinI2) / etaSq)));
-               //Vector transmit = (v * eta) + (n * (eta * cosI - sqrt(1.0f - sinI2)));
+               Vector transmit = (v * eta) + (n * (eta * cosI - (sqrt(1.0f - sinT2) / etaSq)));
                transmit = transmit.normalise();
 
                /* Move the ray origin slightly forward to avoid precision
                 * errors. */
-               p = r.intersection + transmit * 0.001f;
+               Vector p_new = r.intersection + transmit * 0.001f;
 
                /* Re-use our old ray. It gets copied later on anyway, and isn't
                 * used again in this method. This is done for optimization
                 * purposes. */
-               r.pos = p;
+               r.pos = p_new;
                r.dir = transmit;
                r.depth += 1;
 
