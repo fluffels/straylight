@@ -44,7 +44,7 @@ class Camera
       /**
        * Default viewing angle of the Camera in radians.
        * 
-       * 0.471 radians / 27 degrees
+       * 0.471 radians or 27 degrees
        */
       static const double DEFAULT_VIEW_ANGLE;
 
@@ -57,9 +57,12 @@ class Camera
        * Constructor.
        * 
        * @param cop The centre of projection as a vector.
-       * @param at The point the camera is looking up.
+       * @param at The point the camera is looking at.
        * @param up The direction that must be up for the camera, 
        * as a vector.
+       * @param width The width of the image to produce.
+       * @param height The height of the image to produce.
+       * @param viewAngle The camera's viewing angle in radians.
        */
       Camera(const Vector& cop, const Vector& at, const Vector& up, int width,
             int height, double viewAngle);
