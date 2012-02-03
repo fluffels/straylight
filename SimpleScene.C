@@ -31,16 +31,14 @@ testIntersection(Ray& r)
    {
       SceneObject* s = *i;
       
-      Ray temp(r);
-      if (s->intersect(temp) == true)
+      if (s->intersect(r) == true)
       {
-         double distance = (temp.intersection - temp.pos).getMagnitude();
+         double distance = (r.intersection - r.pos).getMagnitude();
          
          if (distance < bestDistance)
          {
             found = true;
             bestDistance = distance;
-            r = temp;
          }
       }
    }
