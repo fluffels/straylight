@@ -375,7 +375,7 @@ shootRay(Ray& r)
             double c1Sq = pow(c1, 2);
 
             /* Eta is reversed here, since the Heckbert formula (below) is based 
-             * on it. */
+             * on it. See p. 90 of thesis. */
             eta = 1 / eta; 
             double etaSq = pow(eta, 2);
 
