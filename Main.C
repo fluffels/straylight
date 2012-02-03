@@ -369,10 +369,11 @@ shootRay(Ray& r)
                double eta2 = r.iorStack.back();
 
                eta = eta1 / eta2;
+
+               n = n * -1;
             }
 
             double c1 = v.dot(n) * -1;
-            c1 = abs(c1);
             double c1Sq = pow(c1, 2);
 
             /* Eta is reversed here, since the Heckbert formula (below) is based 
