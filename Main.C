@@ -309,7 +309,7 @@ shootRay(Ray& r)
       {
          Light light = *i;
 
-         if (inShadow(r, light) == false)
+         if (scene->hasLineOfSight(light, *s, r.intersection) == true)
          {
             Colour contrib = light.getLocalLightAt(r, scene->cam.getCOP());
             localColour += contrib;
@@ -371,13 +371,29 @@ shootRay(Ray& r)
                eta = eta1 / eta2;
             }
 
-            double etaSq = eta * eta;
-            double sinT2 = etaSq * (1.0f - cosI * cosI);
+            double c1 = v.dot(n) * -1;
+            double c1Sq = pow(c1, 2);
 
-            if (sinT2 <= 1)
+            /* Eta is reversed here, since the Heckbert formula (below) is based 
+             * on it. */
+            eta = 1 / eta; 
+            double etaSq = pow(eta, 2);
+
+            if (etaSq + c1Sq >= 1)
             {
-               Vector transmit = (v * eta) + (n * (eta * cosI - (sqrt(1.0f - sinT2) / etaSq)));
+               Vector transmit = (v / eta) + (n / eta) * (c1 - sqrt(etaSq - 1 + 
+                        c1Sq));
+               //cout << "etaSq = " << etaSq << endl;
+               //cout << "c1 = " << c1 << endl;
+               //cout << "det = " << etaSq - 1 + c1Sq << endl;
+               //cout << "sqrt = " << sqrt(etaSq - 1 + c1Sq) << endl;
+
                transmit = transmit.normalise();
+
+               //cout << "v = " << v.x << ", " << v.y << ", " << v.z << endl;
+               //cout << "v = " << v.normalise().x << ", " << v.normalise().y << ", " << v.normalise().z << endl;
+               //cout << "transmit = " << transmit.x << ", " << transmit.y << ", " << transmit.z << endl;
+               //cout << endl << endl;
 
                /* Move the ray origin slightly forward to avoid precision
                 * errors. */
