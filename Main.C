@@ -372,6 +372,7 @@ shootRay(Ray& r)
             }
 
             double c1 = v.dot(n) * -1;
+            c1 = abs(c1);
             double c1Sq = pow(c1, 2);
 
             /* Eta is reversed here, since the Heckbert formula (below) is based 
@@ -385,6 +386,7 @@ shootRay(Ray& r)
                         c1Sq));
                //cout << "etaSq = " << etaSq << endl;
                //cout << "c1 = " << c1 << endl;
+               //cout << "c1Sq = " << c1Sq << endl;
                //cout << "det = " << etaSq - 1 + c1Sq << endl;
                //cout << "sqrt = " << sqrt(etaSq - 1 + c1Sq) << endl;
 
