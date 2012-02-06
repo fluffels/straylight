@@ -40,9 +40,9 @@ castRaySubset(void* arg)
       Colour colour = shootRay(r);
 
       int index = pixel * 3;
-      image[index] = min<double> (colour.r, 1.0) * 255;
-      image[index + 1] = min<double> (colour.g, 1.0) * 255;
-      image[index + 2] = min<double> (colour.b, 1.0) * 255;
+      image[index] = colour.r * 255;
+      image[index + 1] = colour.g * 255;
+      image[index + 2] = colour.b * 255;
 
       pixel = __sync_fetch_and_add(&nextPixel, 1);
    }
@@ -252,7 +252,8 @@ setup()
 {
    width = scene->cam.getWidth();
    height = scene->cam.getHeight();
-   image = new unsigned char[width * height * COLOURS_PER_PIXEL];
+   image = new unsigned char[width * height * COLOURS_PER_PIXEL]; 
+      
    
    outFile = fopen(outFileName, "wb");
    if (outFile == NULL)
@@ -309,9 +310,13 @@ shootRay(Ray& r)
       {
          Light light = *i;
 
-         if (scene->hasLineOfSight(light, *s, r.intersection) == true)
+         double los = scene->getLineOfSight(light, *s, r.intersection);
+
+         if (los >= 0.9)
          {
             Colour contrib = light.getLocalLightAt(r, scene->cam.getCOP());
+
+            contrib *= los;
             localColour += contrib;
          }
 

@@ -60,6 +60,14 @@ class Colour
        * @return The Colour.
        */
       Colour operator*(double rhs);
+
+      /**
+       * Self-multiplication operator. This modifies the current Colour.
+       *
+       * @param rhs The right hand side of the operation.
+       * @return A reference to the current Colour.
+       */
+      Colour& operator*=(double rhs);
       
       /**
        * Increment operator.

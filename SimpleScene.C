@@ -20,12 +20,13 @@ addObject(SceneObject* s)
    objects.push_back(s);
 }
 
-bool SimpleScene::
-hasLineOfSight(Light& source, const SceneObject& dest, Vector& p)
+double SimpleScene::
+getLineOfSight(Light& source, const SceneObject& dest, Vector& p)
 {
+   double los = 1.0;
+   
    /* This is the maximum distance an obscuring object can be at, measured from 
-    * 'source'. We subtract a small epsilon value here. The object might fall 
-    * inside the MAX_DIST if we don't do this. */
+    * 'source'. */
    const double MAX_DIST = (p - source.pos).getMagnitude() - 0.001f;
 
    /* A ray from the 'source' vector to the 'dest' vector. */
@@ -38,24 +39,29 @@ hasLineOfSight(Light& source, const SceneObject& dest, Vector& p)
    {
       SceneObject* s = *i;
 
-      /* The current object is transparent, therefore it does not obstruct line 
-       * of sight. It is skipped. */
-      if (s->mat.kT > 0)
-      {
-         continue;
-      }
-      else if (s->intersect(r) == true)
+      if (s->intersect(r) == true)
       {
          double distance = (r.intersection - r.pos).getMagnitude();
 
          if (distance < MAX_DIST)
          {
-            return false;
+            /* The current object is transparent, therefore it does not obstruct 
+             * line of sight - it merely attenuates light. */
+            if (s->mat.kT > 0)
+            {
+               los *= s->mat.kT;
+
+               continue;
+            }
+            else 
+            {
+               return 0.0;
+            }
          }
       }
    }
    
-   return true;
+   return los;
 }
 
 bool SimpleScene::

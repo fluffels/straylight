@@ -43,9 +43,12 @@ class Scene
        * @param dest The object for which to test line of sight.
        * @param p The point on the object where line of sight is needed.
        *
-       * @return True if the light source has line of sight, false otherwise.
+       * @return A value between 0.0 and 1.0, indicating how much light the 
+       * object receives from the light source. Each transparent object in the 
+       * way of the light source will multiply the original value of 1.0 with 
+       * its kT property, attenuating the light.
        */
-      virtual bool hasLineOfSight(Light& source, const SceneObject& dest, 
+      virtual double getLineOfSight(Light& source, const SceneObject& dest, 
             Vector& p) = 0;
 
       /**

@@ -22,9 +22,11 @@ addObject(SceneObject* s)
    boxes.push_back(new AABB(*s));
 }
 
-bool BoxedScene::
-hasLineOfSight(Light& source, const SceneObject& dest, Vector& p)
+double BoxedScene::
+getLineOfSight(Light& source, const SceneObject& dest, Vector& p)
 {
+   double los = 1.0;
+
    /* This is the maximum distance an obscuring object can be at, measured from 
     * 'source'. We subtract a small epsilon value here. The object might fall 
     * inside the MAX_DIST if we don't do this. */
@@ -41,24 +43,29 @@ hasLineOfSight(Light& source, const SceneObject& dest, Vector& p)
       AABB* box = *i;
       SceneObject& s = box->object;
 
-      /* The current object is transparent, therefore it does not obstruct line 
-       * of sight. It is skipped. */
-      if (s.mat.kT > 0)
-      {
-         continue;
-      }
-      else if (box->intersect(r) && s.intersect(r))
+      if (box->intersect(r) && s.intersect(r))
       {
          double distance = (r.intersection - r.pos).getMagnitude();
 
          if (distance < MAX_DIST)
          {
-            return false;
+            /* The current object is transparent, therefore it does not obstruct line 
+             * of sight - it merely attenuates light. */
+            if (s.mat.kT > 0)
+            {
+               los *= s.mat.kT;
+
+               continue;
+            }
+            else 
+            {
+               return 0.0;
+            }
          }
       }
    }
    
-   return true;
+   return los;
 }
 
 
