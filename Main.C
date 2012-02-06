@@ -385,18 +385,8 @@ shootRay(Ray& r)
             {
                Vector transmit = (v / eta) + (n / eta) * (c1 - sqrt(etaSq - 1 + 
                         c1Sq));
-               //cout << "etaSq = " << etaSq << endl;
-               //cout << "c1 = " << c1 << endl;
-               //cout << "c1Sq = " << c1Sq << endl;
-               //cout << "det = " << etaSq - 1 + c1Sq << endl;
-               //cout << "sqrt = " << sqrt(etaSq - 1 + c1Sq) << endl;
 
                transmit = transmit.normalise();
-
-               //cout << "v = " << v.x << ", " << v.y << ", " << v.z << endl;
-               //cout << "v = " << v.normalise().x << ", " << v.normalise().y << ", " << v.normalise().z << endl;
-               //cout << "transmit = " << transmit.x << ", " << transmit.y << ", " << transmit.z << endl;
-               //cout << endl << endl;
 
                /* Move the ray origin slightly forward to avoid precision
                 * errors. */
