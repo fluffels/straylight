@@ -39,10 +39,12 @@ bool noOutput = false;
 bool progress = false;
 /** The name of the NFF file to parse. */
 char nffFileName[255] = "";
-/** Width of the image to produce. */
-int width = 640;
-/** Height of the image to produce. */
-int height = 480;
+/** Width of the image to produce. 0 by default, so the parser knows the value 
+ * is not filled. */
+int width = 0;
+/** Height of the image to produce. 0 by default, so the parser knows the value 
+ * is not filled. */
+int height = 0;
 /** Amount of threads to spin up. */
 int threadCount = 1;
 

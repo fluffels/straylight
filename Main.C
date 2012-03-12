@@ -40,9 +40,9 @@ castRaySubset(void* arg)
       Colour colour = shootRay(r);
 
       int index = pixel * 3;
-      image[index] = colour.r * 255;
-      image[index + 1] = colour.g * 255;
-      image[index + 2] = colour.b * 255;
+      image[index] = min<double>(1.0, colour.r) * 255;
+      image[index + 1] = min<double>(1.0, colour.g) * 255;
+      image[index + 2] = min<double>(1.0, colour.b) * 255;
 
       pixel = __sync_fetch_and_add(&nextPixel, 1);
    }
