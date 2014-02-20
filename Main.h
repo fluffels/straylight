@@ -14,7 +14,6 @@
 #include "AFF/parse.h"
 
 #include "BoxedScene.h"
-#include "Camera.h"
 #include "Colour.h"
 #include "Light.h"
 #include "Material.h"
