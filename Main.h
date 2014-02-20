@@ -40,10 +40,10 @@ bool progress = false;
 char nffFileName[255] = "";
 /** Width of the image to produce. 0 by default, so the parser knows the value 
  * is not filled. */
-int width = 0;
+int width = 240;
 /** Height of the image to produce. 0 by default, so the parser knows the value 
  * is not filled. */
-int height = 0;
+int height = 240;
 /** Amount of threads to spin up. */
 int threadCount = 1;
 

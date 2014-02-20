@@ -5,6 +5,15 @@ Straylight
 ====================
 
 
+Introduction
+------------
+
+This is a program for testing how well benchmarks can indicate the performance
+gains from certain optimizations to the ray tracing algorithm. It was developed
+as part of my M.Sc.(CS) dissertation at the North West University of South
+Africa.
+
+
 Compilation
 -----------
 
@@ -26,23 +35,15 @@ through ray tracing and write output to a file called "out.png".
 Command-line Arguments
 ----------------------
 
-Usage: ray [options]
+Usage: straylight [options]
 
-	-w		Set the horizontal resolution of the image to produce.
-	-h		Set the vertical resolution of the image to produce.
-	-o		Specify the name of the output file (default "out.png").
-	--show		Pass this to view the image as it is being rendered.
-	--cast-only	Pass this to disable output to a file.
+   -w    Set the horizontal resolution of the image to produce (default 240).
+   -h    Set the vertical resolution of the image to produce (default 240).
+   -o    Specify the name of the output file (default "out.png").
+   -f    NFF file to use as input scene (required).
+   -t --threads   Set the amount of threads to spin up (default: 1).
+   -o --output Specify the output filename (default: 'out.png').
+   -n --naive  Pass this to disable acceleration methods.
+   -p --progress  Pass this to enable progress updates..
+   --no-output Pass this to disable output to a file.
 
-Pass --show to the ray program to show rendering progress. Note that
-this slows down rendering significantly. Passing --cast-only will cause
-the program not to write an output file. The -o <outfile> parameter
-controls the name of the output file created by the program. -w & -h
-control the width and height of the generated image.
-
-Examples: 	./ray -w 1024 -h 1024 		[Creates a 1024x1024 file called
-                                       out.png]
-				./ray --show					[Shows rendering as it
-                                       progresses.]
-				./ray --show --cast-only	[Same as above, but no output
-                                       file is generated.]
