@@ -1,0 +1,7 @@
+makefile.dep
+straylight
+*.png
+*.o
+gmon.out
+*~
+*.log
