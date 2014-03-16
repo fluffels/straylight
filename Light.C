@@ -33,7 +33,7 @@ getLocalLightAt(Ray& ray, const Vector& COP)
    result += diff;
 
    Vector r = l  - n * 2 * l.dot(n);
-   double dot = v.dot(r);
+   float dot = v.dot(r);
 
    if (dot > 0)
    {

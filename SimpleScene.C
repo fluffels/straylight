@@ -20,14 +20,14 @@ addObject(SceneObject* s)
    objects.push_back(s);
 }
 
-double SimpleScene::
+float SimpleScene::
 getLineOfSight(Light& source, const SceneObject& dest, Vector& p)
 {
-   double los = 1.0;
+   float los = 1.0;
    
    /* This is the maximum distance an obscuring object can be at, measured from 
     * 'source'. */
-   const double MAX_DIST = (p - source.pos).getMagnitude() - 0.001f;
+   const float MAX_DIST = (p - source.pos).getMagnitude() - 0.001f;
 
    /* A ray from the 'source' vector to the 'dest' vector. */
    Vector& pos = source.pos;
@@ -41,7 +41,7 @@ getLineOfSight(Light& source, const SceneObject& dest, Vector& p)
 
       if (s->intersect(r) == true)
       {
-         double distance = (r.intersection - r.pos).getMagnitude();
+         float distance = (r.intersection - r.pos).getMagnitude();
 
          if (distance < MAX_DIST)
          {
@@ -68,7 +68,7 @@ bool SimpleScene::
 testIntersection(Ray& r)
 {
    bool found = false;
-   double bestDistance = FLT_MAX;
+   float bestDistance = FLT_MAX;
 
    vector<SceneObject*>::iterator i;
    for (i = objects.begin(); i != objects.end(); i++)
@@ -79,7 +79,7 @@ testIntersection(Ray& r)
       
       if (s->intersect(temp) == true)
       {
-         double distance = (temp.intersection - temp.pos).getMagnitude();
+         float distance = (temp.intersection - temp.pos).getMagnitude();
          
          if (distance < bestDistance)
          {

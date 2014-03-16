@@ -26,7 +26,7 @@ class Cone : public SceneObject
        * @param apex The location of the Cone's apex.
        * @param apexRadius The radius of the Cone's apex.
        */
-      Cone(Vector& base, double baseRadius, Vector& apex, double apexRadius);
+      Cone(Vector& base, float baseRadius, Vector& apex, float apexRadius);
 
       /**
        * Tests for intersection between this Cone and a given Ray.
@@ -45,7 +45,7 @@ class Cone : public SceneObject
       /**
        * Apex radius.
        */
-      double _apexRadius;
+      float _apexRadius;
       
       /**
        * Base vertex.
@@ -55,7 +55,7 @@ class Cone : public SceneObject
       /**
        * Base radius.
        */
-      double _baseRadius;
+      float _baseRadius;
       
       /**
        * Direction vector.
@@ -70,13 +70,13 @@ class Cone : public SceneObject
       /**
        * Length of the cone.
        */
-      double _length;
+      float _length;
       
       /**
        * Calculate the angle between the direction vector of the Cone and the
        * edges of the Cone.
        */
-      double _theta;      
+      float _theta;      
 };
 
 #endif

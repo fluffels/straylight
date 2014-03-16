@@ -48,7 +48,7 @@ class Scene
        * way of the light source will multiply the original value of 1.0 with 
        * its kT property, attenuating the light.
        */
-      virtual double getLineOfSight(Light& source, const SceneObject& dest, 
+      virtual float getLineOfSight(Light& source, const SceneObject& dest, 
             Vector& p) = 0;
 
       /**

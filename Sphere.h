@@ -19,19 +19,19 @@ class Sphere : public SceneObject
        * Constructor.
        * 
        * @param pos This Sphere's centre as an object of class Vector.
-       * @param r This Sphere's radius as a double.
+       * @param r This Sphere's radius as a float.
        */
-      Sphere(const Vector& pos, double r);
+      Sphere(const Vector& pos, float r);
 
       /**
        * Constructor
        * 
        * @param pos This Sphere's centre as an object of class Vector.
-       * @param r This Sphere's radius as a double.
+       * @param r This Sphere's radius as a float.
        * @param mat This Sphere's material properties as an object of
        * class Material.
        */
-      Sphere(const Vector& pos, double r, const Material& mat);
+      Sphere(const Vector& pos, float r, const Material& mat);
 
       /**
        * Tests for intersection between this Sphere and a given Ray.
@@ -50,7 +50,7 @@ class Sphere : public SceneObject
       /**
        * The radius of this Sphere.
        */
-      double r;
+      float r;
 };
 
 #endif /*SPHERE_H_*/

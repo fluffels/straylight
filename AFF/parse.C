@@ -114,29 +114,29 @@ parseViewpoint(FILE *fp, Scene& scene, int width, int height)
    /* Initialize variables here to avoid crossing them with gotos. */
    Vector COP, AT, UP;
 
-   if (fscanf(fp, " from %lf %lf %lf", &COP.x, &COP.y, &COP.z) != 3)
+   if (fscanf(fp, " from %f %f %f", &COP.x, &COP.y, &COP.z) != 3)
    {
       goto fmterr;
    }
 ;
-   if (fscanf(fp, " at %lf %lf %lf", &AT.x, &AT.y, &AT.z) != 3)
+   if (fscanf(fp, " at %f %f %f", &AT.x, &AT.y, &AT.z) != 3)
    {
       goto fmterr;
    }
 
-   if (fscanf(fp, " up %lf %lf %lf", &UP.x, &UP.y, &UP.z) != 3)
+   if (fscanf(fp, " up %f %f %f", &UP.x, &UP.y, &UP.z) != 3)
    {
       goto fmterr;
    }
 
-   double fovAngle;
-   if (fscanf(fp, " angle %lf", &fovAngle) != 1)
+   float fovAngle;
+   if (fscanf(fp, " angle %f", &fovAngle) != 1)
    {
       goto fmterr;
    }
 
-   double hither;
-   if (fscanf(fp, " hither %lf", &hither) != 1)
+   float hither;
+   if (fscanf(fp, " hither %f", &hither) != 1)
    {
       goto fmterr;
    }
@@ -217,14 +217,14 @@ parseLight(FILE *fp, Scene& scene)
 
    Light l;
 
-   if (fscanf(fp, "%lf %lf %lf ", &l.pos.x, &l.pos.y, &l.pos.z) != 3)
+   if (fscanf(fp, "%f %f %f ", &l.pos.x, &l.pos.y, &l.pos.z) != 3)
    {
       printf("Light source position syntax error");
       exit(1);
    }
 
    /* Read optional color of light. */
-   int num = fscanf(fp, "%lf %lf %lf ", &l.colour.r, &l.colour.g, &l.colour.b);
+   int num = fscanf(fp, "%f %f %f ", &l.colour.r, &l.colour.g, &l.colour.b);
    if (num == 0)
    {
       /* I have no idea what V4SET4 is, but I'm guessing it sets 4
@@ -317,14 +317,14 @@ parseFill(FILE *fp)
 {
    /* Ignore fm for now. */
    Colour& col = mat.colour;
-   if (fscanf(fp, "%lf %lf %lf", &col.r, &col.g, &col.b) != 3)
+   if (fscanf(fp, "%f %f %f", &col.r, &col.g, &col.b) != 3)
    {
       printf("fill color syntax error");
       exit(1);
    }
 
-   double kD, kS, kT, shininess, ior;
-   if (fscanf(fp, "%lf %lf %lf %lf %lf", &mat.kD, &mat.kS, &mat.shininess,
+   float kD, kS, kT, shininess, ior;
+   if (fscanf(fp, "%f %f %f %f %f", &mat.kD, &mat.kS, &mat.shininess,
       &mat.kT, &mat.ior) != 5)
    {
       printf("fill material syntax error");
@@ -363,9 +363,9 @@ parseCone(FILE *fp, Scene& scene)
 {
    Vector base;
    Vector apex;
-   double baseRadius, apexRadius;
+   float baseRadius, apexRadius;
 
-   if (fscanf(fp, " %lf %lf %lf %lf %lf %lf %lf %lf",
+   if (fscanf(fp, " %f %f %f %f %f %f %f %f",
       &base.x, &base.y, &base.z, &baseRadius,
       &apex.x, &apex.y, &apex.z, &apexRadius) != 8)
    {
@@ -513,7 +513,7 @@ parsePoly(FILE *fp, Scene& scene)
    Vec3f temp;
    for (int q = 0; q < nverts; q++)
    {
-      if (fscanf(fp, " %lf %lf %lf", &verts[q].x, &verts[q].y, &verts[q].z)
+      if (fscanf(fp, " %f %f %f", &verts[q].x, &verts[q].y, &verts[q].z)
                != 3)
       {
          goto fmterr;
@@ -521,7 +521,7 @@ parsePoly(FILE *fp, Scene& scene)
 
       if (ispatch)
       {
-         if (fscanf(fp, " %lf %lf %lf", &norms[q].x, &norms[q].y, &norms[q].z)
+         if (fscanf(fp, " %f %f %f", &norms[q].x, &norms[q].y, &norms[q].z)
             != 3)
          {
             norms[q] = norms[q].normalise();

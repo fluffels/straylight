@@ -46,7 +46,7 @@ class Camera
        * 
        * 0.471 radians or 27 degrees
        */
-      static const double DEFAULT_VIEW_ANGLE;
+      static const float DEFAULT_VIEW_ANGLE;
 
       /**
        * Default constructor. Uses default values for everything.
@@ -65,7 +65,7 @@ class Camera
        * @param viewAngle The camera's viewing angle in radians.
        */
       Camera(const Vector& cop, const Vector& at, const Vector& up, int width,
-            int height, double viewAngle);
+            int height, float viewAngle);
       
       /**
        * Return the COP used by this camera.
@@ -130,7 +130,7 @@ class Camera
       /**
        * The viewing angle of the Camera, in radians.
        */
-      double _viewAngle;
+      float _viewAngle;
 };
 
 #endif /*CAMERA_H_*/

@@ -16,7 +16,7 @@ using namespace std;
 /**
  * The index of refractivity for air (approximated).
  */
-static const double AIR_IOR = 1.0003;
+static const float AIR_IOR = 1.0003;
 
 /**
  * Encapsulates the mathematical concept of a ray. A ray has a position
@@ -71,7 +71,7 @@ class Ray
        * recent at the top of the stack. This will be initialised to contain
        * the IOR of air.
        */
-      vector<double> iorStack;
+      vector<float> iorStack;
 
       /**
        * The most recently intersected object for this ray.

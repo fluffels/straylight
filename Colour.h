@@ -4,7 +4,7 @@
 #include "CPPLibrary/IllegalArgumentException.h"
 
 /**
- * Models a colour as a set of three doubles that range from 0 (null-
+ * Models a colour as a set of three floats that range from 0 (null-
  * intensity) to 1 (full-intensity).
  */
 class Colour
@@ -18,7 +18,7 @@ class Colour
       /**
        * Constructor, sets the values for each of the intensities.
        */
-      Colour(double red, double green, double blue);
+      Colour(float red, float green, float blue);
          
       /**
        * Copy constructor.
@@ -35,7 +35,7 @@ class Colour
        * @return A value between 0 and 1 indicating the intensity of
        * the component in this colour.
        */
-      double get(int index) const;
+      float get(int index) const;
       
       /**
        * Assignment operator.
@@ -51,7 +51,7 @@ class Colour
        * @param rhs The right hand side of the operation.
        * @return This Colour.
        */
-      Colour operator/(double rhs);
+      Colour operator/(float rhs);
       
       /**
        * Multiplication operator.
@@ -59,7 +59,7 @@ class Colour
        * @param rhs The right hand side of the operation.
        * @return The Colour.
        */
-      Colour operator*(double rhs);
+      Colour operator*(float rhs);
 
       /**
        * Self-multiplication operator. This modifies the current Colour.
@@ -67,7 +67,7 @@ class Colour
        * @param rhs The right hand side of the operation.
        * @return A reference to the current Colour.
        */
-      Colour& operator*=(double rhs);
+      Colour& operator*=(float rhs);
       
       /**
        * Increment operator.
@@ -85,22 +85,22 @@ class Colour
        * @param value A value between 0 and 1 indicating the new
        * intensity of the component in this colour.
        */
-      void set(int index, double value);
+      void set(int index, float value);
    
       /**
        * Red intensity value from 0 to 1.
        */
-      double r;
+      float r;
       
       /**
        * Green intensity value from 0 to 1.
        */
-      double g;
+      float g;
       
       /**
        * Blue intensity value from 0 to 1.
        */
-      double b;
+      float b;
 };
 
 #endif /*COLOUR_H_*/

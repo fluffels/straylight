@@ -3,7 +3,7 @@
 const Vector Camera::DEFAULT_COP(0, 0, 0);
 const Vector Camera::DEFAULT_DIR(0, 0, -1);
 const Vector Camera::DEFAULT_UP(0, 1, 0);
-const double Camera::DEFAULT_VIEW_ANGLE = (27.0 / 180.0) * PI;
+const float Camera::DEFAULT_VIEW_ANGLE = (27.0 / 180.0) * PI;
 
 Camera::
 Camera():
@@ -19,7 +19,7 @@ Camera():
 
 Camera::
 Camera(const Vector& cop, const Vector& at, const Vector& up,
-   int width, int height, double viewAngle):
+   int width, int height, float viewAngle):
    _cop(cop),
    _width(width),
    _height(height),
@@ -47,14 +47,14 @@ getRayAt(int x, int y)
       throw IllegalArgumentException("X / Y out of range.");
    }
    
-   const double LOW = -0.5;
-   const double HIGH = 0.5;
+   const float LOW = -0.5;
+   const float HIGH = 0.5;
    
-   const double MAX_X = _width - 1;
-   const double MAX_Y = _height - 1;
+   const float MAX_X = _width - 1;
+   const float MAX_Y = _height - 1;
    
-   const double X_MAG = (HIGH - LOW) * (x / MAX_X) + LOW;
-   const double Y_MAG = (HIGH - LOW) * (y / MAX_Y) + LOW;
+   const float X_MAG = (HIGH - LOW) * (x / MAX_X) + LOW;
+   const float Y_MAG = (HIGH - LOW) * (y / MAX_Y) + LOW;
    
    Vector direction = (_dir + (_right * X_MAG) + (_up * Y_MAG)).normalise();
    

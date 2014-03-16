@@ -1,7 +1,7 @@
 #include "Sphere.h"
 
 Sphere::
-Sphere(const Vector& newPos, double newR):
+Sphere(const Vector& newPos, float newR):
       pos(newPos),
       r(newR)
 {
@@ -15,7 +15,7 @@ Sphere(const Vector& newPos, double newR):
 }
 
 Sphere::
-Sphere(const Vector& newPos, double newR, const Material& newMat):
+Sphere(const Vector& newPos, float newR, const Material& newMat):
       pos(newPos),
       r(newR)
 {
@@ -33,10 +33,10 @@ intersect(Ray& ray) const
    Vector distance = ray.pos - this->pos;
    Vector dir = ray.dir;
 
-   double a = dir.dot(dir);
-   double b = (distance * 2).dot(dir);
-   double c = distance.dot(distance) - pow(r, 2);
-   double delta = b * b - 4 * a * c;
+   float a = dir.dot(dir);
+   float b = (distance * 2).dot(dir);
+   float c = distance.dot(distance) - pow(r, 2);
+   float delta = b * b - 4 * a * c;
 
    if (delta < 0)
    {
@@ -44,10 +44,10 @@ intersect(Ray& ray) const
    }
    else
    {
-      double t1 = (-b - sqrt(delta)) / (2 * a);
-      double t2 = (-b + sqrt(delta)) / (2 * a);
+      float t1 = (-b - sqrt(delta)) / (2 * a);
+      float t2 = (-b + sqrt(delta)) / (2 * a);
 
-      double t_final = t1;
+      float t_final = t1;
       if (t1 < 0)
       {
          if (t2 < 0)

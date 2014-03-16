@@ -9,7 +9,7 @@ SimpleVector()
 }
 
 SimpleVector::
-SimpleVector(const double newX, const double newY, const double newZ)
+SimpleVector(const float newX, const float newY, const float newZ)
 {
    x = newX;
    y = newY;
@@ -27,20 +27,20 @@ SimpleVector(const SimpleVector& rhs)
 SimpleVector SimpleVector::
 cross(const SimpleVector& rhs) const
 {
-   double newX = y * rhs.z - z * rhs.y;
-   double newY = z * rhs.x - x * rhs.z;
-   double newZ = x * rhs.y - y * rhs.x;
+   float newX = y * rhs.z - z * rhs.y;
+   float newY = z * rhs.x - x * rhs.z;
+   float newZ = x * rhs.y - y * rhs.x;
    
    return SimpleVector(newX, newY, newZ);
 }
 
-double SimpleVector::
+float SimpleVector::
 dot(const SimpleVector& rhs) const
 {
    return x * rhs.x + y * rhs.y + z * rhs.z;
 }
 
-double SimpleVector::
+float SimpleVector::
 getMagnitude() const
 {
    return sqrt(x * x + y * y + z * z);
@@ -75,13 +75,13 @@ operator+=(const SimpleVector& rhs)
 }
 
 SimpleVector SimpleVector::
-operator/(const double rhs) const
+operator/(const float rhs) const
 {
    return SimpleVector(x / rhs, y / rhs, z / rhs);
 }
 
 SimpleVector SimpleVector::
-operator*(const double rhs) const
+operator*(const float rhs) const
 {
    return SimpleVector(x * rhs, y * rhs, z * rhs);
 }
@@ -100,7 +100,7 @@ operator==(const SimpleVector& rhs)
    return x == rhs.x && y == rhs.y && z == rhs.z;
 }
 
-double SimpleVector::
+float SimpleVector::
 operator[](const int index)
 {
    switch (index)

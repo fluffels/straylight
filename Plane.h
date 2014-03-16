@@ -16,7 +16,7 @@ class Plane : public SceneObject
        * @param normal The normal to this Plane.
        * @param d Parametric description of the Plane's location.
        */
-      Plane(const Vector& normal, const double d);
+      Plane(const Vector& normal, const float d);
       
       /**
        * Constructor.
@@ -25,7 +25,7 @@ class Plane : public SceneObject
        * @param d Parametric description of the Plane's location.
        * @param newMat The material of this Plane.
        */
-      Plane(const Vector& normal, const double d, const Material& newMat);
+      Plane(const Vector& normal, const float d, const Material& newMat);
       
       /**
        * Intersect a ray with this plane.
@@ -46,7 +46,7 @@ class Plane : public SceneObject
        * Parametric description of the Plane's location. This is private
        * because there's no need to change it at the moment.
        */
-      double _d;
+      float _d;
 };
 
 #endif /*PLANE_H_*/

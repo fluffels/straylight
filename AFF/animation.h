@@ -113,7 +113,7 @@ Animation* FindAnimation(char* name, struct AnimationList *al);
  * @return TRUE if there was a translation in the given animation
  * structure, else FALSE (and Tout = (0,0,0)).
  */
-int _GetTranslation(Animation* animation, double time, double Tout[3]);
+int _GetTranslation(Animation* animation, float time, float Tout[3]);
 
 /**
  * Gets the rotation of an animated object from the Animation structure
@@ -127,7 +127,7 @@ int _GetTranslation(Animation* animation, double time, double Tout[3]);
  * @return TRUE if there was a rotation in the given animation
  * structure, else FALSE (and Tout = (0,0,0)).
  */
-int _GetRotation(Animation* animation, double time, double Rout[4]);
+int _GetRotation(Animation* animation, float time, float Rout[4]);
 
 /**
  * Gets the scale of an animated object from the Animation structure
@@ -141,7 +141,7 @@ int _GetRotation(Animation* animation, double time, double Rout[4]);
  * @return TRUE if there was a scale in the given animation
  * structure, else FALSE (and Tout = (0,0,0)).
  */
-int _GetScale(Animation* animation, double time, double Sout[3]);
+int _GetScale(Animation* animation, float time, float Sout[3]);
 
 /**
  * Determines whether an object is visible at a certain time from an
@@ -153,7 +153,7 @@ int _GetScale(Animation* animation, double time, double Sout[3]);
  * @return 0 if the object is invisible, if visible it returns a
  * non-zero number.
  */
-int _GetVisibility(Animation* animation, double time);
+int _GetVisibility(Animation* animation, float time);
 
 /**
  * Gets the T * R * S matrix for a given animation. This is a single 
@@ -165,7 +165,7 @@ int _GetVisibility(Animation* animation, double time);
  * @param m The T * R * S matrix. This will be an identity matrix if
  * there were no transformations. This is an output parameter.
  */
-void _GetMatrix(Animation* animation, double time, double m[4][4]);
+void _GetMatrix(Animation* animation, float time, float m[4][4]);
 
 /**
  * Gets the translation of an animated object with a certain name.
@@ -181,8 +181,8 @@ void _GetMatrix(Animation* animation, double time, double m[4][4]);
  * @return TRUE if there was a translation with "name", else FALSE (and
  * Tout = (0,0,0).
  */
-int GetTranslation(struct AnimationList *al, char* name, double time,
-   double Tout[3]);
+int GetTranslation(struct AnimationList *al, char* name, float time,
+   float Tout[3]);
 
 /**
  * Gets the rotation of an animated object with a certain name.
@@ -199,8 +199,8 @@ int GetTranslation(struct AnimationList *al, char* name, double time,
  * @return TRUE if there was a rotation with "name", else FALSE (and the
  * axis is (1,0,0) and the angle is 0.0).
  */
-int GetRotation(struct AnimationList *al, char* name, double time,
-   double Rout[4]);
+int GetRotation(struct AnimationList *al, char* name, float time,
+   float Rout[4]);
 
 /**
  * Gets the scale of an animated object with a certain name.
@@ -216,8 +216,8 @@ int GetRotation(struct AnimationList *al, char* name, double time,
  * @return TRUE if there was a scale with "name", else FALSE (and the
  * scale is then (1, 1, 1).
  */
-int GetScale(struct AnimationList *al, char* name, double time,
-   double Sout[3]);
+int GetScale(struct AnimationList *al, char* name, float time,
+   float Sout[3]);
 
 /**
  * Determines whether an object is visible at a certain time.
@@ -229,7 +229,7 @@ int GetScale(struct AnimationList *al, char* name, double time,
  * @return 0 if the object is invisible, if visible it returns a
  * non-zero number.
  */
-int GetVisibility(struct AnimationList *al, char *name, double time);
+int GetVisibility(struct AnimationList *al, char *name, float time);
 
 /**
  * Gets the full matrix (including scaling, rotation, and translation)
@@ -251,8 +251,8 @@ int GetVisibility(struct AnimationList *al, char *name, double time);
  * @return TRUE if we could find an animation with "name", else FALSE,
  * and the matrix will be an identity matrix
  */
-int GetMatrix(struct AnimationList *al, char* name, double time,
-   double m[4][4]);
+int GetMatrix(struct AnimationList *al, char* name, float time,
+   float m[4][4]);
 
 /**
  * Get the position, the view direction and the up vector of the camera
@@ -273,8 +273,8 @@ int GetMatrix(struct AnimationList *al, char* name, double time,
  * @param viewUp The camera up vector (only set if gotDirection returns
  * 1). This is an output parameter.
  */
-void GetCamera(struct AnimationList *al, double time, int *gotPosition, 
-   double viewPos[3], int *gotDirection, double viewDir[3],
-   double viewUp[3]);
+void GetCamera(struct AnimationList *al, float time, int *gotPosition, 
+   float viewPos[3], int *gotDirection, float viewDir[3],
+   float viewUp[3]);
 
 #endif

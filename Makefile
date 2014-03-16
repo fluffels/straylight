@@ -20,6 +20,8 @@ all: ${TARGET}
 
 clean:
 	rm -rf *~ *.o ${TARGET}
+	rm -rf AFF/*~ AFF/*.o
+	rm -rf GraphicsLibrary/*~ GraphicsLibrary/*.o
 
 debug:
 	${MAKE} EXTRA_C_FLAGS="-g3 -pg" EXTRA_LD_FLAGS="-g3 -pg"

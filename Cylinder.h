@@ -25,7 +25,7 @@ class Cylinder : public SceneObject
        * @param apex The location of the cylinder's apex.
        * @param radius The cylinder's radius.
        */
-      Cylinder(Vector& base, Vector& apex, double radius);
+      Cylinder(Vector& base, Vector& apex, float radius);
 
       /**
        * Tests for intersection between this cylinder and a given ray.
@@ -49,7 +49,7 @@ class Cylinder : public SceneObject
       /**
        * Radius.
        */
-      double _radius;
+      float _radius;
       
       /**
        * Direction vector.
@@ -59,7 +59,7 @@ class Cylinder : public SceneObject
       /**
        * Length of the cylinder.
        */
-      double _length;
+      float _length;
 };
 
 #endif

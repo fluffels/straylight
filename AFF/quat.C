@@ -28,10 +28,10 @@
 #include <math.h>
 #include "quat.h"
 
-static double g_dEpsilon = 1e-03;  // cutoff for sin(angle) near zero
-static double g_dPi = 3.1415926535897932384626433; /*4.0*atan(1.0); */
+static float g_dEpsilon = 1e-03;  // cutoff for sin(angle) near zero
+static float g_dPi = 3.1415926535897932384626433; /*4.0*atan(1.0); */
 
-void Set(Quaternion* q, double _w, double _x, double _y, double _z)
+void Set(Quaternion* q, float _w, float _x, float _y, float _z)
 {
     q->w = _w;
     q->x = _x;
@@ -47,14 +47,14 @@ void SetQuat(Quaternion* q, Quaternion* q2)
     q->z = q2->z;
 }
 
-void FromRotationMatrix(Quaternion* q, double R[3][3])
+void FromRotationMatrix(Quaternion* q, float R[3][3])
 {
    /* Algorithm in Ken Shoemake's article in 1987 SIGGRAPH course notes
     * article "Quaternion Calculus and Fast Animation". */
    static int next[3] = {1, 2, 0};
-   double trace = R[0][0] + R[1][1] + R[2][2];
-   double root;
-   double* quat[3];
+   float trace = R[0][0] + R[1][1] + R[2][2];
+   float root;
+   float* quat[3];
    int i, j, k;
 
    if ( trace > 0.0 )
@@ -96,20 +96,20 @@ void FromRotationMatrix(Quaternion* q, double R[3][3])
    }
 }
 
-void ToRotationMatrix(Quaternion* q, double R[3][3]) 
+void ToRotationMatrix(Quaternion* q, float R[3][3]) 
 {
-   double tx = 2.0 * q->x;
-   double ty = 2.0 * q->y;
-   double tz = 2.0 * q->z;
-   double twx = tx * q->w;
-   double twy = ty * q->w;
-   double twz = tz * q->w;
-   double txx = tx * q->x;
-   double txy = ty * q->x;
-   double txz = tz * q->x;
-   double tyy = ty * q->y;
-   double tyz = tz * q->y;
-   double tzz = tz * q->z;
+   float tx = 2.0 * q->x;
+   float ty = 2.0 * q->y;
+   float tz = 2.0 * q->z;
+   float twx = tx * q->w;
+   float twy = ty * q->w;
+   float twz = tz * q->w;
+   float txx = tx * q->x;
+   float txy = ty * q->x;
+   float txz = tz * q->x;
+   float tyy = ty * q->y;
+   float tyz = tz * q->y;
+   float tzz = tz * q->z;
 
    R[0][0] = 1.0 - (tyy + tzz);
    R[0][1] = txy - twz;
@@ -122,34 +122,34 @@ void ToRotationMatrix(Quaternion* q, double R[3][3])
    R[2][2] = 1.0 - (txx + tyy);
 }
 
-void FromAngleAxis(Quaternion* q, double angle, double ax, double ay,
-   double az)
+void FromAngleAxis(Quaternion* q, float angle, float ax, float ay,
+   float az)
 {
    //assert: axis[] is unit length
    /* The quaternion representing the rotation is:
     * q = cos(A / 2) + sin(A / 2) * (x * i + y * j + z * k). */
 
-   double halfAngle = 0.5 * angle;
-   double sn = sin(halfAngle);
+   float halfAngle = 0.5 * angle;
+   float sn = sin(halfAngle);
    q->w = cos(halfAngle);
    q->x = sn * ax;
    q->y = sn * ay;
    q->z = sn * az;
 }
 
-void FromAngleAxisPt(Quaternion* q, double rdAngle, Point3* rkPoint)
+void FromAngleAxisPt(Quaternion* q, float rdAngle, Point3* rkPoint)
 {
     FromAngleAxis(q, rdAngle, rkPoint->x, rkPoint->y, rkPoint->z);
 }
 
-void ToAngleAxis(Quaternion* q, double* angle, double* ax, double* ay,
-   double* az) 
+void ToAngleAxis(Quaternion* q, float* angle, float* ax, float* ay,
+   float* az) 
 {
    /* The quaternion representing the rotation is:
     * q = cos(A / 2) + sin(A / 2) * (x * i + y * j + z * k). */
 
-   double invlen;
-   double length2 = q->x * q->x + q->y * q->y + q->z * q->z;
+   float invlen;
+   float length2 = q->x * q->x + q->y * q->y + q->z * q->z;
    
    if (length2 > 0.0)
    {
@@ -169,7 +169,7 @@ void ToAngleAxis(Quaternion* q, double* angle, double* ax, double* ay,
    }
 }
 
-void ToAngleAxisPt(Quaternion* q, double* rdAngle, Point3* rkPoint)
+void ToAngleAxisPt(Quaternion* q, float* rdAngle, Point3* rkPoint)
 {
     ToAngleAxis(q, rdAngle, &(rkPoint->x), &(rkPoint->y),
       &(rkPoint->z));
@@ -213,7 +213,7 @@ void Mul(Quaternion* q, Quaternion* q1, Quaternion* q2)
     * cases p * q != q * p. */
 
 #if 1
-    double w, x, y, z;
+    float w, x, y, z;
     w = q1->w * q2->w - q1->x * q2->x - q1->y * q2->y - q1->z * q2->z;
     x = q1->w * q2->x + q1->x * q2->w + q1->y * q2->z - q1->z * q2->y;
     y = q1->w * q2->y + q1->y * q2->w + q1->z * q2->x - q1->x * q2->z;
@@ -234,21 +234,21 @@ void Mul(Quaternion* q, Quaternion* q1, Quaternion* q2)
      * Pentium, multiplications and additions cost the same, so the code
      * below is slower than the code above. */
 
-    double A = (q1->w + q1->x) * (q2->w + q2->x);
-    double B = (q1->z - q1->y) * (q2->y - q2->z);
-    double C = (q1->x - q1->w) * (q2->y + q2->z);
-    double D = (q1->y + q1->z) * (q2->x - q2->w);
-    double E = (q1->x + q1->z) * (q2->x + q2->y);
-    double F = (q1->x - q1->z) * (q2->x - q2->y);
-    double G = (q1->w + q1->y) * (q2->w - q2->z);
-    double H = (q1->w - q1->y) * (q2->w + q2->z);
+    float A = (q1->w + q1->x) * (q2->w + q2->x);
+    float B = (q1->z - q1->y) * (q2->y - q2->z);
+    float C = (q1->x - q1->w) * (q2->y + q2->z);
+    float D = (q1->y + q1->z) * (q2->x - q2->w);
+    float E = (q1->x + q1->z) * (q2->x + q2->y);
+    float F = (q1->x - q1->z) * (q2->x - q2->y);
+    float G = (q1->w + q1->y) * (q2->w - q2->z);
+    float H = (q1->w - q1->y) * (q2->w + q2->z);
 
     /* The names below are derived by the names of the variables with p
      * or m in between for plus or minus. */
-    double EpF = E + F;
-    double EmF = E - F;
-    double GpH = G + H;
-    double GmH = G - H;
+    float EpF = E + F;
+    float EmF = E - F;
+    float GpH = G + H;
+    float GmH = G - H;
 
     q->w = B + 0.5 * (GpH - EpF);
     q->x = A - 0.5 * (GpH + EpF);
@@ -263,7 +263,7 @@ void MulSelf(Quaternion* q, Quaternion* q2)
     * p*q != q*p. */
 
 #if 1
-   double w, x, y, z;
+   float w, x, y, z;
 
    w = q->w * q2->w - q->x * q2->x - q->y * q2->y - q->z * q2->z;
    x = q->w * q2->x + q->x * q2->w + q->y * q2->z - q->z * q2->y;
@@ -285,19 +285,19 @@ void MulSelf(Quaternion* q, Quaternion* q2)
     * Pentium, multiplications and additions cost the same, so the code
     * below is slower than the code above. */
 
-   double A = (q->w + q->x) * (q2->w + q2->x);
-   double B = (q->z - q->y) * (q2->y - q2->z);
-   double C = (q->x - q->w) * (q2->y + q2->z);
-   double D = (q->y + q->z) * (q2->x - q2->w);
-   double E = (q->x + q->z) * (q2->x + q2->y);
-   double F = (q->x - q->z) * (q2->x - q2->y);
-   double G = (q->w + q->y) * (q2->w - q2->z);
-   double H = (q->w - q->y) * (q2->w + q2->z);
+   float A = (q->w + q->x) * (q2->w + q2->x);
+   float B = (q->z - q->y) * (q2->y - q2->z);
+   float C = (q->x - q->w) * (q2->y + q2->z);
+   float D = (q->y + q->z) * (q2->x - q2->w);
+   float E = (q->x + q->z) * (q2->x + q2->y);
+   float F = (q->x - q->z) * (q2->x - q2->y);
+   float G = (q->w + q->y) * (q2->w - q2->z);
+   float H = (q->w - q->y) * (q2->w + q2->z);
 
-   double EpF = E + F;
-   double EmF = E - F;
-   double GpH = G + H;
-   double GmH = G - H;
+   float EpF = E + F;
+   float EmF = E - F;
+   float GpH = G + H;
+   float GmH = G - H;
 
    q->w = B + 0.5 * (GpH - EpF);
    q->x = A - 0.5 * (GpH + EpF);
@@ -306,7 +306,7 @@ void MulSelf(Quaternion* q, Quaternion* q2)
 #endif
 }
 
-void MulScal(Quaternion* q, Quaternion* q1, double c) 
+void MulScal(Quaternion* q, Quaternion* q1, float c) 
 {
     q->w = q1->w * c;
     q->x = q1->x * c;
@@ -314,7 +314,7 @@ void MulScal(Quaternion* q, Quaternion* q1, double c)
     q->z = q1->z * c;
 }
 
-void MulScalSelf(Quaternion* q, double c) 
+void MulScalSelf(Quaternion* q, float c) 
 {
     q->w *= c;
     q->x *= c;
@@ -338,19 +338,19 @@ void NegSelf (Quaternion* q)
     q->z = -q->z;
 }
 
-double Dot (Quaternion* q, Quaternion* q2) 
+float Dot (Quaternion* q, Quaternion* q2) 
 {
     return q->w * q2->w + q->x * q2->x + q->y * q2->y + q->z * q2->z;
 }
 
-double Norm (Quaternion* q)
+float Norm (Quaternion* q)
 {
     return q->w * q->w + q->x * q->x + q->y * q->y + q->z * q->z;
 }
 
 void Inverse (Quaternion* q, Quaternion* q2) 
 {
-   double norm = q2->w * q2->w + q2->x * q2->x + q2->y * q2->y + q2->z
+   float norm = q2->w * q2->w + q2->x * q2->x + q2->y * q2->y + q2->z
       * q2->z;
    
    if ( norm > 0.0 )
@@ -373,7 +373,7 @@ void Inverse (Quaternion* q, Quaternion* q2)
 
 void InverseSelf (Quaternion* q) 
 {
-   double norm = q->w * q->w + q->x * q->x + q->y * q->y + q->z * q->z;
+   float norm = q->w * q->w + q->x * q->x + q->y * q->y + q->z * q->z;
     
    if ( norm > 0.0 )
    {
@@ -419,14 +419,14 @@ void Exp (Quaternion* q, Quaternion* q2)
     * exp(q) = cos(A) + A * (x * i + y * j + z * k) since A/sin(A) has
     * limit 1. */ 
 
-   double angle = sqrt(q2->x * q2->x + q2->y * q2->y + q2->z * q2->z);
-   double sn = sin(angle);
+   float angle = sqrt(q2->x * q2->x + q2->y * q2->y + q2->z * q2->z);
+   float sn = sin(angle);
 
    q->w = cos(angle);
 
    if ( fabs(sn) >= g_dEpsilon )
    {
-      double coeff = sn / angle;
+      float coeff = sn / angle;
       q->x = coeff * q2->x;
       q->y = coeff * q2->y;
       q->z = coeff * q2->z;
@@ -447,14 +447,14 @@ void ExpSelf (Quaternion* q)
      * exp(q) = cos(A) + A * (x * i + y * j + z * k) since A/sin(A) has
      * limit 1. */ 
 
-   double angle = sqrt(q->x*q->x+q->y*q->y+q->z*q->z);
-   double sn = sin(angle);
+   float angle = sqrt(q->x*q->x+q->y*q->y+q->z*q->z);
+   float sn = sin(angle);
 
    q->w = cos(angle);
 
    if ( fabs(sn) >= g_dEpsilon )
    {
-      double coeff = coeff = sn/angle;
+      float coeff = coeff = sn/angle;
       q->x = coeff*q->x;
       q->y = coeff*q->y;
       q->z = coeff*q->z;
@@ -474,7 +474,7 @@ void LogSelf (Quaternion* q)
     * sin(A) is near zero, use log(q) = sin(A) *
     * (x * i + y * j + z * k) since sin(A) / A has limit 1. */
 
-   double angle, sn, coeff, w;
+   float angle, sn, coeff, w;
    w = q->w;
    q->w = 0.0;
 
@@ -499,7 +499,7 @@ void Log (Quaternion* q, Quaternion* q2)
     * sin(A) is near zero, use log(q) = sin(A) *
     * (x * i + y * j + z * k) since sin(A) / A has limit 1. */
 
-    double angle, sn, coeff, w;
+    float angle, sn, coeff, w;
     w = q2->w;
     q->w = 0.0;
 
@@ -548,7 +548,7 @@ void PointMul (Quaternion* q, Point3* Pres, Point3* pt)
     * vector. Typical space-time tradeoff...
     */
 
-   double R[3][3];
+   float R[3][3];
    ToRotationMatrix(q, R);
 
    Pres->x = R[0][0] * pt->x + R[0][1] * pt->y + R[0][2] * pt->z;
@@ -556,12 +556,12 @@ void PointMul (Quaternion* q, Point3* Pres, Point3* pt)
    Pres->z = R[2][0] * pt->x + R[2][1] * pt->y + R[2][2] * pt->z;
 }
 
-void Slerp (Quaternion* res, double t, Quaternion* p, Quaternion* q)
+void Slerp (Quaternion* res, float t, Quaternion* p, Quaternion* q)
 {
    /* assert:  p.Dot(q) >= 0 (guaranteed in NiRotKey::Interpolate
     * methods)*/
-   double dAngle, dSin, dInvSin, dCoeff0, dCoeff1;
-   double dCos = Dot(p, q);
+   float dAngle, dSin, dInvSin, dCoeff0, dCoeff1;
+   float dCos = Dot(p, q);
 
    /* Numerical round-off error could create problems in call to
     * acos. */
@@ -594,12 +594,12 @@ void Slerp (Quaternion* res, double t, Quaternion* p, Quaternion* q)
    }
 }
 
-void SlerpExtraSpins (Quaternion* res, double t, Quaternion* p,
+void SlerpExtraSpins (Quaternion* res, float t, Quaternion* p,
    Quaternion* q, int iExtraSpins)
 {
    /* assert:  p.Dot(q) >= 0 (guaranteed in RotationKey::Preprocess) */
-   double dAngle, dSin, dPhase, dInvSin, dCoeff0, dCoeff1;
-   double dCos = Dot(p, q);
+   float dAngle, dSin, dPhase, dInvSin, dCoeff0, dCoeff1;
+   float dCos = Dot(p, q);
 
    /* Numerical round-off error could create problems in call to
     * acos. */
@@ -665,7 +665,7 @@ void Intermediate ( Quaternion* q0, Quaternion* q1, Quaternion* q2,
    Mul(b, q1, b);
 }
 
-void Squad (Quaternion* res, double t, Quaternion* p,
+void Squad (Quaternion* res, float t, Quaternion* p,
     Quaternion* a, Quaternion* b, Quaternion* q)
 {
    Quaternion q1, q2;
@@ -674,9 +674,9 @@ void Squad (Quaternion* res, double t, Quaternion* p,
    Slerp(res, 2 * t * (1 - t), &q1, &q2);
 }
 
-void QuatToMatrix(Quaternion* quat, double m[4][4])
+void QuatToMatrix(Quaternion* quat, float m[4][4])
 {
-   double wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
+   float wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
  
    x2 = quat->x + quat->x; 
    y2 = quat->y + quat->y; 

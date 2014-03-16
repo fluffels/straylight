@@ -32,7 +32,7 @@ class SimpleScene : public Scene
 
       virtual void addObject(SceneObject* s);
 
-      virtual double getLineOfSight(Light& source, const SceneObject& dest, 
+      virtual float getLineOfSight(Light& source, const SceneObject& dest, 
             Vector& p);
 
       virtual bool testIntersection(Ray& r);

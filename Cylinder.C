@@ -1,7 +1,7 @@
 #include "Cylinder.h"
 
 Cylinder::
-Cylinder(Vector& base, Vector& apex, double radius):
+Cylinder(Vector& base, Vector& apex, float radius):
    _base(base),
    _apex(apex),
    _radius(radius)
@@ -33,7 +33,7 @@ intersect(Ray& r) const
    Vector Bc = _base;
 
    Vector D = (R.cross(A)).normalise();
-   double d = abs((Br - Bc).dot(D));
+   float d = abs((Br - Bc).dot(D));
 
    if (d >= _radius)
    {
@@ -42,18 +42,18 @@ intersect(Ray& r) const
 
    /* The formula for "t" below does not include the minus in the body of the
     * text. The attached code shows it, so it's probably a misprint. */
-   double t = -((Br - Bc).cross(A).dot(D)) / R.cross(A).getMagnitude();
+   float t = -((Br - Bc).cross(A).dot(D)) / R.cross(A).getMagnitude();
 
    Vector O = D.cross(A).normalise();
 
-   double s = abs(sqrt(_radius * _radius - d * d) / R.dot(O));
+   float s = abs(sqrt(_radius * _radius - d * d) / R.dot(O));
 
-   double t_in = t - s;
-   double t_out = t + s;
+   float t_in = t - s;
+   float t_out = t + s;
 
    /* Note that this object is one-sided. As such, we are only interested in
     * the first intersection that is in front of the ray origin. */
-   double t_final = t_in;
+   float t_final = t_in;
    if (t_in < 0)
    {
       if (t_out < 0)

@@ -30,8 +30,8 @@ class SimpleVector
        * @param y The y coordinate.
        * @param z The z coordinate.
        */
-      SimpleVector(const double newX, const double newY,
-         const double newZ);
+      SimpleVector(const float newX, const float newY,
+         const float newZ);
       
       /**
        * Copy constructor
@@ -50,15 +50,15 @@ class SimpleVector
       /**
        * Vector dot product.
        * @param rhs The vector to dot this one with.
-       * @return The result of the dot product as a double
+       * @return The result of the dot product as a float
        */
-      double dot(const SimpleVector& rhs) const;
+      float dot(const SimpleVector& rhs) const;
       
       /**
        * Vector magnitude.
        * @return The magnitude of the vector.
        */
-      double getMagnitude() const;
+      float getMagnitude() const;
       
       /**
        * Vector normalisation.
@@ -92,14 +92,14 @@ class SimpleVector
        * @param rhs A scalar value to divide by.
        * @return This vector divided by the given scalar value.
        */
-      SimpleVector operator/(const double rhs) const;
+      SimpleVector operator/(const float rhs) const;
       
       /**
        * Vector scalar multiplication.
        * @param rhs A scalar value to multiply with.
        * @return This vector scaled by the given value.
        */
-      SimpleVector operator*(const double rhs) const;
+      SimpleVector operator*(const float rhs) const;
       
       /**
        * Assignment operator.
@@ -119,24 +119,24 @@ class SimpleVector
       /**
        * Index operator.
        * @param index The index to return.
-       * @return The coordinate that the specified index as a double.
+       * @return The coordinate that the specified index as a float.
        */
-      double operator[](const int index);
+      float operator[](const int index);
       
       /**
        * X coordinate.
        */
-      double x;
+      float x;
       
       /**
        * Y coordinate.
        */
-      double y;
+      float y;
       
       /**
        * Z coordinate.
        */
-      double z;
+      float z;
 };
 
 #endif /*SIMPLE_VECTOR_H_*/

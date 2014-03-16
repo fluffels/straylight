@@ -6,7 +6,7 @@ Colour():
 {}
 
 Colour::
-Colour(double red, double green, double blue):
+Colour(float red, float green, float blue):
    r(red), g(green), b(blue)
 {}
 
@@ -18,7 +18,7 @@ Colour(const Colour& rhs)
    b = rhs.b;
 }
 
-double Colour::
+float Colour::
 get(int index) const
 {
    switch (index)
@@ -41,7 +41,7 @@ operator=(const Colour& rhs)
 }
 
 Colour Colour::
-operator/(double rhs)
+operator/(float rhs)
 {
    r /= rhs;
    g /= rhs;
@@ -51,13 +51,13 @@ operator/(double rhs)
 }
 
 Colour Colour::
-operator*(double rhs)
+operator*(float rhs)
 {
    return Colour(r * rhs, g * rhs, b * rhs);
 }
 
 Colour& Colour::
-operator*=(double rhs)
+operator*=(float rhs)
 {
    r *= rhs;
    g *= rhs;
@@ -77,7 +77,7 @@ operator+=(Colour& rhs)
 }
 
 void Colour::
-set(int index, double value)
+set(int index, float value)
 {
    switch (index)
    {

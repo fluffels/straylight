@@ -25,7 +25,7 @@
  */
 typedef struct 
 {
-   double x, y, z;
+   float x, y, z;
 }
 Point3;
 #endif
@@ -36,14 +36,14 @@ Point3;
 typedef struct
 {
    /* Sample time. */
-   double t;
+   float t;
 
    /* Sample position. */
    Point3 P;
 
    /* Sample parameters for affecting tangential behavior at control
     * point. */
-   double tension, continuity, bias;
+   float tension, continuity, bias;
 }
 PositionKey;
 
@@ -57,7 +57,7 @@ typedef struct
 
    /* Minimum, maximum and range for this cubic polynomial of time.
     * tmin <= t <= tmax. trange = tmax - tmin. */
-   double tmin, tmax, trange;
+   float tmin, tmax, trange;
 }
 CubicPolynomial;
 
@@ -71,8 +71,8 @@ typedef struct
 
    /* Partial sums of arc length. */
    //TODO: What is arc length?
-   double* length;
-   double totalLength;
+   float* length;
+   float totalLength;
 }
 SplineInfo;
 
@@ -107,7 +107,7 @@ void KB_PosTerminate(void* info);
  * @param t The time at which to find the position.
  * @param point The position will be returned in this variable.
  */
-void  KB_PosInterpolate0(void* info, double t, Point3* P);
+void  KB_PosInterpolate0(void* info, float t, Point3* P);
 
 /**
  * Interpolate the spline to find a velocity.
@@ -119,7 +119,7 @@ void  KB_PosInterpolate0(void* info, double t, Point3* P);
  * @param t The time at which to find the velocity.
  * @param point The velocity will be returned in this variable.
  */
-void  KB_PosInterpolate1(void* info, double t, Point3* P);
+void  KB_PosInterpolate1(void* info, float t, Point3* P);
 
 /**
  * Interpolate the spline to find an acceleration.
@@ -131,7 +131,7 @@ void  KB_PosInterpolate1(void* info, double t, Point3* P);
  * @param t The time at which to find the acceleration.
  * @param point The acceleration will be returned in this variable.
  */
-void  KB_PosInterpolate2(void* info, double t, Point3* P);
+void  KB_PosInterpolate2(void* info, float t, Point3* P);
 
 /**
  * Evaluate position by specifying arc length s along the curve.  If L
@@ -144,7 +144,7 @@ void  KB_PosInterpolate2(void* info, double t, Point3* P);
  * @param s The arc length at which to find the position.
  * @param point The position will be returned in this variable.
  */
-void KB_PosInterpolate0_AL(void* info, double s, Point3* P);
+void KB_PosInterpolate0_AL(void* info, float s, Point3* P);
 
 /**
  * Evaluate velocity by specifying arc length s along the curve.  If L
@@ -157,7 +157,7 @@ void KB_PosInterpolate0_AL(void* info, double s, Point3* P);
  * @param s The arc length at which to find the velocity.
  * @param point The velocity will be returned in this variable.
  */
-void KB_PosInterpolate1_AL(void* info, double s, Point3* P);
+void KB_PosInterpolate1_AL(void* info, float s, Point3* P);
 
 /**
  * Evaluate acceleration by specifying arc length s along the curve.  If
@@ -170,7 +170,7 @@ void KB_PosInterpolate1_AL(void* info, double s, Point3* P);
  * @param s The arc length at which to find the acceleration.
  * @param point The acceleration will be returned in this variable.
  */
-void KB_PosInterpolate2_AL(void* info, double s, Point3* P);
+void KB_PosInterpolate2_AL(void* info, float s, Point3* P);
 
 /**
  * Get the length at a time.
@@ -178,18 +178,18 @@ void KB_PosInterpolate2_AL(void* info, double s, Point3* P);
  * @param info The SplineInfo structure that contains information about
  * the spline.
  * @param t The time. tmin <= t <= tmax
- * @return The length of the arc as a double.
+ * @return The length of the arc as a float.
  */
-double KB_PosLength(void* info, double t);
+float KB_PosLength(void* info, float t);
 
 /**
  * Get the total length of the spline.
  * 
  * @param info The SplineInfo structure that contains information about
  * the spline.
- * @return The length of the arc as a double.
+ * @return The length of the arc as a float.
  */
-double KB_PosTotalLength(void* info);
+float KB_PosTotalLength(void* info);
 
 /**
  * Computes the length of each arc subsection in the spline and stores
@@ -207,7 +207,7 @@ static void ComputeArcLength(SplineInfo* info);
  * @param u The parameter value that indicates some position on the
  * polynomial curve.
  */
-double Length(CubicPolynomial* poly, double u);
+float Length(CubicPolynomial* poly, float u);
 
 #endif
 

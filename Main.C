@@ -40,9 +40,9 @@ castRaySubset(void* arg)
       Colour colour = shootRay(r);
 
       int index = pixel * 3;
-      image[index] = min<double>(1.0, colour.r) * 255;
-      image[index + 1] = min<double>(1.0, colour.g) * 255;
-      image[index + 2] = min<double>(1.0, colour.b) * 255;
+      image[index] = min<float>(1.0, colour.r) * 255;
+      image[index + 1] = min<float>(1.0, colour.g) * 255;
+      image[index + 2] = min<float>(1.0, colour.b) * 255;
 
       pixel = __sync_fetch_and_add(&nextPixel, 1);
    }
@@ -76,8 +76,8 @@ inShadow(Ray& r, Light light)
        * ray. */
       else
       {
-         double d = (shadowRay.intersection - r.intersection).getMagnitude();
-         const double EPSILON = 0.00000001;
+         float d = (shadowRay.intersection - r.intersection).getMagnitude();
+         const float EPSILON = 0.00000001;
 
          if (d < EPSILON)
          {
@@ -310,7 +310,7 @@ shootRay(Ray& r)
       {
          Light light = *i;
 
-         double los = scene->getLineOfSight(light, *s, r.intersection);
+         float los = scene->getLineOfSight(light, *s, r.intersection);
 
          if (los >= 0.9)
          {
@@ -331,7 +331,7 @@ shootRay(Ray& r)
          Vector& p = r.intersection;
          Vector& v = r.dir;
 
-         double cosI = v.dot(n);
+         float cosI = v.dot(n);
 
          if (m.kS > 0)
          {
@@ -355,13 +355,13 @@ shootRay(Ray& r)
             /* Based on code found at:
              * http://www.devmaster.net/articles/raytracing_series/part3.php */
 
-            double eta = 0;
+            float eta = 0;
 
             /* Entering object. */
             if (r.normal.dot(r.dir) < 0)
             {
-               double eta1 = r.iorStack.back();
-               double eta2 = m.ior;
+               float eta1 = r.iorStack.back();
+               float eta2 = m.ior;
                eta = eta1 / eta2;
 
                r.iorStack.push_back(eta2);
@@ -369,22 +369,22 @@ shootRay(Ray& r)
             /* Exiting object. */
             else
             {
-               double eta1 = r.iorStack.back();
+               float eta1 = r.iorStack.back();
                r.iorStack.pop_back();
-               double eta2 = r.iorStack.back();
+               float eta2 = r.iorStack.back();
 
                eta = eta1 / eta2;
 
                n = n * -1;
             }
 
-            double c1 = v.dot(n) * -1;
-            double c1Sq = pow(c1, 2);
+            float c1 = v.dot(n) * -1;
+            float c1Sq = pow(c1, 2);
 
             /* Eta is reversed here, since the Heckbert formula (below) is based 
              * on it. See p. 90 of thesis. */
             eta = 1 / eta; 
-            double etaSq = pow(eta, 2);
+            float etaSq = pow(eta, 2);
 
             if (etaSq + c1Sq >= 1)
             {
