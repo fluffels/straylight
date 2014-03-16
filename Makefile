@@ -19,7 +19,7 @@ TARGET = straylight
 all: ${TARGET}
 
 clean:
-	rm -v ${OBJS} ${TARGET}
+	rm -rf *~ *.o ${TARGET}
 
 debug:
 	${MAKE} EXTRA_C_FLAGS="-g3 -pg" EXTRA_LD_FLAGS="-g3 -pg"
@@ -34,7 +34,7 @@ optimized:
 ######################
 
 ${TARGET}: ${OBJS}
-	${CC} ${LDFLAGS} ${EXTRA_LD_FLAGS} ${LDLIBS} -o ${TARGET} $^
+	${CC} ${LDFLAGS} ${EXTRA_LD_FLAGS} -o ${TARGET} $^ ${LDLIBS}
 
 %.o: %.C %.h Makefile
 	${CC} ${CFLAGS} ${EXTRA_C_FLAGS} -c -o $@ $<
