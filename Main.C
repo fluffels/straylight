@@ -98,13 +98,12 @@ inShadow(Ray& r, Light light)
 void
 loadNFFFile()
 {
-   if (naive)
+   switch (method)
    {
-      scene = new SimpleScene();
-   }
-   else
-   {
-      scene = new BoxedScene();
+      default:
+      case 0: scene = new SimpleScene(); break;
+      case 1: scene = new BoxedScene(); break;
+      case 2: scene = new RTreeScene(); break;
    }
 
    FILE* nffFile = fopen(nffFileName, "r");
@@ -207,9 +206,16 @@ parseArguments(int argc, char** argv)
          outFileName = argv[a + 1];
          a++;
       }
-      else if ((strcmp(argv[a], "-n") == 0) || strcmp(argv[a], "--naive") == 0)
+      else if ((strcmp(argv[a], "-m") == 0) || strcmp(argv[a], "--method") == 0)
       {
-         naive = true;
+         if (argc < a + 2)
+         {
+            printf("Option '--method / -m' requires an argument.\n\n");
+            printUsage();
+         }
+
+         method = atoi(argv[a + 1]);
+         a++;
       }
       else if ((strcmp(argv[a], "-p") == 0) || strcmp(argv[a], "--progress")
          == 0)
@@ -236,11 +242,11 @@ printUsage()
    printf("\n");
    printf("\t--help\t\tShow this help message.\n");
    printf("\t-f --file\tThe scene description file (required).\n");
-   printf("\t-w --width\tSet the output image's horizontal resolution (default: 640).\n");
-   printf("\t-h --height\tSet the output image's vertical resolution (default: 480).\n");
+   printf("\t-w --width\tSet the output image's horizontal resolution (default: 240).\n");
+   printf("\t-h --height\tSet the output image's vertical resolution (default: 240).\n");
    printf("\t-t --threads\tSet the amount of threads to spin up (default: 1).\n");
    printf("\t-o --output\tSpecify the output filename (default: 'out.png').\n");
-   printf("\t-n --naive\tPass this to disable acceleration methods.\n");
+   printf("\t-m --method\tSet the method of raytracing (0 = simple, 1 = boxed, 2 = rtree).\n");
    printf("\t-p --progress\tPass this to enable progress updates..\n");
    printf("\t--no-output\tPass this to disable output to a file.\n");
 

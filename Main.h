@@ -14,6 +14,7 @@
 #include "AFF/parse.h"
 
 #include "BoxedScene.h"
+#include "RTreeScene.h"
 #include "Colour.h"
 #include "Light.h"
 #include "Material.h"
@@ -31,18 +32,16 @@ Scene* scene;
 /** Title of the window. */
 const char* title = "Straylight";
 /** Whether to use naïve ray tracing (no acceleration methods / structures). */
-bool naive = false;
+int method = 0;
 /** Whether to only cast rays and produce no output. */
 bool noOutput = false;
 /** Whether to print progress updates. */
 bool progress = false;
 /** The name of the NFF file to parse. */
 char nffFileName[255] = "";
-/** Width of the image to produce. 0 by default, so the parser knows the value 
- * is not filled. */
+/** Width of the image to produce. */
 int width = 240;
-/** Height of the image to produce. 0 by default, so the parser knows the value 
- * is not filled. */
+/** Height of the image to produce. */
 int height = 240;
 /** Amount of threads to spin up. */
 int threadCount = 1;

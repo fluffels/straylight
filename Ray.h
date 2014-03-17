@@ -87,6 +87,17 @@ class Ray
        * The ray's position.
        */
       Vector pos;
+
+        
+      /**
+        * Check whether this ray intersects the given bounds.
+        *
+        * @param min The minimum point of the bounds to intersect with this ray.
+        * @param max The maximum point of the bounds to intersect with this ray.
+        *
+        * @return True if this ray intersects the bounds, false otherwise.
+        */
+      bool intersect(const Vector& min, const Vector& max) const;
 };
 
 #endif /*RAY_H_*/
