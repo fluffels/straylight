@@ -45,7 +45,8 @@ struct LOSVisitor {
           }
           else 
           {
-             ContinueVisiting = false;
+            los = 0.0;
+            ContinueVisiting = false;
           }
        }
     }
