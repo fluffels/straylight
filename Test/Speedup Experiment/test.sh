@@ -16,7 +16,7 @@ echo "Starting resolution test"
 # CONTROL PARAMETERS
 #######################################
 
-RESOLUTIONS="2048"
+RESOLUTIONS="512"
 THREADS=8
 SCENES="balls"
 LOG_FILE=$1

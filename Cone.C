@@ -1,16 +1,16 @@
 #include "Cone.h"
 
 Cone::
-Cone(Vector& base, float baseRadius, Vector& apex, float apexRadius):
+Cone(vec3& base, float baseRadius, vec3& apex, float apexRadius):
    _base(base),
    _baseRadius(baseRadius),
    _apex(apex),
    _apexRadius(apexRadius)
 {
    _dir = _apex - _base;
-   _length = _dir.getMagnitude();
+   _length = length(_dir);
    
-   _dir = _dir.normalise();
+   _dir = normalize(_dir);
    
    _theta = atan((_baseRadius - _apexRadius) / _length);
 
@@ -33,13 +33,13 @@ intersect(Ray& r) const
     */
    float cosSqr = pow(cos(_theta), 2);
    
-   const Vector& A = _dir;
-   const Vector& D = r.dir;
-   const Vector E = r.pos - _extendedApex;
+   const vec3& A = _dir;
+   const vec3& D = r.dir;
+   const vec3 E = r.pos - _extendedApex;
    
-   float c2 = pow(A.dot(D), 2) - cosSqr;
-   float c1 = A.dot(D) * A.dot(E) - cosSqr * D.dot(E);
-   float c0 = pow(A.dot(E), 2) - cosSqr * E.dot(E);
+   float c2 = pow(dot(A, D), 2) - cosSqr;
+   float c1 = dot(A, D) * dot(A, E) - cosSqr * dot(D, E);
+   float c0 = pow(dot(A, E), 2) - cosSqr * dot(E, E);
    
    float disc = c1 * c1 - c0 * c2;
    
@@ -73,11 +73,11 @@ intersect(Ray& r) const
          }
       }
       
-      Vector point = r.pos + r.dir * t_final;
+      vec3 point = r.pos + r.dir * t_final;
 
       /* This ensures that the point is within the stated apex & base
        * coordinates. */
-      if (((point - _apex).dot(A) <= 0) && ((point - _base).dot(A) >= 0))
+      if ((dot(point - _apex, A) <= 0) && (dot(point - _base, A) >= 0))
       {
          r.intersection = point;
          r.intersected = this;
@@ -87,9 +87,9 @@ intersect(Ray& r) const
           * have a point on the central axis of the cone. We can simply
           * subtract this from the point on the surface to obtain the
           * normal. */
-         Vector v = point - _apex;
-         Vector proj = _dir * (v.dot(_dir) / _dir.dot(_dir));
-         r.normal = (point - (_apex + proj)).normalise();
+         vec3 v = point - _apex;
+         vec3 proj = _dir * dot(dot(v, _dir) / _dir, _dir);
+         r.normal = normalize(point - (_apex + proj));
 
          return true;
       }

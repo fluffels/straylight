@@ -9,7 +9,10 @@ class SceneObject;
 #include <vector>
 
 #include "SceneObject.h"
-#include "Vector.h"
+#include "GraphicsLibrary/glm/glm.hpp"
+
+using glm::vec3;
+using glm::normalize;
 
 using namespace std;
 
@@ -42,7 +45,7 @@ class Ray
        * @param newPos The position of the ray.
        * @param newDir The direction of the ray.
        */
-      Ray(const Vector& newPos, const Vector& newDir);
+      Ray(const vec3& newPos, const vec3& newDir);
 
       /**
        * Has the ray reached its maximum trace depth?
@@ -59,12 +62,12 @@ class Ray
       /**
        * The ray's direction.
        */
-      Vector dir;
+      vec3 dir;
 
       /**
        * The location of the ray's last intersection with an object.
        */
-      Vector intersection;
+      vec3 intersection;
       
       /**
        * A history of the IORs of objects the ray passed through, the most
@@ -81,12 +84,12 @@ class Ray
       /**
        * The normal at the most recent intersection point.
        */
-      Vector normal;
+      vec3 normal;
 
       /**
        * The ray's position.
        */
-      Vector pos;
+      vec3 pos;
 };
 
 #endif /*RAY_H_*/

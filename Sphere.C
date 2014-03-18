@@ -1,7 +1,7 @@
 #include "Sphere.h"
 
 Sphere::
-Sphere(const Vector& newPos, float newR):
+Sphere(const vec3& newPos, float newR):
       pos(newPos),
       r(newR)
 {
@@ -15,7 +15,7 @@ Sphere(const Vector& newPos, float newR):
 }
 
 Sphere::
-Sphere(const Vector& newPos, float newR, const Material& newMat):
+Sphere(const vec3& newPos, float newR, const Material& newMat):
       pos(newPos),
       r(newR)
 {
@@ -30,12 +30,12 @@ intersect(Ray& ray) const
    /* Note that the Ray's direction vector is guaranteed to be a unit
     * vector, as the class normalises the vector upon receiving it. */
 
-   Vector distance = ray.pos - this->pos;
-   Vector dir = ray.dir;
+   vec3 distance = ray.pos - this->pos;
+   vec3 dir = ray.dir;
 
-   float a = dir.dot(dir);
-   float b = (distance * 2).dot(dir);
-   float c = distance.dot(distance) - pow(r, 2);
+   float a = dot(dir, dir);
+   float b = dot(2.0f * distance, dir);
+   float c = dot(distance, distance) - pow(r, 2);
    float delta = b * b - 4 * a * c;
 
    if (delta < 0)
@@ -68,12 +68,12 @@ intersect(Ray& ray) const
       }
 
 
-      Vector point = ray.pos + ray.dir * t_final;
+      vec3 point = ray.pos + ray.dir * t_final;
 
-      Vector normal((point.x - pos.x) / r,
+      vec3 normal((point.x - pos.x) / r,
          (point.y - pos.y) / r,
          (point.z - pos.z) / r);
-      normal = normal.normalise();
+      normal = normalize(normal);
 
       ray.intersected = this;
       ray.intersection = point;

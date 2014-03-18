@@ -5,7 +5,13 @@
 #include <cmath>
 
 #include "SceneObject.h"
-#include "Vector.h"
+#include "GraphicsLibrary/glm/glm.hpp"
+
+using glm::vec3;
+using glm::normalize;
+using glm::cross;
+using glm::dot;
+using glm::length;
 
 /**
  * Encapsulates a cylinder defined by a radius and a base and apex vector.
@@ -25,7 +31,7 @@ class Cylinder : public SceneObject
        * @param apex The location of the cylinder's apex.
        * @param radius The cylinder's radius.
        */
-      Cylinder(Vector& base, Vector& apex, float radius);
+      Cylinder(vec3& base, vec3& apex, float radius);
 
       /**
        * Tests for intersection between this cylinder and a given ray.
@@ -39,12 +45,12 @@ class Cylinder : public SceneObject
       /**
        * Apex vertex.
        */
-      Vector _apex;
+      vec3 _apex;
       
       /**
        * Base vertex.
        */
-      Vector _base;
+      vec3 _base;
        
       /**
        * Radius.
@@ -54,7 +60,7 @@ class Cylinder : public SceneObject
       /**
        * Direction vector.
        */
-      Vector _dir;
+      vec3 _dir;
 
       /**
        * Length of the cylinder.

@@ -21,8 +21,12 @@
 #include "Scene.h"
 #include "SimpleScene.h"
 #include "Sphere.h"
-#include "Vector.h"
+#include "GraphicsLibrary/glm/glm.hpp"
 
+using glm::vec3;
+using glm::normalize;
+using glm::length;
+using glm::dot;
 using namespace std;
 
 /** The scene. */

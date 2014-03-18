@@ -5,7 +5,12 @@
 #include <cmath>
 
 #include "SceneObject.h"
-#include "Vector.h"
+#include "GraphicsLibrary/glm/glm.hpp"
+
+using glm::vec3;
+using glm::normalize;
+using glm::dot;
+using glm::length;
 
 /**
  * Encapsulates a cone defined by base and an apex vertices and radii.
@@ -26,7 +31,7 @@ class Cone : public SceneObject
        * @param apex The location of the Cone's apex.
        * @param apexRadius The radius of the Cone's apex.
        */
-      Cone(Vector& base, float baseRadius, Vector& apex, float apexRadius);
+      Cone(vec3& base, float baseRadius, vec3& apex, float apexRadius);
 
       /**
        * Tests for intersection between this Cone and a given Ray.
@@ -40,7 +45,7 @@ class Cone : public SceneObject
       /**
        * Apex vertex.
        */
-      Vector _apex;
+      vec3 _apex;
       
       /**
        * Apex radius.
@@ -50,7 +55,7 @@ class Cone : public SceneObject
       /**
        * Base vertex.
        */
-      Vector _base;
+      vec3 _base;
        
       /**
        * Base radius.
@@ -60,12 +65,12 @@ class Cone : public SceneObject
       /**
        * Direction vector.
        */
-      Vector _dir;
+      vec3 _dir;
       
       /**
        * "Imaginary" apex, where the cone would end if it wasn't cut off.
        */
-      Vector _extendedApex;
+      vec3 _extendedApex;
       
       /**
        * Length of the cone.

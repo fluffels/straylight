@@ -1,15 +1,15 @@
 #include "Cylinder.h"
 
 Cylinder::
-Cylinder(Vector& base, Vector& apex, float radius):
+Cylinder(vec3& base, vec3& apex, float radius):
    _base(base),
    _apex(apex),
    _radius(radius)
 {
    _dir = _apex - _base;
-   _length = _dir.getMagnitude();
+   _length = length(_dir);
    
-   _dir = _dir.normalise();
+   _dir = normalize(_dir);
 
    max.x = std::max(base.x, apex.x) + radius;
    max.y = std::max(base.y, apex.y) + radius;
@@ -26,14 +26,14 @@ intersect(Ray& r) const
    /* This intersection test is taken from Cychosz & Waggespack. 1994.
     * "Intersecting a Ray with a Cylinder". Graphics Gems 4, 356-3650.
     * Academic Press, Inc. */
-   Vector R = r.dir;
-   Vector A = _dir;
+   vec3 R = r.dir;
+   vec3 A = _dir;
 
-   Vector Br = r.pos;
-   Vector Bc = _base;
+   vec3 Br = r.pos;
+   vec3 Bc = _base;
 
-   Vector D = (R.cross(A)).normalise();
-   float d = abs((Br - Bc).dot(D));
+   vec3 D = normalize(cross(R, A));
+   float d = abs(dot(Br - Bc, D));
 
    if (d >= _radius)
    {
@@ -42,11 +42,11 @@ intersect(Ray& r) const
 
    /* The formula for "t" below does not include the minus in the body of the
     * text. The attached code shows it, so it's probably a misprint. */
-   float t = -((Br - Bc).cross(A).dot(D)) / R.cross(A).getMagnitude();
+   float t = -(dot(cross(Br - Bc, A), D)) / length(cross(R, A));
 
-   Vector O = D.cross(A).normalise();
+   vec3 O = normalize(cross(D, A));
 
-   float s = abs(sqrt(_radius * _radius - d * d) / R.dot(O));
+   float s = abs(sqrt(_radius * _radius - d * d) / dot(R, O));
 
    float t_in = t - s;
    float t_out = t + s;
@@ -66,20 +66,20 @@ intersect(Ray& r) const
       }
    }
 
-   Vector H = Br + R * t_final;
+   vec3 H = Br + R * t_final;
 
    /* The if statement below makes sure the cylinder is between the apex and
     * basis vectors using dot products. The idea is that a line drawn from the
     * base to a point on the cylinder will form a sharp angle (cos > 0) with the
     * direction vector, while the line between that point and the apex will form
     * an obtuse angle (cos < 0) with the direction vector. */
-   Vector Ha = (H - _apex).normalise();
-   Vector Hb = (H - _base).normalise();
+   vec3 Ha = normalize(H - _apex);
+   vec3 Hb = normalize(H - _base);
 
-   if ((Hb.dot(A) > 0) && (Ha.dot(A) < 0))
+   if ((dot(Hb, A) > 0) && (dot(Ha, A) < 0))
    {
-      Vector HB = (H - Bc);
-      Vector N = (HB - (A * HB.dot(A))) / _radius;
+      vec3 HB = (H - Bc);
+      vec3 N = (HB - (A * dot(HB, A))) / _radius;
 
       r.intersected = this;
       r.intersection = H;

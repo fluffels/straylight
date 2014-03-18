@@ -112,7 +112,7 @@ static void
 parseViewpoint(FILE *fp, Scene& scene, int width, int height)
 {
    /* Initialize variables here to avoid crossing them with gotos. */
-   Vector COP, AT, UP;
+   vec3 COP, AT, UP;
 
    if (fscanf(fp, " from %f %f %f", &COP.x, &COP.y, &COP.z) != 3)
    {
@@ -361,8 +361,8 @@ parseFill(FILE *fp)
 static void
 parseCone(FILE *fp, Scene& scene)
 {
-   Vector base;
-   Vector apex;
+   vec3 base;
+   vec3 apex;
    float baseRadius, apexRadius;
 
    if (fscanf(fp, " %f %f %f %f %f %f %f %f",
@@ -430,7 +430,7 @@ parseSphere(FILE *fp, Scene& scene)
       exit(1);
    }
 
-   Vector centre(center[X], center[Y], center[Z]);
+   vec3 centre(center[X], center[Y], center[Z]);
 
    Sphere* sphere = new Sphere(centre, radius);
    sphere->mat = mat;
@@ -478,8 +478,8 @@ static void
 parsePoly(FILE *fp, Scene& scene)
 {
    /* These have to be declared and initialized before any gotos. */
-   Vector* verts = NULL;
-   Vector* norms = NULL;
+   vec3* verts = NULL;
+   vec3* norms = NULL;
    
    int ispatch = getc(fp);
    if (ispatch != 'p')
@@ -494,7 +494,7 @@ parsePoly(FILE *fp, Scene& scene)
       goto fmterr;
    }
 
-   verts = new Vector[nverts];
+   verts = new vec3[nverts];
    if (verts == NULL)
    {
       goto memerr;
@@ -502,7 +502,7 @@ parsePoly(FILE *fp, Scene& scene)
 
    if (ispatch)
    {
-      norms = new Vector[nverts];
+      norms = new vec3[nverts];
       if (norms == NULL)
       {
          goto memerr;
@@ -524,7 +524,7 @@ parsePoly(FILE *fp, Scene& scene)
          if (fscanf(fp, " %f %f %f", &norms[q].x, &norms[q].y, &norms[q].z)
             != 3)
          {
-            norms[q] = norms[q].normalise();
+            norms[q] = normalize(norms[q]);
             goto fmterr;
          }
       }
@@ -1388,7 +1388,7 @@ getTextureCoords(FILE* fp, char* texturename, int* num, Vec2f** vecs)
       if (fscanf(fp, "%f %f", &txts[q][X], &txts[q][Y]) != 2)
       {
          printf("Error: could not read %d texturecoords ", num_txts);
-         printf("of mesh.\n", num_txts);
+         printf("of mesh.\n");
          exit(1);
       }
    }

@@ -9,8 +9,11 @@
 #include "Ray.h"
 #include "Scene.h"
 #include "SceneObject.h"
-#include "Vector.h"
+#include "GraphicsLibrary/glm/glm.hpp"
 
+using glm::vec3;
+using glm::normalize;
+using glm::length;
 using namespace std;
 
 /**
@@ -33,7 +36,7 @@ class SimpleScene : public Scene
       virtual void addObject(SceneObject* s);
 
       virtual float getLineOfSight(Light& source, const SceneObject& dest, 
-            Vector& p);
+            vec3& p);
 
       virtual bool testIntersection(Ray& r);
 

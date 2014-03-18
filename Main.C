@@ -58,8 +58,8 @@ inShadow(Ray& r, Light light)
     * light source. To solve this in the easiest way, we instead shoot a
     * shadow ray from the light source to the intersection point. */
 
-   Vector p = light.pos;
-   Vector l = (r.intersection - light.pos);
+   vec3 p = light.pos;
+   vec3 l = (r.intersection - light.pos);
 
    Ray shadowRay(p, l);
 
@@ -76,7 +76,7 @@ inShadow(Ray& r, Light light)
        * ray. */
       else
       {
-         float d = (shadowRay.intersection - r.intersection).getMagnitude();
+         float d = length(shadowRay.intersection - r.intersection);
          const float EPSILON = 0.00000001;
 
          if (d < EPSILON)
@@ -327,20 +327,20 @@ shootRay(Ray& r)
       {
          /* Partially based on code found at:
           * http://www.devmaster.net/articles/raytracing_series/part2.php */
-         Vector& n = r.normal;
-         Vector& p = r.intersection;
-         Vector& v = r.dir;
+         vec3& n = r.normal;
+         vec3& p = r.intersection;
+         vec3& v = r.dir;
 
-         float cosI = v.dot(n);
+         float cosI = dot(v, n);
 
          if (m.kS > 0)
          {
-            Vector reflect = v - n * 2 * cosI;
-            reflect = reflect.normalise();
+            vec3 reflect = v - n * 2.0f * cosI;
+            reflect = normalize(reflect);
 
             /* Move the ray origin slightly forward to avoid precision
              * errors. */
-            Vector p_new = r.intersection + reflect * 0.001f;
+            vec3 p_new = r.intersection + reflect * 0.001f;
 
             /* Construct and shoot the reflected ray. */
             Ray newRay(p_new, reflect);
@@ -358,7 +358,7 @@ shootRay(Ray& r)
             float eta = 0;
 
             /* Entering object. */
-            if (r.normal.dot(r.dir) < 0)
+            if (dot(r.normal, r.dir) < 0)
             {
                float eta1 = r.iorStack.back();
                float eta2 = m.ior;
@@ -375,10 +375,10 @@ shootRay(Ray& r)
 
                eta = eta1 / eta2;
 
-               n = n * -1;
+               n = -1.0f * n;
             }
 
-            float c1 = v.dot(n) * -1;
+            float c1 = dot(v, n) * -1;
             float c1Sq = pow(c1, 2);
 
             /* Eta is reversed here, since the Heckbert formula (below) is based 
@@ -388,14 +388,14 @@ shootRay(Ray& r)
 
             if (etaSq + c1Sq >= 1)
             {
-               Vector transmit = (v / eta) + (n / eta) * (c1 - sqrt(etaSq - 1 + 
-                        c1Sq));
+               vec3 transmit = (v / eta) + (c1 - sqrt(etaSq - 1 + 
+                        c1Sq)) * (n / eta);
 
-               transmit = transmit.normalise();
+               transmit = normalize(transmit);
 
                /* Move the ray origin slightly forward to avoid precision
                 * errors. */
-               Vector p_new = r.intersection + transmit * 0.001f;
+               vec3 p_new = r.intersection + 0.001f * transmit;
 
                /* Re-use our old ray. It gets copied later on anyway, and isn't
                 * used again in this method. This is done for optimization

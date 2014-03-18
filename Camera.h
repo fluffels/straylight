@@ -7,7 +7,12 @@
 #include "GraphicsLibrary/Constants.h"
 
 #include "Ray.h"
-#include "Vector.h"
+#include "GraphicsLibrary/glm/glm.hpp"
+
+using glm::vec3;
+using glm::cross;
+using glm::normalize;
+using glm::length;
 
 /**
  * Encapsulates a camera used for a ray tracer. Determines the rays that
@@ -19,17 +24,17 @@ class Camera
       /**
        * Default centre of projection (0, 0, 0).
        */
-      static const Vector DEFAULT_COP;
+      static const vec3 DEFAULT_COP;
 
       /**
        * Default dir vector (0, 0, -1).
        */
-      static const Vector DEFAULT_DIR;
+      static const vec3 DEFAULT_DIR;
 
       /**
        * Default up vector (0, 1, 0).
        */
-      static const Vector DEFAULT_UP;
+      static const vec3 DEFAULT_UP;
 
       /**
        * Default width (in pixels) of the image produced by the Camera.
@@ -64,7 +69,7 @@ class Camera
        * @param height The height of the image to produce.
        * @param viewAngle The camera's viewing angle in radians.
        */
-      Camera(const Vector& cop, const Vector& at, const Vector& up, int width,
+      Camera(const vec3& cop, const vec3& at, const vec3& up, int width,
             int height, float viewAngle);
       
       /**
@@ -72,7 +77,7 @@ class Camera
        *
        * @return A Vector object.
        */
-      const Vector& getCOP() const {return _cop;}
+      const vec3& getCOP() const {return _cop;}
 
       /**
        * Get the height of the image produced by this Camera.
@@ -100,22 +105,22 @@ class Camera
       /**
        * The centre of projection.
        */
-      Vector _cop;
+      vec3 _cop;
       
       /**
        * The direction the Camera is looking in.
        */
-      Vector _dir;
+      vec3 _dir;
       
       /**
        * The direction that is up from the Camera.
        */
-      Vector _up;
+      vec3 _up;
       
       /**
        * The direction to the right of the Camera.
        */
-      Vector _right;
+      vec3 _right;
       
       /**
        * The width of the image produced by the Camera, in pixels.

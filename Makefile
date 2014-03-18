@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -fmessage-length=0 -std=c++0x -pipe
+CFLAGS = -fmessage-length=0 -std=c++0x -pipe -Wfatal-errors
 LDFLAGS = -pipe
 LDLIBS = -lpng -lpthread
 OBJS = Colour.o GraphicsLibrary/SimpleVector.o Camera.o Ray.o \

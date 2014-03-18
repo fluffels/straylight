@@ -7,7 +7,11 @@
 
 #include "Colour.h"
 #include "Sphere.h"
-#include "Vector.h"
+#include "GraphicsLibrary/glm/glm.hpp"
+
+using glm::vec3;
+using glm::normalize;
+using glm::dot;
 
 /**
  * Models the properties exhibited by a point-source light.
@@ -33,7 +37,7 @@ class Light
        * @return A vector describing the light intensity in terms of its
        * red, green and blue components.
        */
-      Colour getLocalLightAt(Ray& ray, const Vector& COP);
+      Colour getLocalLightAt(Ray& ray, const vec3& COP);
       
       /**
        * The light's colour.
@@ -43,7 +47,7 @@ class Light
       /**
        * The light's position.
        */
-      Vector pos;
+      vec3 pos;
 };
 
 #endif /*LIGHT_H_*/

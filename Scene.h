@@ -49,7 +49,7 @@ class Scene
        * its kT property, attenuating the light.
        */
       virtual float getLineOfSight(Light& source, const SceneObject& dest, 
-            Vector& p) = 0;
+            vec3& p) = 0;
 
       /**
        * Find the closest SceneObject intersected by the given Ray.

@@ -7,7 +7,13 @@
 #include "Plane.h"
 #include "SceneObject.h"
 #include "Ray.h"
-#include "Vector.h"
+#include "GraphicsLibrary/glm/glm.hpp"
+
+using glm::vec3;
+using glm::normalize;
+using glm::cross;
+using glm::dot;
+using glm::length;
 
 /**
  * Encapsulates a polyogon.
@@ -29,7 +35,7 @@ class Polygon : public SceneObject
        * the polygon.
        * @param newMat The material to use when rendering this Polygon.
        */
-      Polygon(int vertexCount, Vector* vertices, const Material& newMat);
+      Polygon(int vertexCount, vec3* vertices, const Material& newMat);
       
       /**
        * Destructor.
@@ -62,7 +68,7 @@ class Polygon : public SceneObject
       /**
        * The vertices in this Polygon.
        */
-      Vector* _vertices;
+      vec3* _vertices;
 };
 
 #endif

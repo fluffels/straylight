@@ -23,18 +23,18 @@ addObject(SceneObject* s)
 }
 
 float BoxedScene::
-getLineOfSight(Light& source, const SceneObject& dest, Vector& p)
+getLineOfSight(Light& source, const SceneObject& dest, vec3& p)
 {
    float los = 1.0;
 
    /* This is the maximum distance an obscuring object can be at, measured from 
     * 'source'. We subtract a small epsilon value here. The object might fall 
     * inside the MAX_DIST if we don't do this. */
-   const float MAX_DIST = (p - source.pos).getMagnitude() - 0.001f; 
+   const float MAX_DIST = length(p - source.pos) - 0.001f; 
 
    /* A ray from the 'source' vector to the 'dest' vector. */
-   Vector& pos = source.pos;
-   Vector dir = (p - source.pos).normalise();
+   vec3& pos = source.pos;
+   vec3 dir = normalize(p - source.pos);
    Ray r(pos, dir);
 
    vector<AABB*>::iterator i;
@@ -45,7 +45,7 @@ getLineOfSight(Light& source, const SceneObject& dest, Vector& p)
 
       if (box->intersect(r) && s.intersect(r))
       {
-         float distance = (r.intersection - r.pos).getMagnitude();
+         float distance = length(r.intersection - r.pos);
 
          if (distance < MAX_DIST)
          {
@@ -86,7 +86,7 @@ testIntersection(Ray& r)
       {
          if (box.object.intersect(temp) == true)
          {
-            float distance = (temp.intersection - temp.pos).getMagnitude();
+            float distance = length(temp.intersection - temp.pos);
 
             if (distance < bestDistance)
             {
