@@ -34,7 +34,7 @@ optimized:
 ######################
 
 ${TARGET}: ${OBJS}
-	${CC} ${LDFLAGS} ${EXTRA_LD_FLAGS} ${LDLIBS} -o ${TARGET} $^
+	${CC} ${LDFLAGS} ${EXTRA_LD_FLAGS} -o ${TARGET} $^ ${LDLIBS} 
 
 %.o: %.C %.h Makefile
 	${CC} ${CFLAGS} ${EXTRA_C_FLAGS} -c -o $@ $<
