@@ -1,0 +1,109 @@
+338.413
+473.865
+0.277
+499.575
+libc++abi.dylib: terminating with uncaught exception of type std::length_error: vector
+./experiment.sh: line 4: 35330 Abort trap: 6           ./straylight -t 4 --no-output -f $file -m $1
+63.758
+30.271
+459.179
+./experiment.sh: line 4: 35378 Segmentation fault: 11  ./straylight -t 4 --no-output -f $file -m $1
+0.027
+165.553
+41.659
+99.722
+83.997
+307.128
+334.983
+470.914
+0.276
+498.431
+libc++abi.dylib: terminating with uncaught exception of type std::length_error: vector
+./experiment.sh: line 4: 35562 Abort trap: 6           ./straylight -t 4 --no-output -f $file -m $1
+103.071
+30.285
+458.570
+21.930
+165.888
+41.685
+99.993
+83.994
+308.254
+333.205
+472.228
+0.272
+500.508
+libc++abi.dylib: terminating with uncaught exception of type std::length_error: vector
+./experiment.sh: line 4: 35863 Abort trap: 6           ./straylight -t 4 --no-output -f $file -m $1
+101.996
+30.215
+457.151
+./experiment.sh: line 4: 35914 Segmentation fault: 11  ./straylight -t 4 --no-output -f $file -m $1
+0.027
+165.306
+41.887
+99.505
+84.180
+306.616
+333.623
+470.620
+0.272
+499.284
+libc++abi.dylib: terminating with uncaught exception of type std::length_error: vector
+./experiment.sh: line 4: 36164 Abort trap: 6           ./straylight -t 4 --no-output -f $file -m $1
+101.449
+30.164
+457.254
+21.740
+165.146
+41.652
+99.473
+84.214
+307.150
+333.605
+471.241
+0.272
+498.408
+libc++abi.dylib: terminating with uncaught exception of type std::length_error: vector
+./experiment.sh: line 4: 36393 Abort trap: 6           ./straylight -t 4 --no-output -f $file -m $1
+64.404
+30.254
+457.905
+./experiment.sh: line 4: 36514 Segmentation fault: 11  ./straylight -t 4 --no-output -f $file -m $1
+0.047
+165.822
+41.769
+100.042
+84.163
+306.928
+333.506
+471.869
+0.273
+498.490
+libc++abi.dylib: terminating with uncaught exception of type std::length_error: vector
+./experiment.sh: line 4: 36769 Abort trap: 6           ./straylight -t 4 --no-output -f $file -m $1
+102.914
+30.341
+459.400
+21.780
+165.423
+41.638
+100.862
+84.225
+305.747
+333.830
+473.435
+0.275
+500.559
+libc++abi.dylib: terminating with uncaught exception of type std::length_error: vector
+./experiment.sh: line 4: 37005 Abort trap: 6           ./straylight -t 4 --no-output -f $file -m $1
+63.733
+30.239
+459.890
+./experiment.sh: line 4: 37052 Segmentation fault: 11  ./straylight -t 4 --no-output -f $file -m $1
+0.023
+165.294
+41.628
+100.373
+84.021
+306.751
