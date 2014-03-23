@@ -54,8 +54,8 @@ Set the amount of threads to spin up (default: 1).
 #### -o/--output
 Specify the output filename (default: 'out.png').
 
-#### -n/--naive
-Pass this to disable acceleration methods.
+#### -m/--method
+Acceleration method to use.
 
 #### -p/--progress
 Pass this to enable progress updates..
