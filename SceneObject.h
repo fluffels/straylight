@@ -7,7 +7,9 @@ class Ray;
 
 #include "Material.h"
 #include "Ray.h"
-#include "Vector.h"
+#include "GraphicsLibrary/glm/glm.hpp"
+
+using glm::vec3;
 
 /**
  * Encapsulates any object found in a ray trace scene. The specific
@@ -34,12 +36,12 @@ class SceneObject
       /**
        * Top-front-right corner of this object's extents.
        */
-      Vector max;
+      vec3 max;
 
       /**
        * Bottom-back-left corner of this object's extents.
        */
-      Vector min;
+      vec3 min;
 };
 
 #endif /*SCENEOBJECT_H_*/

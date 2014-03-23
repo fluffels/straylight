@@ -3,6 +3,9 @@
 
 #include "Ray.h"
 #include "SceneObject.h"
+#include "GraphicsLibrary/glm/glm.hpp"
+
+using glm::vec3;
 
 /**
  * An axis-aligned bounding box. Contains a pointer to the SceneObject enclosed
