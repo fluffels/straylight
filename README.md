@@ -27,16 +27,16 @@ through ray tracing and write output to a file called "out.png".
 Command-line Arguments
 
 ```
-Usage: straylight [options]
+Usage: straylight <(-f | --file) scene.nff> [options]
 
-   -w    Set the horizontal resolution of the image to produce (default 240).
-   -h    Set the vertical resolution of the image to produce (default 240).
-   -o    Specify the name of the output file (default "out.png").
-   -f    NFF file to use as input scene (required).
-   -t --threads   Set the amount of threads to spin up (default: 1).
-   -o --output Specify the output filename (default: 'out.png').
-   -n --naive  Pass this to disable acceleration methods.
-   -p --progress  Pass this to enable progress updates..
-   --no-output Pass this to disable output to a file.
+	--help		Show this help message.
+	-w --width	Set the output image's horizontal resolution (default: 240).
+	-h --height	Set the output image's vertical resolution (default: 240).
+	-o --output	Specify the output filename (default: 'out.png').
+	-f --file	Specify the scene description file (required).
+	-t --threads	Set the amount of threads to spin up (default: 1).
+	-n --naive	Pass this to disable acceleration methods.
+	-p --progress	Pass this to enable progress updates.
+	--no-output	Pass this to disable output to a file.
 ```
 
