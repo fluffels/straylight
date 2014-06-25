@@ -249,7 +249,7 @@ printUsage()
    printf("\t-t --threads\tSet the amount of threads to spin up (default: 1).\n");
    printf("\t-o --output\tSpecify the output filename (default: 'out.png').\n");
    printf("\t-m --method\tSet the method of raytracing (0 = simple, 1 = boxed, 2 = rtree).\n");
-   printf("\t-p --progress\tPass this to enable progress updates..\n");
+   printf("\t-p --progress\tPass this to enable progress updates.\n");
    printf("\t--no-output\tPass this to disable output to a file.\n");
 
    exit(-1);
