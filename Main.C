@@ -104,6 +104,8 @@ loadNFFFile()
          break;
       case 1: scene = new BoxedScene();
          break;
+      case 2: scene = new RTreeScene();
+         break;
    }
 
    FILE* nffFile = fopen(nffFileName, "r");
@@ -242,11 +244,11 @@ printUsage()
    printf("\n");
    printf("\t--help\t\tShow this help message.\n");
    printf("\t-f --file\tThe scene description file (required).\n");
-   printf("\t-w --width\tSet the output image's horizontal resolution (default: 640).\n");
-   printf("\t-h --height\tSet the output image's vertical resolution (default: 480).\n");
+   printf("\t-w --width\tSet the output image's horizontal resolution (default: 240).\n");
+   printf("\t-h --height\tSet the output image's vertical resolution (default: 240).\n");
    printf("\t-t --threads\tSet the amount of threads to spin up (default: 1).\n");
    printf("\t-o --output\tSpecify the output filename (default: 'out.png').\n");
-   printf("\t-m --method\tAcceleration method to use.\n");
+   printf("\t-m --method\tSet the method of raytracing (0 = simple, 1 = boxed, 2 = rtree).\n");
    printf("\t-p --progress\tPass this to enable progress updates..\n");
    printf("\t--no-output\tPass this to disable output to a file.\n");
 
