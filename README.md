@@ -1,12 +1,18 @@
 #Straylight
 
-##Introduction
+## Introduction
 
 This is a program for testing how well benchmarks can indicate the performance
-gains from certain optimizations to the ray tracing algorithm. It was developed
-as part of my M.Sc.(CS) dissertation at the North West University of South
-Africa.
+gains from certain optimizations to the ray tracing algorithm.
+It was initially developed as part of my M.Sc.(CS) dissertation at the North West University of South Africa.
+Since then I have been tinkering with it an sometimes using it as a teaching aid.
+Because of the latter, various students have contributed code.
 
+## Contributors
+
+* Jan Kroeze (thejcwk@gmail.com)
+* Arné Schreuder
+* Daniel Smith
 
 ##Compilation
 
@@ -16,27 +22,31 @@ other 1.2.x versions.
 To compile the program, execute "make" in the root directory of the
 project.
 
-
 ##Instructions
+
+To compile:
+
+```shell
+$ cd path/to/dir
+$ make
+```
 
 To run the program, simply execute "./straylight" while in the root
 directory. Executing the program will render the scene constructed
 through ray tracing and write output to a file called "out.png".
 
+##Command-line Arguments
 
-Command-line Arguments
-
-```
+```shell
 Usage: straylight <(-f | --file) scene.nff> [options]
 
-	--help		Show this help message.
-	-w --width	Set the output image's horizontal resolution (default: 240).
-	-h --height	Set the output image's vertical resolution (default: 240).
-	-o --output	Specify the output filename (default: 'out.png').
-	-f --file	Specify the scene description file (required).
+	--help		    Show this help message.
+	-w --width	    Set the output image's horizontal resolution (default: 240).
+	-h --height	    Set the output image's vertical resolution (default: 240).
+	-o --output	    Specify the output filename (default: 'out.png').
+	-f --file	    Specify the scene description file (required).
 	-t --threads	Set the amount of threads to spin up (default: 1).
-	-n --naive	Pass this to disable acceleration methods.
+	-n --naive	    Pass this to disable acceleration methods.
 	-p --progress	Pass this to enable progress updates.
-	--no-output	Pass this to disable output to a file.
+	--no-output	    Pass this to disable output to a file.
 ```
-

@@ -30,7 +30,7 @@ castRaySubset(void* arg)
    {
       if ((progress == true) && (pixel % 1000 == 0))
       {
-         printf("%f%% complete...\n", (float)pixel / (width * height) * 100);
+         printf("%f%% complete...\n", (float) pixel / (width * height) * 100);
       }
 
       int y = pixel / width;
@@ -40,9 +40,9 @@ castRaySubset(void* arg)
       Colour colour = shootRay(r);
 
       int index = pixel * 3;
-      image[index] = min<double>(1.0, colour.r) * 255;
-      image[index + 1] = min<double>(1.0, colour.g) * 255;
-      image[index + 2] = min<double>(1.0, colour.b) * 255;
+      image[index] = min<int>(255, colour.r * 255);
+      image[index + 1] = min<int>(255, colour.g * 255);
+      image[index + 2] = min<int>(255, colour.b * 255);
 
       pixel = __sync_fetch_and_add(&nextPixel, 1);
    }
@@ -58,8 +58,8 @@ inShadow(Ray& r, Light light)
     * light source. To solve this in the easiest way, we instead shoot a
     * shadow ray from the light source to the intersection point. */
 
-   Vector p = light.pos;
-   Vector l = (r.intersection - light.pos);
+   vec3 p = light.pos;
+   vec3 l = (r.intersection - light.pos);
 
    Ray shadowRay(p, l);
 
@@ -76,8 +76,8 @@ inShadow(Ray& r, Light light)
        * ray. */
       else
       {
-         double d = (shadowRay.intersection - r.intersection).getMagnitude();
-         const double EPSILON = 0.00000001;
+         float d = length(shadowRay.intersection - r.intersection);
+         const float EPSILON = 0.00000001;
 
          if (d < EPSILON)
          {
@@ -98,13 +98,12 @@ inShadow(Ray& r, Light light)
 void
 loadNFFFile()
 {
-   if (naive)
+   switch (method)
    {
-      scene = new SimpleScene();
-   }
-   else
-   {
-      scene = new BoxedScene();
+      case 0: scene = new SimpleScene();
+         break;
+      case 1: scene = new BoxedScene();
+         break;
    }
 
    FILE* nffFile = fopen(nffFileName, "r");
@@ -207,9 +206,16 @@ parseArguments(int argc, char** argv)
          outFileName = argv[a + 1];
          a++;
       }
-      else if ((strcmp(argv[a], "-n") == 0) || strcmp(argv[a], "--naive") == 0)
+      else if ((strcmp(argv[a], "-m") == 0) || strcmp(argv[a], "--method") == 0)
       {
-         naive = true;
+         if (argc < a + 2)
+         {
+            printf("Option '--method / -m' requires an argument.\n\n");
+            printUsage();
+         }
+
+         method = atoi(argv[a + 1]);
+         a++;
       }
       else if ((strcmp(argv[a], "-p") == 0) || strcmp(argv[a], "--progress")
          == 0)
@@ -232,16 +238,16 @@ parseArguments(int argc, char** argv)
 void
 printUsage()
 {
-   printf("Usage: straylight <(-f | --file) scene.nff> [options]\n");
+   printf("Usage: straylight (-f | --file) [options]\n");
    printf("\n");
    printf("\t--help\t\tShow this help message.\n");
-   printf("\t-w --width\tSet the output image's horizontal resolution (default: 240).\n");
-   printf("\t-h --height\tSet the output image's vertical resolution (default: 240).\n");
-   printf("\t-o --output\tSpecify the output filename (default: 'out.png').\n");
-   printf("\t-f --file\tSpecify the scene description file (required).\n");
+   printf("\t-f --file\tThe scene description file (required).\n");
+   printf("\t-w --width\tSet the output image's horizontal resolution (default: 640).\n");
+   printf("\t-h --height\tSet the output image's vertical resolution (default: 480).\n");
    printf("\t-t --threads\tSet the amount of threads to spin up (default: 1).\n");
-   printf("\t-n --naive\tPass this to disable acceleration methods.\n");
-   printf("\t-p --progress\tPass this to enable progress updates.\n");
+   printf("\t-o --output\tSpecify the output filename (default: 'out.png').\n");
+   printf("\t-m --method\tAcceleration method to use.\n");
+   printf("\t-p --progress\tPass this to enable progress updates..\n");
    printf("\t--no-output\tPass this to disable output to a file.\n");
 
    exit(-1);
@@ -252,8 +258,7 @@ setup()
 {
    width = scene->cam.getWidth();
    height = scene->cam.getHeight();
-   image = new unsigned char[width * height * COLOURS_PER_PIXEL]; 
-      
+   image = new unsigned char[width * height * COLOURS_PER_PIXEL];
    
    outFile = fopen(outFileName, "wb");
    if (outFile == NULL)
@@ -310,7 +315,7 @@ shootRay(Ray& r)
       {
          Light light = *i;
 
-         double los = scene->getLineOfSight(light, *s, r.intersection);
+         float los = scene->getLineOfSight(light, *s, r.intersection);
 
          if (los >= 0.9)
          {
@@ -327,20 +332,20 @@ shootRay(Ray& r)
       {
          /* Partially based on code found at:
           * http://www.devmaster.net/articles/raytracing_series/part2.php */
-         Vector& n = r.normal;
-         Vector& p = r.intersection;
-         Vector& v = r.dir;
+         vec3& n = r.normal;
+         vec3& p = r.intersection;
+         vec3& v = r.dir;
 
-         double cosI = v.dot(n);
+         float cosI = dot(v, n);
 
          if (m.kS > 0)
          {
-            Vector reflect = v - n * 2 * cosI;
-            reflect = reflect.normalise();
+            vec3 reflect = v - n * 2.0f * cosI;
+            reflect = normalize(reflect);
 
             /* Move the ray origin slightly forward to avoid precision
              * errors. */
-            Vector p_new = r.intersection + reflect * 0.001f;
+            vec3 p_new = r.intersection + reflect * 0.001f;
 
             /* Construct and shoot the reflected ray. */
             Ray newRay(p_new, reflect);
@@ -355,47 +360,46 @@ shootRay(Ray& r)
             /* Based on code found at:
              * http://www.devmaster.net/articles/raytracing_series/part3.php */
 
-            double eta = 0;
+            float eta = 0;
 
             /* Entering object. */
-            if (r.normal.dot(r.dir) < 0)
+            if (dot(r.normal, r.dir) < 0)
             {
-               double eta1 = r.iorStack.back();
-               double eta2 = m.ior;
+               float eta1 = r.iorStack.back();
+               float eta2 = m.ior;
                eta = eta1 / eta2;
 
                r.iorStack.push_back(eta2);
-            }
-            /* Exiting object. */
+            }                    /* Exiting object. */
             else
             {
-               double eta1 = r.iorStack.back();
+               float eta1 = r.iorStack.back();
                r.iorStack.pop_back();
-               double eta2 = r.iorStack.back();
+               float eta2 = r.iorStack.back();
 
                eta = eta1 / eta2;
 
-               n = n * -1;
+               n = -1.0f * n;
             }
 
-            double c1 = v.dot(n) * -1;
-            double c1Sq = pow(c1, 2);
+            float c1 = dot(v, n) * -1;
+            float c1Sq = pow(c1, 2);
 
             /* Eta is reversed here, since the Heckbert formula (below) is based 
              * on it. See p. 90 of thesis. */
-            eta = 1 / eta; 
-            double etaSq = pow(eta, 2);
+            eta = 1 / eta;
+            float etaSq = pow(eta, 2);
 
             if (etaSq + c1Sq >= 1)
             {
-               Vector transmit = (v / eta) + (n / eta) * (c1 - sqrt(etaSq - 1 + 
-                        c1Sq));
+               vec3 transmit = (v / eta) + (c1 - sqrt(etaSq - 1 +
+                   c1Sq)) * (n / eta);
 
-               transmit = transmit.normalise();
+               transmit = normalize(transmit);
 
                /* Move the ray origin slightly forward to avoid precision
                 * errors. */
-               Vector p_new = r.intersection + transmit * 0.001f;
+               vec3 p_new = r.intersection + 0.001f * transmit;
 
                /* Re-use our old ray. It gets copied later on anyway, and isn't
                 * used again in this method. This is done for optimization
@@ -432,11 +436,11 @@ teardown()
 void
 writeImage()
 {
-   png_byte* rowPointers[height];
+   png_byte * rowPointers[height];
    for (int a = 0; a < height; a++)
    {
       rowPointers[height - 1 - a] = (png_byte*) image + a * width
-               * COLOURS_PER_PIXEL;
+          * COLOURS_PER_PIXEL;
    }
 
    if (setjmp(png_jmpbuf(png)))

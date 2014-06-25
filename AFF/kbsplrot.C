@@ -22,7 +22,7 @@ typedef struct
 
    /* Sample time interval on which polynomial is valid. 
     * trange = tmax - tmin */
-   double tmin, tmax, trange;
+   float tmin, tmax, trange;
 }
 SquadInfo;
 
@@ -36,13 +36,13 @@ typedef struct
 }
 SplineInfo;
 
-static double epsilon = 1e-06;
-static double pi = 3.1415926535897932384626433; /* 4.0 * atan(1.0); */
+static float epsilon = 1e-06;
+static float pi = 3.1415926535897932384626433; /* 4.0 * atan(1.0); */
 
 void* KB_RotInitialize (int numKeys, RotationKey* key)
 {
-   double omt0, omc0, opc0, omb0, opb0, adj0, out0, out1;
-   double omt1, omc1, opc1, omb1, opb1, adj1, in0, in1;
+   float omt0, omc0, opc0, omb0, opb0, adj0, out0, out1;
+   float omt1, omc1, opc1, omb1, opb1, adj1, in0, in1;
 
    Quaternion q0, q1, q2, q3;
    Quaternion prod;
@@ -159,7 +159,7 @@ void KB_RotTerminate (void* info)
    free(spline);
 }
 
-static void KB_InterpolateSingle (double s, SquadInfo* si, Rotation3* R)
+static void KB_InterpolateSingle (float s, SquadInfo* si, Rotation3* R)
 {
    assert(0 <= s <= 1);
 
@@ -168,14 +168,14 @@ static void KB_InterpolateSingle (double s, SquadInfo* si, Rotation3* R)
    ToAngleAxis(&squad, &(R->angle), &(R->x), &(R->y), &(R->z)); 
 }
 
-void KB_RotInterpolate (void* info, double t, Rotation3* R)
+void KB_RotInterpolate (void* info, float t, Rotation3* R)
 {
    SplineInfo* tmp = (SplineInfo*)info;
 
    /* Find the interpolating polynomial (clamping used, modify for
     * looping). */
    int i;
-   double s;
+   float s;
 
    if (tmp->si[0].tmin < t)
    {

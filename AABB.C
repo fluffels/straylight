@@ -15,10 +15,10 @@ intersect(Ray& r)
    /* This algorithm was taken from "An Efficient and Robust Ray-Box
     * Interesection Algorithm" by Williams, Barrus, Morley and Shirley. */
 
-   Vector& min = object.min;
-   Vector& max = object.max;
+   vec3& min = object.min;
+   vec3& max = object.max;
 
-   Vector tmin, tmax;
+   vec3 tmin, tmax;
 
    if (r.dir.x >= 0)
    {

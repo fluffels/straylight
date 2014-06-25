@@ -1,8 +1,8 @@
 CC = g++
-CFLAGS = -fmessage-length=0 -std=c++0x -pipe
+CFLAGS = -fmessage-length=0 -std=c++11 -pipe -Wfatal-errors
 LDFLAGS = -pipe
 LDLIBS = -lpng -lpthread
-OBJS = Colour.o GraphicsLibrary/SimpleVector.o Camera.o Ray.o \
+OBJS = Colour.o Camera.o Ray.o \
 Material.o SceneObject.o Sphere.o Plane.o Polygon.o PolygonPatch.o Cone.o \
 Cylinder.o Light.o Scene.o SimpleScene.o BoxedScene.o AABB.o Main.o \
 AFF/parse.o AFF/texture.o AFF/animation.o AFF/quat.o AFF/kbsplpos.o \
@@ -34,7 +34,7 @@ optimized:
 ######################
 
 ${TARGET}: ${OBJS}
-	${CC} ${LDFLAGS} ${EXTRA_LD_FLAGS} ${LDLIBS} -o ${TARGET} $^
+	${CC} ${LDFLAGS} ${EXTRA_LD_FLAGS} -o ${TARGET} $^ ${LDLIBS}
 
 %.o: %.C %.h Makefile
 	${CC} ${CFLAGS} ${EXTRA_C_FLAGS} -c -o $@ $<

@@ -8,6 +8,7 @@
 #include <iostream>
 #include <map>
 
+#include <glm/glm.hpp>
 #include <pthread.h>
 #include <png.h>
 
@@ -21,8 +22,11 @@
 #include "Scene.h"
 #include "SimpleScene.h"
 #include "Sphere.h"
-#include "Vector.h"
 
+using glm::vec3;
+using glm::normalize;
+using glm::length;
+using glm::dot;
 using namespace std;
 
 /** The scene. */
@@ -31,7 +35,7 @@ Scene* scene;
 /** Title of the window. */
 const char* title = "Straylight";
 /** Whether to use naïve ray tracing (no acceleration methods / structures). */
-bool naive = false;
+int method = 0;
 /** Whether to only cast rays and produce no output. */
 bool noOutput = false;
 /** Whether to print progress updates. */

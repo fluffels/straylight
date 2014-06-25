@@ -26,7 +26,7 @@ class PolygonPatch : public Polygon
        * vertices array and so on.
        * @param newMat The material to use when rendering this polygon patch.
        */
-      PolygonPatch(int vertexCount, Vector* vertices, Vector* normals,
+      PolygonPatch(int vertexCount, vec3* vertices, vec3* normals,
          const Material& newMat);
 
       /**
@@ -42,7 +42,7 @@ class PolygonPatch : public Polygon
       /**
        * The normals at each vertex in the polygon patch.
        */
-      Vector* _normals;
+      vec3* _normals;
 };
 
 #endif

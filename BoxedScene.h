@@ -29,8 +29,8 @@ class BoxedScene : public Scene
 
       virtual void addObject(SceneObject* s);
 
-      virtual double getLineOfSight(Light& source, const SceneObject& dest, 
-            Vector& p);
+      virtual float getLineOfSight(Light& source, const SceneObject& dest, 
+            vec3& p);
 
       virtual bool testIntersection(Ray& r);
 

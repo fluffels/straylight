@@ -4,8 +4,15 @@
 #include <algorithm>
 #include <cmath>
 
+#include <glm/glm.hpp>
+
 #include "SceneObject.h"
-#include "Vector.h"
+
+using glm::vec3;
+using glm::normalize;
+using glm::cross;
+using glm::dot;
+using glm::length;
 
 /**
  * Encapsulates a cylinder defined by a radius and a base and apex vector.
@@ -25,7 +32,7 @@ class Cylinder : public SceneObject
        * @param apex The location of the cylinder's apex.
        * @param radius The cylinder's radius.
        */
-      Cylinder(Vector& base, Vector& apex, double radius);
+      Cylinder(vec3& base, vec3& apex, float radius);
 
       /**
        * Tests for intersection between this cylinder and a given ray.
@@ -39,27 +46,27 @@ class Cylinder : public SceneObject
       /**
        * Apex vertex.
        */
-      Vector _apex;
+      vec3 _apex;
       
       /**
        * Base vertex.
        */
-      Vector _base;
+      vec3 _base;
        
       /**
        * Radius.
        */
-      double _radius;
+      float _radius;
       
       /**
        * Direction vector.
        */
-      Vector _dir;
+      vec3 _dir;
 
       /**
        * Length of the cylinder.
        */
-      double _length;
+      float _length;
 };
 
 #endif

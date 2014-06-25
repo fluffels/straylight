@@ -1,16 +1,16 @@
 #include "Cone.h"
 
 Cone::
-Cone(Vector& base, double baseRadius, Vector& apex, double apexRadius):
+Cone(vec3& base, float baseRadius, vec3& apex, float apexRadius):
    _base(base),
    _baseRadius(baseRadius),
    _apex(apex),
    _apexRadius(apexRadius)
 {
    _dir = _apex - _base;
-   _length = _dir.getMagnitude();
+   _length = length(_dir);
    
-   _dir = _dir.normalise();
+   _dir = normalize(_dir);
    
    _theta = atan((_baseRadius - _apexRadius) / _length);
 
@@ -31,29 +31,29 @@ intersect(Ray& r) const
    /* This intersection test is taken from:
     * http://www.geometrictools.com/LibMathematics/Intersection/Wm5IntrLine3Cone3.cpp
     */
-   double cosSqr = pow(cos(_theta), 2);
+   float cosSqr = pow(cos(_theta), 2);
    
-   const Vector& A = _dir;
-   const Vector& D = r.dir;
-   const Vector E = r.pos - _extendedApex;
+   const vec3& A = _dir;
+   const vec3& D = r.dir;
+   const vec3 E = r.pos - _extendedApex;
    
-   double c2 = pow(A.dot(D), 2) - cosSqr;
-   double c1 = A.dot(D) * A.dot(E) - cosSqr * D.dot(E);
-   double c0 = pow(A.dot(E), 2) - cosSqr * E.dot(E);
+   float c2 = pow(dot(A, D), 2) - cosSqr;
+   float c1 = dot(A, D) * dot(A, E) - cosSqr * dot(D, E);
+   float c0 = pow(dot(A, E), 2) - cosSqr * dot(E, E);
    
-   double disc = c1 * c1 - c0 * c2;
+   float disc = c1 * c1 - c0 * c2;
    
    /* We ignore cases where disc == 0 / disc < 0. The former has no visible
     * impact on image quality, and the latter indicates an abscence of
     * intersections. False will be returned for both occurrences. */
    if (disc > 0)
    {
-      double t0 = (-c1 - sqrt(disc)) * (1 / c2);
-      double t1 = (-c1 + sqrt(disc)) * (1 / c2);
+      float t0 = (-c1 - sqrt(disc)) * (1 / c2);
+      float t1 = (-c1 + sqrt(disc)) * (1 / c2);
 
       /* Note that this object is one-sided. As such, we are only interested in
        * the first intersection that is in front of the ray origin. */
-      double t_final = t0;
+      float t_final = t0;
       if (t0 < 0)
       {
          if (t1 < 0)
@@ -73,11 +73,11 @@ intersect(Ray& r) const
          }
       }
       
-      Vector point = r.pos + r.dir * t_final;
+      vec3 point = r.pos + r.dir * t_final;
 
       /* This ensures that the point is within the stated apex & base
        * coordinates. */
-      if (((point - _apex).dot(A) <= 0) && ((point - _base).dot(A) >= 0))
+      if ((dot(point - _apex, A) <= 0) && (dot(point - _base, A) >= 0))
       {
          r.intersection = point;
          r.intersected = this;
@@ -87,9 +87,9 @@ intersect(Ray& r) const
           * have a point on the central axis of the cone. We can simply
           * subtract this from the point on the surface to obtain the
           * normal. */
-         Vector v = point - _apex;
-         Vector proj = _dir * (v.dot(_dir) / _dir.dot(_dir));
-         r.normal = (point - (_apex + proj)).normalise();
+         vec3 v = point - _apex;
+         vec3 proj = _dir * dot(dot(v, _dir) / _dir, _dir);
+         r.normal = normalize(point - (_apex + proj));
 
          return true;
       }

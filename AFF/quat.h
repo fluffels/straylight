@@ -37,7 +37,7 @@
 typedef struct 
 {
     /* Point or vector or in 3-D space. */
-    double x, y, z;
+    float x, y, z;
 }
 Point3;
 
@@ -48,7 +48,7 @@ Point3;
  */
 typedef struct 
 {
-    double w, x, y, z;
+    float w, x, y, z;
 }
 Quaternion;
 
@@ -61,7 +61,7 @@ Quaternion;
  * @param _y The y component.
  * @param _z The z component.
  */
-void Set(Quaternion* q, double _w, double _x, double _y, double _z);
+void Set(Quaternion* q, float _w, float _x, float _y, float _z);
 
 /**
  * Sets two quaternions equal.
@@ -83,7 +83,7 @@ void SetQuat(Quaternion* q, Quaternion* q2);
  * @param q The quaternion.
  * @param Rot The rotation matrix.
  */
-void FromRotationMatrix (Quaternion* q, double Rot[3][3]);
+void FromRotationMatrix (Quaternion* q, float Rot[3][3]);
 
 /**
  * Converts a quaternion to a rotation matrix.
@@ -91,7 +91,7 @@ void FromRotationMatrix (Quaternion* q, double Rot[3][3]);
  * @param q The quaternion.
  * @param Rot The rotation matrix.
  */
-void ToRotationMatrix (Quaternion* q, double Rot[3][3]);
+void ToRotationMatrix (Quaternion* q, float Rot[3][3]);
 
 /**
  * Initializes a quaternion from an angle and an axis.
@@ -102,8 +102,8 @@ void ToRotationMatrix (Quaternion* q, double Rot[3][3]);
  * @param ay The y-component of the axis.
  * @param az The z-component of the axis.
  */
-void FromAngleAxis (Quaternion* q, double angle, double ax, double ay,
-   double az);
+void FromAngleAxis (Quaternion* q, float angle, float ax, float ay,
+   float az);
 
 /**
  * Initializes a quaternion from an angle and an axis, using a Point3
@@ -113,7 +113,7 @@ void FromAngleAxis (Quaternion* q, double angle, double ax, double ay,
  * @param rdAngle The angle.
  * @param rkPoint The Point3 pointer storing the axis.
  */
-void FromAngleAxisPt(Quaternion* q, double rdAngle, Point3* rkPoint);
+void FromAngleAxisPt(Quaternion* q, float rdAngle, Point3* rkPoint);
 
 /**
  * Converts a quaternion to an angle and axis.
@@ -124,8 +124,8 @@ void FromAngleAxisPt(Quaternion* q, double rdAngle, Point3* rkPoint);
  * @param ay The y-component of the axis.
  * @param az The z-component of the axis.
  */
-void ToAngleAxis (Quaternion* q, double* angle, double* ax, double* ay,
-   double* az);
+void ToAngleAxis (Quaternion* q, float* angle, float* ax, float* ay,
+   float* az);
 
 /**
  * Converts a quaternion to an angle and axis, where the axis is stored
@@ -135,7 +135,7 @@ void ToAngleAxis (Quaternion* q, double* angle, double* ax, double* ay,
  * @param rkAngle The angle.
  * @param rkPoint The axis as a Point3.
  */
-void ToAngleAxisPt(Quaternion* q, double* rkAngle, Point3* rkPoint);
+void ToAngleAxisPt(Quaternion* q, float* rkAngle, Point3* rkPoint);
 
 /* Arithmetic operations. */
 
@@ -207,7 +207,7 @@ void MulSelf(Quaternion* q, Quaternion* q2);
  * @param q1 The quaternion to perform the scalar multiplication on.
  * @param c The scalar to multiply with.
  */
-void MulScal(Quaternion* q, Quaternion* q1, double c);
+void MulScal(Quaternion* q, Quaternion* q1, float c);
 
 /**
  * Scalar multiplication of a quaternion. The result is stored in the
@@ -217,7 +217,7 @@ void MulScal(Quaternion* q, Quaternion* q1, double c);
  * multiplication on and to store the result in.
  * @param c The scalar to multiply with.
  */
-void MulScalSelf(Quaternion* q, double c);
+void MulScalSelf(Quaternion* q, float c);
 
 /**
  * Negates a quaternion. The result is stored in a second quaternion
@@ -245,18 +245,18 @@ void NegSelf(Quaternion* q);
  * @param q The left operand.
  * @param q2 The right operand.
  * 
- * @return The result as a double.
+ * @return The result as a float.
  */
-double Dot (Quaternion* q, Quaternion* q2);
+float Dot (Quaternion* q, Quaternion* q2);
 
 /**
  * Squared length of a quaternion.
  * 
  * @param q The quaternion.
  * 
- * @return The result as a double.
+ * @return The result as a float.
  */
-double Norm (Quaternion* q);
+float Norm (Quaternion* q);
 
 /**
  * Invert a quaternion. Store the result in a second quaternion.
@@ -344,7 +344,7 @@ void PointMul (Quaternion* q, Point3* Pres, Point3* pt);
  * @param p The first quaternion to interpolate between.
  * @param q The second quaternion to interpolate between.
  */
-void Slerp (Quaternion* res, double t, Quaternion* p, Quaternion* q);
+void Slerp (Quaternion* res, float t, Quaternion* p, Quaternion* q);
 
 /**
  * Spherical linear interpolation with "extra spins".
@@ -357,7 +357,7 @@ void Slerp (Quaternion* res, double t, Quaternion* p, Quaternion* q);
  * @param q The second quaternion to interpolate between.
  * @param iExtraSpins
  */
-void SlerpExtraSpins (Quaternion* res, double t, Quaternion* p,
+void SlerpExtraSpins (Quaternion* res, float t, Quaternion* p,
    Quaternion* q, int iExtraSpins);
 
 /**
@@ -384,7 +384,7 @@ void Intermediate ( Quaternion* q0, Quaternion* q1, Quaternion* q2,
  * @param a The third Quaternion to interpolate with.
  * @param b The fourth Quaternion to interpolate with.
  */
-void Squad (Quaternion* res, double t, Quaternion* p, Quaternion* a,
+void Squad (Quaternion* res, float t, Quaternion* p, Quaternion* a,
    Quaternion* b, Quaternion* q);
 
 /**
@@ -393,7 +393,7 @@ void Squad (Quaternion* res, double t, Quaternion* p, Quaternion* a,
  * @param quat The quaternion to convert.
  * @param m The matrix to store the result in.
  */
-void QuatToMatrix(Quaternion* quat, double m[4][4]);
+void QuatToMatrix(Quaternion* quat, float m[4][4]);
 
 #endif
 

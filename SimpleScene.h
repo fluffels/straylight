@@ -4,13 +4,17 @@
 #include <cfloat>
 #include <vector>
 
+#include <glm/glm.hpp>
+
 #include "Camera.h"
 #include "Light.h"
 #include "Ray.h"
 #include "Scene.h"
 #include "SceneObject.h"
-#include "Vector.h"
 
+using glm::vec3;
+using glm::normalize;
+using glm::length;
 using namespace std;
 
 /**
@@ -32,8 +36,8 @@ class SimpleScene : public Scene
 
       virtual void addObject(SceneObject* s);
 
-      virtual double getLineOfSight(Light& source, const SceneObject& dest, 
-            Vector& p);
+      virtual float getLineOfSight(Light& source, const SceneObject& dest, 
+            vec3& p);
 
       virtual bool testIntersection(Ray& r);
 

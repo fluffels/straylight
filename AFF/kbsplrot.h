@@ -27,8 +27,8 @@
  */
 typedef struct
 {
-    double x, y, z;
-    double angle;
+    float x, y, z;
+    float angle;
 }
 Rotation3;
 
@@ -38,14 +38,14 @@ Rotation3;
 typedef struct
 {
    /* Sample time. */
-   double t;
+   float t;
    
    /* Sample rotation axis and angle. */
    Rotation3 Rot;
    
    /* Sample parameters for affecting tangential behavior at control
     * point. */
-   double tension, continuity, bias;
+   float tension, continuity, bias;
 }
 RotationKey;
 
@@ -72,6 +72,6 @@ void KB_RotTerminate(void* info);
  * @param t The time at which to find the rotation.
  * @param Rot The rotation found after interpolation.
  */
-void KB_RotInterpolate(void* info, double t, Rotation3* Rot);
+void KB_RotInterpolate(void* info, float t, Rotation3* Rot);
 
 #endif
