@@ -99,7 +99,7 @@ class Ray
         *
         * @return True if this ray intersects the bounds, false otherwise.
         */
-      bool intersect(const Vector& min, const Vector& max) const;
+      bool intersect(const vec3& min, const vec3& max) const;
 };
 
 #endif /*RAY_H_*/

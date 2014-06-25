@@ -26,12 +26,12 @@ shouldTerminate() const
 }
 
 bool Ray::
-intersect(const Vector& min, const Vector& max) const
+intersect(const vec3& min, const vec3& max) const
 {
    /* This algorithm was taken from "An Efficient and Robust Ray-Box
     * Interesection Algorithm" by Williams, Barrus, Morley and Shirley. */
 
-   Vector tmin, tmax;
+   vec3 tmin, tmax;
 
    if (dir.x >= 0)
    {

@@ -177,8 +177,8 @@ struct RStarBoundingBox {
    */
   bool intersect(const Ray& r) const
   {
-		Vector min(edges[0].first , edges[1].first,  edges[2].first );
-		Vector max(edges[0].second, edges[1].second, edges[2].second);
+		vec3 min(edges[0].first , edges[1].first,  edges[2].first );
+		vec3 max(edges[0].second, edges[1].second, edges[2].second);
 
 		return r.intersect(min, max);
   }

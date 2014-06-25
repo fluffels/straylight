@@ -33,7 +33,7 @@ struct LOSVisitor {
 
     if (ContinueVisiting && box.intersect(r) && s.intersect(r))
     {
-       double distance = (r.intersection - r.pos).getMagnitude();
+       double distance = length(r.intersection - r.pos);
 
        if (distance < MAX_DIST)
        {
@@ -72,7 +72,7 @@ struct IntersectionVisitor {
     Ray temp(r);
     if (box.intersect(temp) && s.intersect(temp) == true)
     {
-      double distance = (temp.intersection - temp.pos).getMagnitude();
+      double distance = length(temp.intersection - temp.pos);
 
       if (distance < bestDistance)
       {
@@ -101,12 +101,12 @@ class RTreeScene : public Scene
        */
       ~RTreeScene();
 
-      static BoundingBox bounds(Vector &min, Vector &max);
+      static BoundingBox bounds(vec3 &min, vec3 &max);
 
       virtual void addObject(SceneObject* s);
 
-      virtual double getLineOfSight(Light& source, const SceneObject& dest, 
-            Vector& p);
+      virtual float getLineOfSight(Light& source, const SceneObject& dest, 
+            vec3& p);
 
       virtual bool testIntersection(Ray& r);
 
