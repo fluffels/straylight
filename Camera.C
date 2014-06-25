@@ -1,9 +1,9 @@
 #include "Camera.h"
 
-const Vector Camera::DEFAULT_COP(0, 0, 0);
-const Vector Camera::DEFAULT_DIR(0, 0, -1);
-const Vector Camera::DEFAULT_UP(0, 1, 0);
-const double Camera::DEFAULT_VIEW_ANGLE = (27.0 / 180.0) * PI;
+const vec3 Camera::DEFAULT_COP(0, 0, 0);
+const vec3 Camera::DEFAULT_DIR(0, 0, -1);
+const vec3 Camera::DEFAULT_UP(0, 1, 0);
+const float Camera::DEFAULT_VIEW_ANGLE = (27.0 / 180.0) * PI;
 
 Camera::
 Camera():
@@ -14,29 +14,29 @@ Camera():
    _height(DEFAULT_HEIGHT),
    _viewAngle(DEFAULT_VIEW_ANGLE)
 {
-   _right = _dir.cross(_up);
+   _right = cross(_dir, _up);
 }
 
 Camera::
-Camera(const Vector& cop, const Vector& at, const Vector& up,
-   int width, int height, double viewAngle):
+Camera(const vec3& cop, const vec3& at, const vec3& up,
+   int width, int height, float viewAngle):
    _cop(cop),
    _width(width),
    _height(height),
    _viewAngle(viewAngle)
 {
    _dir = at - _cop;
-   _right = _dir.cross(up);
-   _up = _right.cross(_dir);
+   _right = cross(_dir, up);
+   _up = cross(_right, _dir);
    
-   _dir = _dir.normalise();
+   _dir = normalize(_dir);
 
    /* Take the view angle into account. This is derived from the formula to get
     * the viewing angle for a lense with a focal length of 1. */
-   _right = _right.normalise() * 2 * tan(_viewAngle / 2);
+   _right = 2 * tan(_viewAngle / 2) * normalize(_right);
 
    /* Take the aspect ratio of non-square resolutions into account. */
-   _up = _up.normalise() * _right.getMagnitude() * _height / _width;
+   _up = _height / _width * length(_right) * normalize(_up);
 }
 
 Ray Camera::
@@ -47,16 +47,16 @@ getRayAt(int x, int y)
       throw IllegalArgumentException("X / Y out of range.");
    }
    
-   const double LOW = -0.5;
-   const double HIGH = 0.5;
+   const float LOW = -0.5;
+   const float HIGH = 0.5;
    
-   const double MAX_X = _width - 1;
-   const double MAX_Y = _height - 1;
+   const float MAX_X = _width - 1;
+   const float MAX_Y = _height - 1;
    
-   const double X_MAG = (HIGH - LOW) * (x / MAX_X) + LOW;
-   const double Y_MAG = (HIGH - LOW) * (y / MAX_Y) + LOW;
+   const float X_MAG = (HIGH - LOW) * (x / MAX_X) + LOW;
+   const float Y_MAG = (HIGH - LOW) * (y / MAX_Y) + LOW;
    
-   Vector direction = (_dir + (_right * X_MAG) + (_up * Y_MAG)).normalise();
+   vec3 direction = normalize(_dir + (X_MAG * _right) + (Y_MAG * _up));
    
    Ray r(_cop, direction);
    

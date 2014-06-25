@@ -6,7 +6,11 @@
 #include "Material.h"
 #include "Ray.h"
 #include "SceneObject.h"
-#include "Vector.h"
+#include <glm/glm.hpp>
+
+using glm::vec3;
+using glm::normalize;
+using glm::dot;
 
 /**
  * Models a spherical object using a centre point and a radius. Also has
@@ -19,19 +23,19 @@ class Sphere : public SceneObject
        * Constructor.
        * 
        * @param pos This Sphere's centre as an object of class Vector.
-       * @param r This Sphere's radius as a double.
+       * @param r This Sphere's radius as a float.
        */
-      Sphere(const Vector& pos, double r);
+      Sphere(const vec3& pos, float r);
 
       /**
        * Constructor
        * 
        * @param pos This Sphere's centre as an object of class Vector.
-       * @param r This Sphere's radius as a double.
+       * @param r This Sphere's radius as a float.
        * @param mat This Sphere's material properties as an object of
        * class Material.
        */
-      Sphere(const Vector& pos, double r, const Material& mat);
+      Sphere(const vec3& pos, float r, const Material& mat);
 
       /**
        * Tests for intersection between this Sphere and a given Ray.
@@ -45,12 +49,12 @@ class Sphere : public SceneObject
       /**
        * The centre of this Sphere.
        */
-      Vector pos;
+      vec3 pos;
 
       /**
        * The radius of this Sphere.
        */
-      double r;
+      float r;
 };
 
 #endif /*SPHERE_H_*/

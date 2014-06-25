@@ -37,7 +37,7 @@ Animation* FindAnimation(char* name, struct AnimationList *al)
    return NULL;
 }
 
-int _GetTranslation(Animation* animation, double time, double Tout[3])
+int _GetTranslation(Animation* animation, float time, float Tout[3])
 {
    void* p = animation->translations;
    
@@ -58,7 +58,7 @@ int _GetTranslation(Animation* animation, double time, double Tout[3])
    return FALSE;
 }
 
-int _GetRotation(Animation* animation, double time, double Rout[4])
+int _GetRotation(Animation* animation, float time, float Rout[4])
 {
    void* r = animation->rotations;
    
@@ -83,7 +83,7 @@ int _GetRotation(Animation* animation, double time, double Rout[4])
    return FALSE;
 }
 
-int _GetScale(Animation* animation, double time, double Sout[3])
+int _GetScale(Animation* animation, float time, float Sout[3])
 {
    void* s = animation->scales;
    
@@ -106,7 +106,7 @@ int _GetScale(Animation* animation, double time, double Sout[3])
    return FALSE;
 }
 
-int _GetVisibility(Animation* animation, double time)
+int _GetVisibility(Animation* animation, float time)
 {
    if(animation->visibilities)
    {
@@ -144,7 +144,7 @@ int _GetVisibility(Animation* animation, double time)
    return 1;  
 }
 
-void _GetMatrix(Animation* animation, double time, double m[4][4])
+void _GetMatrix(Animation* animation, float time, float m[4][4])
 {
    Animation* a = (Animation*) animation;
    
@@ -153,7 +153,7 @@ void _GetMatrix(Animation* animation, double time, double m[4][4])
    /* Rotation. */
    if(a->rotations)
    {
-      double drot[4];
+      float drot[4];
       _GetRotation(a, time, drot);
       
       Rotation3 RR;
@@ -177,7 +177,7 @@ void _GetMatrix(Animation* animation, double time, double m[4][4])
    /* Concatenate with scaling. */
    if(a->scales)
    {
-      double S[3];
+      float S[3];
       _GetScale(a, time, S);
 
       m[0][0] *= S[0]; m[0][1] *= S[1]; m[0][2] *= S[2];
@@ -188,7 +188,7 @@ void _GetMatrix(Animation* animation, double time, double m[4][4])
    /* Translation. */
    if(a->translations)  
    {
-      double P[3];
+      float P[3];
       _GetTranslation(a, time, P);
       
       m[0][3] = P[0];
@@ -197,8 +197,8 @@ void _GetMatrix(Animation* animation, double time, double m[4][4])
    }
 }
 
-int GetTranslation(struct AnimationList *al, char* name, double time,
-   double Tout[3])
+int GetTranslation(struct AnimationList *al, char* name, float time,
+   float Tout[3])
 {
    void* a = FindAnimation(name, al);
    Animation* anim = (Animation*) a;
@@ -214,8 +214,8 @@ int GetTranslation(struct AnimationList *al, char* name, double time,
    return FALSE;
 }
 
-int GetRotation(struct AnimationList *al, char* name, double time,
-   double Rout[4])
+int GetRotation(struct AnimationList *al, char* name, float time,
+   float Rout[4])
 {
    void* a = FindAnimation(name, al);
    Animation* anim = (Animation*) a;
@@ -234,8 +234,8 @@ int GetRotation(struct AnimationList *al, char* name, double time,
    return FALSE;
 }
 
-int GetScale(struct AnimationList *al, char* name, double time,
-   double Sout[3])
+int GetScale(struct AnimationList *al, char* name, float time,
+   float Sout[3])
 {
    void* a = FindAnimation(name, al);
    Animation* anim = (Animation*) a;
@@ -251,7 +251,7 @@ int GetScale(struct AnimationList *al, char* name, double time,
    return FALSE;
 }
 
-int GetVisibility(struct AnimationList *al, char *name, double time)
+int GetVisibility(struct AnimationList *al, char *name, float time)
 {
    void* a = FindAnimation(name, al);
    Animation* anim = (Animation*) a;
@@ -264,8 +264,8 @@ int GetVisibility(struct AnimationList *al, char *name, double time)
    return 1;
 }
 
-int GetMatrix(struct AnimationList *al, char* name, double time,
-   double m[4][4])
+int GetMatrix(struct AnimationList *al, char* name, float time,
+   float m[4][4])
 {
    int x, y;
    void* a = FindAnimation(name, al);
@@ -295,9 +295,9 @@ int GetMatrix(struct AnimationList *al, char* name, double time,
    return FALSE;
 }
 
-void GetCamera(struct AnimationList *al, double time, int *gotPosition,
-   double viewPos[3], int *gotDirection, double viewDir[3],
-   double viewUp[3])
+void GetCamera(struct AnimationList *al, float time, int *gotPosition,
+   float viewPos[3], int *gotDirection, float viewDir[3],
+   float viewUp[3])
 {
    /* If there is an animation called "camera", then use it to animate
     * the camera. */
@@ -314,7 +314,7 @@ void GetCamera(struct AnimationList *al, double time, int *gotPosition,
    
    if(a)
    {
-      double m[4][4];
+      float m[4][4];
       
       /* Get position of the camera, if there is any. */
       if(a->translations)

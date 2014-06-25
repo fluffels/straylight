@@ -3,7 +3,7 @@
 #include <cstdio>
 
 Polygon::
-Polygon(int vertexCount, Vector* vertices, const Material& newMat):
+Polygon(int vertexCount, vec3* vertices, const Material& newMat):
    _vertexCount(vertexCount)
 {
    mat = newMat;
@@ -16,12 +16,12 @@ Polygon(int vertexCount, Vector* vertices, const Material& newMat):
    min.y = FLT_MAX;
    min.z = FLT_MAX;
 
-   _vertices = new Vector[_vertexCount];
+   _vertices = new vec3[_vertexCount];
    for (int a = 0; a < vertexCount; a++)
    {
       _vertices[a] = vertices[a];
 
-      Vector& vertex = vertices[a];
+      vec3& vertex = vertices[a];
 
       if (vertex.x > max.x)
       {
@@ -51,12 +51,12 @@ Polygon(int vertexCount, Vector* vertices, const Material& newMat):
    }
    
    /* Construct the Plane containing this Polygon. */
-   Vector face1 = vertices[1] - vertices[0];
-   Vector face2 = vertices[2] - vertices[0];
-   Vector normal = face1.cross(face2).normalise();
+   vec3 face1 = vertices[1] - vertices[0];
+   vec3 face2 = vertices[2] - vertices[0];
+   vec3 normal = normalize(cross(face1, face2));
    /* The constant "d" is used as a value in the parametric definition of a
     * plane. */
-   double d = -normal.dot(vertices[0]);
+   float d = dot(-normal, vertices[0]);
    _plane = new Plane(normal, d, mat);
 }
 
@@ -78,12 +78,12 @@ intersect(Ray& r) const
    }
    else
    {
-      Vector p = r.intersection;
-      Vector n = r.normal;
+      vec3 p = r.intersection;
+      vec3 n = r.normal;
       
       /* Determine i0, the dominant axis of the surface normal. */
       int i0 = -1;
-      double max = -1;
+      float max = -1;
       for (int a = 0; a < 3; a++)
       {
          if (abs(n[a]) > max)
@@ -102,14 +102,14 @@ intersect(Ray& r) const
       const int U = 0;
       const int V = 1;
 
-      const double INTERSECT_U = p[i1];
-      const double INTERSECT_V = p[i2];
+      const float INTERSECT_U = p[i1];
+      const float INTERSECT_V = p[i2];
 
-      double verts[_vertexCount][2];
+      float verts[_vertexCount][2];
 
       for (int i = 0; i < _vertexCount; i++)
       {
-         Vector& vertex = _vertices[i];
+         vec3& vertex = _vertices[i];
 
          /* Centre the new vertices around the intersection point by subtracting
           * it from them. */
@@ -128,11 +128,11 @@ intersect(Ray& r) const
 
       for (int i = 0; i < _vertexCount; i++)
       {
-         double Ua = verts[i][U];
-         double Ub = verts[(i + 1) % _vertexCount][U];
+         float Ua = verts[i][U];
+         float Ub = verts[(i + 1) % _vertexCount][U];
 
-         double Va = verts[i][V];
-         double Vb = verts[(i + 1) % _vertexCount][V];
+         float Va = verts[i][V];
+         float Vb = verts[(i + 1) % _vertexCount][V];
 
          if (Va >= 0) sign = +1;
          else sign = -1;
@@ -154,7 +154,7 @@ intersect(Ray& r) const
              * intersection with the +U axis. */
             if ((Ua > 0) || (Ub > 0))
             {
-               double result = Ua - Va * (Ub - Ua) / (Vb - Va);
+               float result = Ua - Va * (Ub - Ua) / (Vb - Va);
 
                if (result > 0)
                {

@@ -24,27 +24,27 @@ class Material
       /**
        * The material's diffuse component.
        */
-      double kD;
+      float kD;
       
       /**
        * The material's specular component.
        */
-      double kS;
+      float kS;
 
       /**
        * The material's transmissive component.
        */
-      double kT;
+      float kT;
 
       /**
        * The material's shininess coefficient.
        */
-      double shininess;
+      float shininess;
 
       /**
        * The index of reflection for this material.
        */
-      double ior;
+      float ior;
 };
 
 #endif /*MATERIAL_H_*/

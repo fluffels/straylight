@@ -1,17 +1,17 @@
 #include "Plane.h"
 
 Plane::
-Plane(const Vector& normal, const double d):
+Plane(const vec3& normal, const float d):
    /* Make sure the normal is, actually, normalised. */
-   _normal(normal.normalise()),
+   _normal(normalize(normal)),
    _d(d)
 {
 }
 
 Plane::
-Plane(const Vector& normal, const double d, const Material& newMat):
+Plane(const vec3& normal, const float d, const Material& newMat):
    /* Make sure the normal is, actually, normalised. */
-   _normal(normal.normalise()),
+   _normal(normalize(normal)),
    _d(d)
 {
    mat = newMat;
@@ -20,7 +20,7 @@ Plane(const Vector& normal, const double d, const Material& newMat):
 bool Plane::
 intersect(Ray& r) const
 {
-   double Vd = _normal.dot(r.dir);
+   float Vd = dot(_normal, r.dir);
    
    if (Vd >= 0)
    {
@@ -28,8 +28,8 @@ intersect(Ray& r) const
    }
    else
    {
-      double Vo = -(_normal.dot(r.pos) + _d);
-      double t = Vo / Vd;
+      float Vo = -(dot(_normal, r.pos) + _d);
+      float t = Vo / Vd;
       
       if (t < 0)
       {
@@ -37,7 +37,7 @@ intersect(Ray& r) const
       }
       else
       {
-         Vector p = r.pos + r.dir * t;
+         vec3 p = r.pos + (t * r.dir);
          
          r.intersected = this;
          r.intersection = p;

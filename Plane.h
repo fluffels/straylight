@@ -2,7 +2,11 @@
 #define PLANE_H_
 
 #include "SceneObject.h"
-#include "Vector.h"
+#include <glm/glm.hpp>
+
+using glm::vec3;
+using glm::normalize;
+using glm::dot;
 
 /**
  * Encapsulates an axis aligned infinite plane.
@@ -16,7 +20,7 @@ class Plane : public SceneObject
        * @param normal The normal to this Plane.
        * @param d Parametric description of the Plane's location.
        */
-      Plane(const Vector& normal, const double d);
+      Plane(const vec3& normal, const float d);
       
       /**
        * Constructor.
@@ -25,7 +29,7 @@ class Plane : public SceneObject
        * @param d Parametric description of the Plane's location.
        * @param newMat The material of this Plane.
        */
-      Plane(const Vector& normal, const double d, const Material& newMat);
+      Plane(const vec3& normal, const float d, const Material& newMat);
       
       /**
        * Intersect a ray with this plane.
@@ -40,13 +44,13 @@ class Plane : public SceneObject
        * This plane's normal. This is private because there's no need to
        * change it at the moment.
        */
-      Vector _normal;
+      vec3 _normal;
       
       /**
        * Parametric description of the Plane's location. This is private
        * because there's no need to change it at the moment.
        */
-      double _d;
+      float _d;
 };
 
 #endif /*PLANE_H_*/

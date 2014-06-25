@@ -7,6 +7,8 @@
 
 #include <stdio.h>
 
+#include <glm/glm.hpp>
+
 #include "../Colour.h"
 #include "../Cone.h"
 #include "../Cylinder.h"
@@ -16,7 +18,9 @@
 #include "../PolygonPatch.h"
 #include "../Scene.h"
 #include "../Sphere.h"
-#include "../Vector.h"
+
+using glm::vec3;
+using glm::normalize;
 
 /* This is not defined in parse.C, and it's not used anywhere. Commented
  * it out. Maybe it will be useful sometime. */

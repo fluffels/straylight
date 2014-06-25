@@ -15,23 +15,23 @@
  * are non confusingly stated with the interface functions in the
  * header, but that I don't have to worry about where they are declared
  * in the source file. */
-static void ComputeIAndU(SplineInfo* info, double t, int* j, double* v);
-static void InterpolateSingle0(double u, CubicPolynomial* poly,
+static void ComputeIAndU(SplineInfo* info, float t, int* j, float* v);
+static void InterpolateSingle0(float u, CubicPolynomial* poly,
    Point3* P);
-static void InterpolateSingle1(double u, CubicPolynomial* poly,
+static void InterpolateSingle1(float u, CubicPolynomial* poly,
    Point3* P);
-static void InterpolateSingle2(double u, CubicPolynomial* poly,
+static void InterpolateSingle2(float u, CubicPolynomial* poly,
    Point3* P);
-static void InvertIntegral(SplineInfo* info, double s, int* j,
-   double* v);
-static double Speed (CubicPolynomial* poly, double u);
+static void InvertIntegral(SplineInfo* info, float s, int* j,
+   float* v);
+static float Speed (CubicPolynomial* poly, float u);
 
 void* KB_PosInitialize(int numKeys, PositionKey* key)
 {
    assert(numKeys >= 4);
 
-   double omt0, omc0, opc0, omb0, opb0, adj0, out0, out1;
-   double omt1, omc1, opc1, omb1, opb1, adj1, in0, in1;
+   float omt0, omc0, opc0, omb0, opb0, adj0, out0, out1;
+   float omt1, omc1, opc1, omb1, opb1, adj1, in0, in1;
    Point3 Tout, Tin;
    Point3 DP;
       
@@ -118,61 +118,61 @@ void KB_PosTerminate(void* info)
    free(spline);
 }
 
-void KB_PosInterpolate0(void* info, double t, Point3* P)
+void KB_PosInterpolate0(void* info, float t, Point3* P)
 {
     SplineInfo* tmp = (SplineInfo*)info;
     int i;
-    double u;
+    float u;
     ComputeIAndU(tmp, t, &i, &u);
     InterpolateSingle0(u, &tmp->poly[i], P);
 }
 
-void KB_PosInterpolate1(void* info, double t, Point3* P)
+void KB_PosInterpolate1(void* info, float t, Point3* P)
 {
     SplineInfo* tmp = (SplineInfo*)info;
     int i;
-    double u;
+    float u;
     ComputeIAndU(tmp, t, &i, &u);
     InterpolateSingle1(u, &tmp->poly[i], P);
 }
 
-void KB_PosInterpolate2(void* info, double t, Point3* P)
+void KB_PosInterpolate2(void* info, float t, Point3* P)
 {
     SplineInfo* tmp = (SplineInfo*)info;
     int i;
-    double u;
+    float u;
     ComputeIAndU(tmp, t, &i, &u);
     InterpolateSingle2(u, &tmp->poly[i], P);
 }
 
-void KB_PosInterpolate0_AL (void* info, double s, Point3* P)
+void KB_PosInterpolate0_AL (void* info, float s, Point3* P)
 {
     SplineInfo* tmp = (SplineInfo*) info;
     int i;
-    double u;
+    float u;
     InvertIntegral(tmp,s,&i,&u);
     InterpolateSingle0(u,&tmp->poly[i],P);
 }
 
-void KB_PosInterpolate1_AL (void* info, double s, Point3* P)
+void KB_PosInterpolate1_AL (void* info, float s, Point3* P)
 {
     SplineInfo* tmp = (SplineInfo*) info;
     int i;
-    double u;
+    float u;
     InvertIntegral(tmp,s,&i,&u);
     InterpolateSingle1(u,&tmp->poly[i],P);
 }
 
-void KB_PosInterpolate2_AL (void* info, double s, Point3* P)
+void KB_PosInterpolate2_AL (void* info, float s, Point3* P)
 {
     SplineInfo* tmp = (SplineInfo*) info;
     int i;
-    double u;
+    float u;
     InvertIntegral(tmp,s,&i,&u);
     InterpolateSingle2(u,&tmp->poly[i],P);
 }
 
-static void InterpolateSingle0(double u, CubicPolynomial* poly,
+static void InterpolateSingle0(float u, CubicPolynomial* poly,
    Point3* P)
 {
    assert(0 <= u <= 1);
@@ -182,7 +182,7 @@ static void InterpolateSingle0(double u, CubicPolynomial* poly,
    P->z = poly->C0.z + u*(poly->C1.z + u*(poly->C2.z + u*poly->C3.z));
 }
 
-static void InterpolateSingle1(double u, CubicPolynomial* poly,
+static void InterpolateSingle1(float u, CubicPolynomial* poly,
    Point3* P)
 {
    assert(0 <= u <= 1);
@@ -192,7 +192,7 @@ static void InterpolateSingle1(double u, CubicPolynomial* poly,
    P->z = poly->C1.z + u*(2*poly->C2.z + u*3*poly->C3.z);
 }
 
-static void InterpolateSingle2(double u, CubicPolynomial* poly,
+static void InterpolateSingle2(float u, CubicPolynomial* poly,
    Point3* P)
 {
    assert(0 <= u <= 1);
@@ -202,10 +202,10 @@ static void InterpolateSingle2(double u, CubicPolynomial* poly,
    P->z = 2*poly->C2.z + u*6*poly->C3.z;
 }
 
-static void ComputeIAndU(SplineInfo* info, double t, int* j, double* v)
+static void ComputeIAndU(SplineInfo* info, float t, int* j, float* v)
 {
    int i = *j;
-   double u = *v;
+   float u = *v;
     
    /* Clamp to [tmin, tmax]. */
 
@@ -238,20 +238,20 @@ static void ComputeIAndU(SplineInfo* info, double t, int* j, double* v)
 
 /**
  * Gets the speed at a point. Note that this has no direction, so it's
- * only a double that gets returned.
+ * only a float that gets returned.
  * 
  * @param poly The polynomial to use.
  * @param u The parametric value indicating a point on the polynomial.
- * @return The speed at this point as a double.
+ * @return The speed at this point as a float.
  */
-static double Speed(CubicPolynomial* poly, double u)
+static float Speed(CubicPolynomial* poly, float u)
 {
    Point3 vel;
    InterpolateSingle1(u, poly, &vel);
    return sqrt(vel.x * vel.x + vel.y * vel.y + vel.z * vel.z);
 }
 
-double Length(CubicPolynomial* poly, double u)
+float Length(CubicPolynomial* poly, float u)
 {
    /* Legendre polynomial information for Gaussian quadrature of speed 
     * on domain [0,u], 0 <= u <= 1. 
@@ -259,10 +259,10 @@ double Length(CubicPolynomial* poly, double u)
 
    /* const int degree = 5; */
    #define degree 5
-   double result = 0.0;
+   float result = 0.0;
    int i = 0;
 
-   static double modRoot[degree] =
+   static float modRoot[degree] =
    {
       /* Legendre roots mapped to (root+1)/2. */
       0.046910077,
@@ -271,7 +271,7 @@ double Length(CubicPolynomial* poly, double u)
       0.769234655,
       0.953089922
    };
-   static double modCoeff[degree] =
+   static float modCoeff[degree] =
    {
       /* Original coefficients divided by 2. */
       0.118463442,
@@ -296,9 +296,9 @@ double Length(CubicPolynomial* poly, double u)
 static void ComputeArcLength(SplineInfo* info)
 {
    int i = 0;
-   double ln;
+   float ln;
 
-   info->length = (double*) calloc(info->numPolys+1, sizeof(double));
+   info->length = (float*) calloc(info->numPolys+1, sizeof(float));
    info->length[0] = 0.0;
 
    for ( i = 0; i < info->numPolys; i++)
@@ -313,15 +313,15 @@ static void ComputeArcLength(SplineInfo* info)
    info->totalLength = info->length[info->numPolys];
 }
 
-static void InvertIntegral(SplineInfo* info, double s, int* j,
-   double* v)
+static void InvertIntegral(SplineInfo* info, float s, int* j,
+   float* v)
 {
-   const double tolerance = 1e-06;
+   const float tolerance = 1e-06;
    const int maxIters = 32;
-   double dist=0.0;
+   float dist=0.0;
    int iter;
    int i = *j;
-   double u = *v;
+   float u = *v;
       
    /* Clamp s to [0,L] so that t in [tmin,tmax]. */
    if (s <= 0.0)
@@ -359,7 +359,7 @@ static void InvertIntegral(SplineInfo* info, double s, int* j,
    /* Use Newton's method to invert the arc length integral. */
    for ( iter = 0; iter < maxIters; iter++)
    {
-      double diff = Length(&info->poly[i],u) - dist;
+      float diff = Length(&info->poly[i],u) - dist;
       if ( fabs(diff) <= tolerance )
       {
          break;
@@ -374,16 +374,16 @@ static void InvertIntegral(SplineInfo* info, double s, int* j,
 }
 
 
-double KB_PosLength(void* info, double t)
+float KB_PosLength(void* info, float t)
 {
     SplineInfo* tmp = (SplineInfo*) info;
     int i;
-    double u;
+    float u;
     ComputeIAndU(tmp, t, &i, &u);
     return Length(&tmp->poly[i], u);
 }
 
-double KB_PosTotalLength(void* info)
+float KB_PosTotalLength(void* info)
 {
     return ((SplineInfo*)info)->totalLength;
 }

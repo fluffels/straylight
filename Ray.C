@@ -10,10 +10,10 @@ Ray():
 }
 
 Ray::
-Ray(const Vector& newPos, const Vector& newDir):
+Ray(const vec3& newPos, const vec3& newDir):
    pos(newPos),
    /* Ensure that dir is normalised. */
-   dir(newDir.normalise()),
+   dir(normalize(newDir)),
    depth(0)
 {
    iorStack.push_back(AIR_IOR);

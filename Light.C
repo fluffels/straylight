@@ -7,41 +7,39 @@ Light():
 {}
 
 Colour Light::
-getLocalLightAt(Ray& ray, const Vector& COP)
+getLocalLightAt(Ray& ray, const vec3& COP)
 {
    /**
     * Basic local light model. Based on code found at:
     * http://www.devmaster.net/articles/raytracing_series/part2.php
     */
-   Vector v = ray.dir;
-   Vector n = ray.normal;
-   Vector l = (pos - ray.intersection).normalise();
+   vec3 v = ray.dir;
+   vec3 n = ray.normal;
+   vec3 l = normalize(pos - ray.intersection);
 
-   if (v.dot(n) >= 0)
+   if (dot(v, n) >= 0)
    {
-      n = n * -1;
+      n = -1.0f * n;
    }
 
    Material m = ray.intersected->mat;
 
    Colour result = Colour(0, 0, 0);
 
-   Colour diff = m.colour * l.dot(n) * m.kD;
+   Colour diff = m.colour * dot(l, n) * m.kD;
    diff.r *= colour.r;
    diff.g *= colour.g;
    diff.b *= colour.b;
    result += diff;
 
-   Vector r = l  - n * 2 * l.dot(n);
-   double dot = v.dot(r);
+   vec3 r = l - n * 2.0f * dot(l, n);
+   float dotvr = dot(v, r);
 
-   if (dot > 0)
+   if (dotvr > 0)
    {
-      Colour spec = colour * pow(dot, m.shininess) * m.kS;
+      Colour spec = colour * pow(dotvr, m.shininess) * m.kS;
       result += spec;
    }
-
-
 
    return result;
 }
