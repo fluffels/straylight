@@ -3,6 +3,8 @@
 void
 castRays()
 {
+   image = new unsigned char[width * height * COMPONENTS];
+
    pthread_t thread[threadCount];
 
    for (int i = 0; i < threadCount; i++)
@@ -33,7 +35,7 @@ castRaySubset(void* arg)
          printf("%f%% complete...\n", (float) pixel / (width * height) * 100);
       }
 
-      int y = pixel / width;
+      int y = height - 1 - pixel / width;
       int x = pixel % width;
 
       Ray r = scene->cam.getRayAt(x, y);
@@ -128,13 +130,12 @@ main(int argc, char** argv)
 
    loadNFFFile();
 
-   setup();
-
    castRays();
 
-   writeImage();
+   stbi_write_png(outFileName, width, height, COMPONENTS, image, 0);
 
-   teardown();
+   delete[] image;
+   delete scene;
 
    return 0;
 }
@@ -254,53 +255,6 @@ printUsage()
 
    exit(-1);
 }
-
-void
-setup()
-{
-   width = scene->cam.getWidth();
-   height = scene->cam.getHeight();
-   image = new unsigned char[width * height * COLOURS_PER_PIXEL];
-   
-   outFile = fopen(outFileName, "wb");
-   if (outFile == NULL)
-   {
-      fprintf(stderr, "Could not open file \"%s\" for writing.\n", outFileName);
-      exit(-1);
-   }
-
-   png = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-   if (png == NULL)
-   {
-      fprintf(stderr, "Could not create PNG struct.\n");
-      exit(-1);
-   }
-
-   pngInfo = png_create_info_struct(png);
-   if (pngInfo == NULL)
-   {
-      fprintf(stderr, "Could not create PNG info struct.\n");
-      exit(-1);
-   }
-
-   if (setjmp(png_jmpbuf(png)))
-   {
-      fprintf(stderr, "Could not initialize libPNG input / output.\n");
-      exit(-1);
-   }
-   png_init_io(png, outFile);
-   
-   if (setjmp(png_jmpbuf(png)))
-   {
-      fprintf(stderr, "Could not write PNG header.\n");
-      exit(-1);
-   }
-
-   png_set_IHDR(png, pngInfo, width, height, BIT_DEPTH, COLOUR_TYPE,
-      INTERLACE_TYPE, COMPRESSION_TYPE, FILTER_METHOD);
-   png_write_info(png, pngInfo);
-}
-
 
 Colour
 shootRay(Ray& r)
@@ -433,31 +387,4 @@ teardown()
 {
    delete scene;
    delete[] image;
-}
-
-void
-writeImage()
-{
-   png_byte * rowPointers[height];
-   for (int a = 0; a < height; a++)
-   {
-      rowPointers[height - 1 - a] = (png_byte*) image + a * width
-          * COLOURS_PER_PIXEL;
-   }
-
-   if (setjmp(png_jmpbuf(png)))
-   {
-      fprintf(stderr, "Could not write image data.\n");
-      exit(-1);
-   }
-   png_write_image(png, rowPointers);
-
-   if (setjmp(png_jmpbuf(png)))
-   {
-      fprintf(stderr, "Could not finish write.\n");
-      exit(-1);
-   }
-   png_write_end(png, NULL);
-
-   fclose(outFile);
 }
