@@ -273,13 +273,10 @@ shootRay(Ray& r)
 
          float los = scene->getLineOfSight(light, *s, r.intersection);
 
-         if (los >= 0.9)
-         {
-            Colour contrib = light.getLocalLightAt(r, scene->cam.getCOP());
+         Colour contrib = light.getLocalLightAt(r, scene->cam.getCOP());
 
-            contrib *= los;
-            localColour += contrib;
-         }
+         contrib *= los;
+         localColour += contrib;
 
          i++;
       }
