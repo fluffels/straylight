@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -fmessage-length=0 -std=c++11 -pipe -Wfatal-errors
 LDFLAGS = -pipe
-LDLIBS = -lpng -lpthread
+LDLIBS = -lpthread
 OBJS = Colour.o Camera.o Ray.o \
 Material.o SceneObject.o Sphere.o Plane.o Polygon.o PolygonPatch.o Cone.o \
 Cylinder.o Light.o Scene.o SimpleScene.o BoxedScene.o RTreeScene.o AABB.o Main.o \
