@@ -1,7 +1,7 @@
 #ifndef COLOUR_H_
 #define COLOUR_H_
 
-#include "CPPLibrary/IllegalArgumentException.h"
+#include "Exception.h"
 
 /**
  * Models a colour as a set of three floats that range from 0 (null-

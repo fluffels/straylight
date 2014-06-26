@@ -5,8 +5,6 @@
 
 #include <glm/glm.hpp>
 
-#include "CPPLibrary/IllegalArgumentException.h"
-
 #include "Colour.h"
 #include "Sphere.h"
 
