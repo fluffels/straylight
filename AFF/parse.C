@@ -236,7 +236,7 @@ parseLight(FILE *fp, Scene& scene)
       //V4SET4(col,1.0f,1.0f,1.0f,1.0f);
       for (int j = 0; j < 3; j++)
       {
-         l.colour.set(j, 0.3f);
+         l.colour.set(j, 0.7f);
       }
    }
    else if (num != 3)
