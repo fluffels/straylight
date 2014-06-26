@@ -44,7 +44,7 @@ getRayAt(int x, int y)
 {
    if ((x < 0) || (x >= _width) || (y < 0) || (y >= _height))
    {
-      throw IllegalArgumentException("X / Y out of range.");
+      throw Exception("X / Y out of range.");
    }
    
    const float LOW = -0.5;

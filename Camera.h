@@ -5,9 +5,8 @@
 
 #include <glm/glm.hpp>
 
-#include "CPPLibrary/IllegalArgumentException.h"
-#include "GraphicsLibrary/Constants.h"
-
+#include "Constants.h"
+#include "Exception.h"
 #include "Ray.h"
 
 using glm::vec3;
