@@ -56,10 +56,11 @@ int threadCount = 1;
 /** Name of the output file. */
 const char* outFileName = "out.png";
 
+const float GAMMA = 1.0f / 2.2f;
 /** Colour components per pixel in the image. */
 const int COMPONENTS = 3;
 /** Image data, stored as columns of pixels with three eight-bit values. */
-unsigned char* image;
+float* image;
 
 int nextPixel;
 

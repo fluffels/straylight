@@ -3,7 +3,7 @@
 void
 castRays()
 {
-   image = new unsigned char[width * height * COMPONENTS];
+   image = new float[width * height * COMPONENTS];
 
    pthread_t thread[threadCount];
 
@@ -123,6 +123,40 @@ loadNFFFile()
    fclose(nffFile);
 }
 
+unsigned char*
+post_process(float* image)
+{
+    float max_mag = 0;
+    for (int j = 0; j < width * height * COMPONENTS; j++)
+    {
+        float f = image[j] / max_mag;
+        f = pow(f, GAMMA);
+        bytes[j] = min<int>(255, f * 255);
+    }
+
+    for (int j = 0; j < width * height * COMPONENTS; j+=3)
+    {
+        int idx = j;
+
+        float mag = image[idx] * image[idx];
+        mag += image[idx + 1] * image[idx + 1];
+        mag += image[idx + 2] * image[idx + 2];
+
+        if (mag > max_mag) {max_mag = mag;}
+    }
+    max_mag = sqrt(max_mag);
+
+    unsigned char* bytes = new unsigned char[width * height * COMPONENTS];
+    for (int j = 0; j < width * height * COMPONENTS; j++)
+    {
+        float f = image[j] / max_mag;
+        f = pow(f, GAMMA);
+        bytes[j] = min<int>(255, f * 255);
+    }
+
+    return bytes;
+}
+
 int
 main(int argc, char** argv)
 {
@@ -132,7 +166,8 @@ main(int argc, char** argv)
 
    castRays();
 
-   stbi_write_png(outFileName, width, height, COMPONENTS, image, 0);
+   unsigned char* bytes = post_process(image);
+   stbi_write_png(outFileName, width, height, COMPONENTS, bytes, 0);
 
    delete[] image;
    delete scene;
