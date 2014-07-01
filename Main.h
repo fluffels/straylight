@@ -59,7 +59,7 @@ const char* outFileName = "out.png";
 /** Colour components per pixel in the image. */
 const int COMPONENTS = 3;
 /** Image data, stored as columns of pixels with three eight-bit values. */
-unsigned char* image;
+float* image;
 
 int nextPixel;
 
