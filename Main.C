@@ -42,9 +42,9 @@ castRaySubset(void* arg)
       Colour colour = shootRay(r);
 
       int index = pixel * 3;
-      image[index] = min<int>(255, colour.r * 255);
-      image[index + 1] = min<int>(255, colour.g * 255);
-      image[index + 2] = min<int>(255, colour.b * 255);
+      image[index] = colour.r;
+      image[index + 1] = colour.g;
+      image[index + 2] = colour.b;
 
       pixel = __sync_fetch_and_add(&nextPixel, 1);
    }
@@ -126,31 +126,10 @@ loadNFFFile()
 unsigned char*
 post_process(float* image)
 {
-    float max_mag = 0;
-    for (int j = 0; j < width * height * COMPONENTS; j++)
-    {
-        float f = image[j] / max_mag;
-        f = pow(f, GAMMA);
-        bytes[j] = min<int>(255, f * 255);
-    }
-
-    for (int j = 0; j < width * height * COMPONENTS; j+=3)
-    {
-        int idx = j;
-
-        float mag = image[idx] * image[idx];
-        mag += image[idx + 1] * image[idx + 1];
-        mag += image[idx + 2] * image[idx + 2];
-
-        if (mag > max_mag) {max_mag = mag;}
-    }
-    max_mag = sqrt(max_mag);
-
     unsigned char* bytes = new unsigned char[width * height * COMPONENTS];
     for (int j = 0; j < width * height * COMPONENTS; j++)
     {
-        float f = image[j] / max_mag;
-        f = pow(f, GAMMA);
+        float f = image[j];
         bytes[j] = min<int>(255, f * 255);
     }
 
@@ -315,6 +294,7 @@ shootRay(Ray& r)
 
          i++;
       }
+      localColour *= m.kD;
 
       if (r.shouldTerminate() == false)
       {
