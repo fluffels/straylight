@@ -47,6 +47,7 @@ Usage: straylight (-f | --file) [options]
         -f --file       The scene description file (required).
         -w --width      Set the output image's horizontal resolution (default: 240).
         -h --height     Set the output image's vertical resolution (default: 240).
+        -d --depth  Set max amount of ray hits (default: 4).
         -t --threads    Set the amount of threads to spin up (default: 1).
         -o --output     Specify the output filename (default: 'out.png').
         -m --method     Set the method of raytracing (0 = simple, 1 = boxed, 2 = rtree).
