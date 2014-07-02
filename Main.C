@@ -126,10 +126,30 @@ loadNFFFile()
 unsigned char*
 post_process(float* image)
 {
+    float max_lumens = 0;
+    for (int j = 0; j < width * height; j++)
+    {   
+        float* pixel = image + (j * COMPONENTS);
+
+        float lumens = 0;
+        for (int k = 0; k < 3; k++)
+        {
+            lumens += pixel[k] * pixel[k];
+        }
+
+        if (lumens > max_lumens)
+        {
+            max_lumens = lumens;
+        }
+    }
+    max_lumens = sqrt(max_lumens);
+    float gamma = log(2) / log(max_lumens);
+
     unsigned char* bytes = new unsigned char[width * height * COMPONENTS];
     for (int j = 0; j < width * height * COMPONENTS; j++)
     {
         float f = image[j];
+        f = (0.5) * pow(f, gamma);
         bytes[j] = min<int>(255, f * 255);
     }
 
