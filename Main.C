@@ -142,6 +142,9 @@ main(int argc, char** argv)
 void
 parseArguments(int argc, char** argv)
 {
+   /* Initialize some values to their defaults. */
+   Ray::maxDepth = 4;
+
    for (int a = 1; a < argc; a++)
    {
       if (strcmp(argv[a], "--no-output") == 0)
@@ -182,6 +185,17 @@ parseArguments(int argc, char** argv)
          }
 
          height = atoi(argv[a + 1]);
+         a++;
+      }
+      else if ((strcmp(argv[a], "-d") == 0) || (strcmp(argv[a], "--depth") == 0))
+      {
+         if (argc < a + 2)
+         {
+            printf("Option '--depth / -d' requires an argument.\n\n");
+            printUsage();
+         }
+
+         Ray::maxDepth = atoi(argv[a + 1]);
          a++;
       }
       else if ((strcmp(argv[a], "-t") == 0) || (strcmp(argv[a], "--threads")
@@ -246,6 +260,7 @@ printUsage()
    printf("\t-f --file\tThe scene description file (required).\n");
    printf("\t-w --width\tSet the output image's horizontal resolution (default: 240).\n");
    printf("\t-h --height\tSet the output image's vertical resolution (default: 240).\n");
+   printf("\t-d --depth\tSet max amount of ray hits (default: 4).\n");
    printf("\t-t --threads\tSet the amount of threads to spin up (default: 1).\n");
    printf("\t-o --output\tSpecify the output filename (default: 'out.png').\n");
    printf("\t-m --method\tSet the method of raytracing (0 = simple, 1 = boxed, 2 = rtree).\n");
@@ -352,6 +367,7 @@ shootRay(Ray& r)
 
             /* Construct and shoot the reflected ray. */
             Ray newRay(p_new, reflect);
+            newRay.depth = r.depth;
 
             Colour reflection = shootRay(newRay) * m.kS;
             localColour += reflection;

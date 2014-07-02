@@ -28,11 +28,6 @@ static const float AIR_IOR = 1.0003;
 class Ray
 {
    public:
-      /**
-       * This sets how many bounces to trace a ray through.
-       */
-      static const int TRACE_DEPTH = 4;
-      
       /*
        * Default constructor. Initializes pos to (0, 0, 0), dir to (0, 0, 1) and
        * depth to 0. Pushes AIR_IOR onto iorStack.
@@ -58,6 +53,11 @@ class Ray
        * The current trace depth of this ray.
        */
       int depth;
+
+      /**
+       * This sets how many bounces to trace a ray through.
+       */
+      static int maxDepth;
 
       /**
        * The ray's direction.

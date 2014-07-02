@@ -1,5 +1,7 @@
 #include "Ray.h"
 
+int Ray::maxDepth = 1;
+
 Ray::
 Ray():
    pos(0, 0, 0),
@@ -22,7 +24,7 @@ Ray(const vec3& newPos, const vec3& newDir):
 bool Ray::
 shouldTerminate() const
 {
-   return depth >= TRACE_DEPTH;
+   return depth >= maxDepth;
 }
 
 bool Ray::

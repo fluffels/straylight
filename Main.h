@@ -23,6 +23,7 @@
 #include "Scene.h"
 #include "SimpleScene.h"
 #include "Sphere.h"
+#include "Ray.h"
 
 using glm::vec3;
 using glm::normalize;
