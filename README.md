@@ -14,10 +14,11 @@ Because of the latter, various students have contributed code.
 * Arné Schreuder
 * Daniel Smith
 
-##Compilation
+## Credits
 
-This project requires libpng 1.2.37, although it will probably work with
-other 1.2.x versions.
+This project uses [stb_image_write](https://github.com/nothings/stb) written by Sean T. Barret.
+
+##Compilation
 
 To compile the program, execute "make" in the root directory of the
 project.

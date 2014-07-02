@@ -14,6 +14,9 @@
 
 #include "AFF/parse.h"
 
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb/stb_image_write.h"
+
 #include "BoxedScene.h"
 #include "RTreeScene.h"
 #include "Colour.h"
@@ -53,28 +56,11 @@ int threadCount = 1;
 
 /** Name of the output file. */
 const char* outFileName = "out.png";
-/** Output file handle. */
-FILE* outFile;
 
-/** Output file bit depth. */
-const int BIT_DEPTH = 8;
-/** Colour type of the output file. */
-const int COLOUR_TYPE = PNG_COLOR_TYPE_RGB;
-/** Interlacing to use for the output file. */
-const int INTERLACE_TYPE = PNG_INTERLACE_NONE; //_ADAM7;
-/** Compression type to use for the output file. */
-const int COMPRESSION_TYPE = PNG_COMPRESSION_TYPE_DEFAULT;
-/** Filtering method to use for the output file. */
-const int FILTER_METHOD = PNG_FILTER_TYPE_DEFAULT;
-/** Colours per pixel in the image. */
-const int COLOURS_PER_PIXEL = 3;
+/** Colour components per pixel in the image. */
+const int COMPONENTS = 3;
 /** Image data, stored as columns of pixels with three eight-bit values. */
-unsigned char* image;
-
-/** libPNG master structure. */
-png_structp png;
-/** libPNG info structure. */
-png_infop pngInfo;
+float* image;
 
 int nextPixel;
 
@@ -141,16 +127,6 @@ void
 printUsage();
 
 /**
- * Initialize libPNG, allocate global memory and open file handles.
- *
- * This function must perform any action that would force the program to
- * terminate because it is executed before the ray trace operation, which could
- * take some time.
- */
-void
-setup();
-
-/**
  * Shoots an individual ray.
  *
  * @param r The ray to shoot.
@@ -158,19 +134,5 @@ setup();
  */
 Colour
 shootRay(Ray& r);
-
-/**
- * Free any global memory, close file handles and perform any cleanup that must
- * be done before the program terminates.
- */
-void
-teardown();
-
-/**
- * Call libPNG and write the ray traced image to the file specified by
- * outFileName.
- */
-void
-writeImage();
 
 #endif

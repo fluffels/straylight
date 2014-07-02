@@ -26,7 +26,7 @@ get(int index) const
       case 0: return r;
       case 1: return g;
       case 2: return b;
-      default: throw IllegalArgumentException("No such component.");
+      default: throw Exception("No such component.");
    }
 }
 
@@ -84,6 +84,6 @@ set(int index, float value)
       case 0: r = value; return;
       case 1: g = value; return;
       case 2: b = value; return;
-      default: throw IllegalArgumentException("No such component.");
+      default: throw Exception("No such component.");
    }
 }

@@ -26,13 +26,14 @@ getLocalLightAt(Ray& ray, const vec3& COP)
 
    Colour result = Colour(0, 0, 0);
 
-   Colour diff = m.colour * dot(l, n) * m.kD;
+   float theta = clamp(dot(l, n), 0.0f, 1.0f);
+   Colour diff = m.colour * theta * m.kD;
    diff.r *= colour.r;
    diff.g *= colour.g;
    diff.b *= colour.b;
    result += diff;
 
-   vec3 r = l - n * 2.0f * dot(l, n);
+   vec3 r = reflect(l, n);
    float dotvr = dot(v, r);
 
    if (dotvr > 0)

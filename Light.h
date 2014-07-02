@@ -5,14 +5,14 @@
 
 #include <glm/glm.hpp>
 
-#include "CPPLibrary/IllegalArgumentException.h"
-
 #include "Colour.h"
 #include "Sphere.h"
 
-using glm::vec3;
-using glm::normalize;
+using glm::clamp;
 using glm::dot;
+using glm::normalize;
+using glm::reflect;
+using glm::vec3;
 
 /**
  * Models the properties exhibited by a point-source light.
