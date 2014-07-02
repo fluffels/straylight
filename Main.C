@@ -307,6 +307,7 @@ shootRay(Ray& r)
 {
    if (scene->testIntersection(r) == true)
    {
+      r.depth += 1;
       const SceneObject* s = r.intersected;
       const Material& m = s->mat;
 
