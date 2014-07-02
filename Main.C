@@ -352,7 +352,6 @@ shootRay(Ray& r)
 
             /* Construct and shoot the reflected ray. */
             Ray newRay(p_new, reflect);
-            newRay.depth = r.depth + 1;
 
             Colour reflection = shootRay(newRay) * m.kS;
             localColour += reflection;
@@ -409,7 +408,6 @@ shootRay(Ray& r)
                 * purposes. */
                r.pos = p_new;
                r.dir = transmit;
-               r.depth += 1;
 
                Colour transmittance = shootRay(r) * m.kT;
                localColour += transmittance;
