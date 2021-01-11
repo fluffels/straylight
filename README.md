@@ -1,4 +1,4 @@
-#Straylight
+# Straylight
 
 ## Introduction
 
@@ -18,12 +18,12 @@ Because of the latter, various students have contributed code.
 
 This project uses [stb_image_write](https://github.com/nothings/stb) written by Sean T. Barret.
 
-##Compilation
+## Compilation
 
 To compile the program, execute "make" in the root directory of the
 project.
 
-##Instructions
+## Instructions
 
 To compile:
 
@@ -36,7 +36,7 @@ To run the program, simply execute "./straylight" while in the root
 directory. Executing the program will render the scene constructed
 through ray tracing and write output to a file called "out.png".
 
-##Command-line Arguments
+## Command-line Arguments
 
 ```shell
 You must specify a scene description file.
