@@ -4,3 +4,7 @@ straylight
 gmon.out
 *~
 *.log
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
