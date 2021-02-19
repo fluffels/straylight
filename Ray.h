@@ -9,7 +9,7 @@ class SceneObject;
 #include <vector>
 
 #include "SceneObject.h"
-#include <glm/glm.hpp>
+#include "glm/glm.hpp"
 
 using glm::vec3;
 using glm::normalize;

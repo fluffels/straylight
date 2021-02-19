@@ -8,7 +8,7 @@
 #include <iostream>
 #include <map>
 
-#include <glm/glm.hpp>
+#include "glm/glm.hpp"
 #include <pthread.h>
 #include <png.h>
 

@@ -3,7 +3,7 @@
 
 #include <cfloat>
 
-#include <glm/glm.hpp>
+#include "glm/glm.hpp"
 
 #include "Material.h"
 #include "Plane.h"

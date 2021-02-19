@@ -7,7 +7,7 @@
 
 #include <stdio.h>
 
-#include <glm/glm.hpp>
+#include "glm/glm.hpp"
 
 #include "../Colour.h"
 #include "../Cone.h"

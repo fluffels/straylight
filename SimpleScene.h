@@ -4,7 +4,7 @@
 #include <cfloat>
 #include <vector>
 
-#include <glm/glm.hpp>
+#include "glm/glm.hpp"
 
 #include "Camera.h"
 #include "Light.h"

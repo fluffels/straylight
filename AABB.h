@@ -3,7 +3,7 @@
 
 #include "Ray.h"
 #include "SceneObject.h"
-#include <glm/glm.hpp>
+#include "glm/glm.hpp"
 
 using glm::vec3;
 

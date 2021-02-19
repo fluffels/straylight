@@ -3,7 +3,7 @@
 
 #include <algorithm>
 
-#include <glm/glm.hpp>
+#include "glm/glm.hpp"
 
 #include "Colour.h"
 #include "Sphere.h"

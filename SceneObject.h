@@ -7,7 +7,7 @@ class Ray;
 
 #include "Material.h"
 #include "Ray.h"
-#include <glm/glm.hpp>
+#include "glm/glm.hpp"
 
 using glm::vec3;
 

@@ -3,7 +3,7 @@
 
 #include <cmath>
 
-#include <glm/glm.hpp>
+#include "glm/glm.hpp"
 
 #include "Constants.h"
 #include "Exception.h"

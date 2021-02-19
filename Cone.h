@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <cmath>
 
-#include <glm/glm.hpp>
+#include "glm/glm.hpp"
 
 #include "SceneObject.h"
 
