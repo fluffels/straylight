@@ -68,8 +68,7 @@ intersect(Ray& r) const
          float alpha = (u0 * v2 - u2 * v0) / (u1 * v2 - u2 * v1);
          float beta = (u1 * v0 - u0 * v1) / (u1 * v2 - u2 * v1);
 
-         if ((alpha >= 0) and (beta >= 0) and (alpha + beta <= 1))
-         {
+         if ((alpha >= 0) && (beta >= 0) && (alpha + beta <= 1)) {
             r.intersected = this;
 
             /* This normal is calculated by interpolating among the normals at

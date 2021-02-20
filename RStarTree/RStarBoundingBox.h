@@ -27,6 +27,8 @@
 
 #include "../Ray.h"
 
+#undef max
+#undef min
 
 template <std::size_t dimensions>
 struct RStarBoundingBox {

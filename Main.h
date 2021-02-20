@@ -9,8 +9,11 @@
 #include <map>
 
 #include "glm/glm.hpp"
-#include <pthread.h>
-#include <png.h>
+#ifdef _WIN32
+    #include <windows.h>
+#else
+    #include <pthread.h>
+#endif
 
 #include "AFF/parse.h"
 

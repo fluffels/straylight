@@ -1,6 +1,9 @@
 #include "Polygon.h"
 
 #include <cstdio>
+#include <vector>
+
+using std::vector;
 
 Polygon::
 Polygon(int vertexCount, vec3* vertices, const Material& newMat):
@@ -105,16 +108,18 @@ intersect(Ray& r) const
       const float INTERSECT_U = p[i1];
       const float INTERSECT_V = p[i2];
 
-      float verts[_vertexCount][2];
+      vector<vector<float>> verts(_vertexCount);
 
       for (int i = 0; i < _vertexCount; i++)
       {
+         auto& vert = verts[i];
+
          vec3& vertex = _vertices[i];
 
          /* Centre the new vertices around the intersection point by subtracting
           * it from them. */
-         verts[i][U] = vertex[i1] - INTERSECT_U;
-         verts[i][V] = vertex[i2] - INTERSECT_V;
+         vert.push_back(vertex[i1] - INTERSECT_U);
+         vert.push_back(vertex[i2] - INTERSECT_V);
       }
 
       /* Count the amount of times a ray along the +U axis crosses the polygon,
@@ -161,8 +166,6 @@ intersect(Ray& r) const
                   crossings++;
                }
             }
-
-
          }
       }
 

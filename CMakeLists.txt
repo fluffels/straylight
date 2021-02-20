@@ -1,8 +1,13 @@
 cmake_minimum_required(VERSION 3.5)
 project(straylight)
 
-set(CMAKE_CXX_FLAGS "-lpthread")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_STANDARD 14)
+
+if (WIN32)
+    set(CMAKE_CXX_FLAGS "/EHsc")
+ELSE()
+    set(CMAKE_CXX_FLAGS "-lpthread")
+ENDIF()
 
 include_directories (${CMAKE_HOME_DIRECTORY}/lib/glm)
 

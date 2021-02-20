@@ -1,5 +1,15 @@
 #include "Main.h"
 
+#ifdef _WIN32
+void
+castRays() {
+    image = new float[width * height * COMPONENTS];
+}
+void *
+castRaySubset(void *arg) {
+    return nullptr;
+}
+#else
 void
 castRays() {
     image = new float[width * height * COMPONENTS];
@@ -18,7 +28,6 @@ castRays() {
         pthread_join(thread[i], NULL);
     }
 }
-
 void *
 castRaySubset(void *arg) {
     int pixel = __sync_fetch_and_add(&nextPixel, 1);
@@ -44,6 +53,8 @@ castRaySubset(void *arg) {
 
     pthread_exit(NULL);
 }
+#endif
+
 
 bool
 inShadow(Ray &r, Light light) {
