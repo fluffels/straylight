@@ -108,6 +108,7 @@ intersect(Ray& r) const
       const float INTERSECT_U = p[i1];
       const float INTERSECT_V = p[i2];
 
+      // This needs to be allocated here for thread safety.
       float* verts = new float[_vertexCount * 2];
 
       for (int i = 0; i < _vertexCount; i++)
@@ -171,6 +172,8 @@ intersect(Ray& r) const
             }
          }
       }
+
+      delete[] verts;
 
       return crossings % 2 == 1;
    }
