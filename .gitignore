@@ -9,3 +9,4 @@ Makefile
 cmake_install.cmake
 build
 Test/times.log
+out.png

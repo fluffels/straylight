@@ -1,13 +1,68 @@
 #include "Main.h"
 
 #ifdef _WIN32
+DWORD WINAPI
+ThreadProc(
+    LPVOID param
+) {
+    auto pixel = InterlockedIncrement64(&nextPixel);
+
+    while (pixel < width * height) {
+        if ((progress == true) && (pixel % 1000 == 0)) {
+            printf("%f%% complete...\n", (float) pixel / (width * height) * 100);
+        }
+        int y = height - 1 - pixel / width;
+        int x = pixel % width;
+
+        Ray r = scene->cam.getRayAt(x, y);
+        Colour colour = shootRay(r);
+
+        int index = pixel * 3;
+        image[index] = colour.r;
+        image[index + 1] = colour.g;
+        image[index + 2] = colour.b;
+
+        pixel = InterlockedIncrement64(&nextPixel);
+    }
+
+    return 0;
+}
 void
 castRays() {
+    LARGE_INTEGER counterFrequency;
+    QueryPerformanceFrequency(&counterFrequency);
+    LARGE_INTEGER epoch = {};
+    QueryPerformanceCounter(&epoch);
+
     image = new float[width * height * COMPONENTS];
-}
-void *
-castRaySubset(void *arg) {
-    return nullptr;
+
+    auto threadIDs = new DWORD[threadCount];
+    auto threadHandles = new HANDLE[threadCount];
+
+    for (int i = 0; i < threadCount; i++) {
+        threadHandles[i] = CreateThread(
+            NULL,
+            0,
+            ThreadProc,
+            nullptr,
+            0,
+            threadIDs+i
+        );
+    }
+
+    WaitForMultipleObjects(
+        threadCount,
+        threadHandles,
+        true,
+        INFINITE
+    );
+
+    LARGE_INTEGER end = {};
+    QueryPerformanceCounter(&end);
+
+    int64_t delta = end.QuadPart - epoch.QuadPart;
+    float seconds = (float)delta / counterFrequency.QuadPart;
+    printf("%fs", seconds);
 }
 #else
 void

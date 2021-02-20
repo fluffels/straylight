@@ -65,7 +65,11 @@ const int COMPONENTS = 3;
 /** Image data, stored as columns of pixels with three eight-bit values. */
 float* image;
 
-int nextPixel;
+#ifdef _WIN32
+    long long nextPixel;
+#else
+    int nextPixel;
+#endif
 
 /**
  * The main loop for the program.
