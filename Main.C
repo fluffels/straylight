@@ -105,6 +105,8 @@ loadNFFFile() {
     }
 
     viParseFile(nffFile, *scene, width, height);
+    height = scene->cam.getHeight();
+    width = scene->cam.getWidth();
 
     fclose(nffFile);
 }
@@ -237,8 +239,8 @@ printUsage() {
     printf("\n");
     printf("\t--help\t\tShow this help message.\n");
     printf("\t-f --file\tThe scene description file (required).\n");
-    printf("\t-w --width\tSet the output image's horizontal resolution (default: 240).\n");
-    printf("\t-h --height\tSet the output image's vertical resolution (default: 240).\n");
+    printf("\t-w --width\tOverride horizontal resolution.\n");
+    printf("\t-h --height\tOverride vertical resolution.\n");
     printf("\t-d --depth\tSet max amount of ray hits (default: 4).\n");
     printf("\t-t --threads\tSet the amount of threads to spin up (default: 1).\n");
     printf("\t-o --output\tSpecify the output filename (default: 'out.png').\n");

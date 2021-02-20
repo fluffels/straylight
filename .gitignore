@@ -1,5 +1,4 @@
 straylight
-*.png
 *.o
 gmon.out
 *~
@@ -8,3 +7,5 @@ CMakeCache.txt
 CMakeFiles
 Makefile
 cmake_install.cmake
+build
+Test/times.log
