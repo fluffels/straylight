@@ -109,6 +109,8 @@ intersect(Ray& r) const
       const float INTERSECT_V = p[i2];
 
       // This needs to be allocated here for thread safety.
+      // TODO(jan): this allocation is potentially expensive, maybe it can
+      // be replaced by some sort of arena
       float* verts = new float[_vertexCount * 2];
 
       for (int i = 0; i < _vertexCount; i++)
