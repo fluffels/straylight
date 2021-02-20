@@ -108,23 +108,6 @@ intersect(Ray& r) const
       const float INTERSECT_U = p[i1];
       const float INTERSECT_V = p[i2];
 
-      // This needs to be allocated here for thread safety.
-      // TODO(jan): this allocation is potentially expensive, maybe it can
-      // be replaced by some sort of arena
-      float* verts = new float[_vertexCount * 2];
-
-      for (int i = 0; i < _vertexCount; i++)
-      {
-         float* vert = verts + i*2;
-
-         vec3& vertex = _vertices[i];
-
-         /* Centre the new vertices around the intersection point by subtracting
-          * it from them. */
-         vert[U] = vertex[i1] - INTERSECT_U;
-         vert[V] = vertex[i2] - INTERSECT_V;
-      }
-
       /* Count the amount of times a ray along the +U axis crosses the polygon,
        * if this number is odd, the point is inside the polygon, otherwise it is
        * outside. This is known as the Jordan curve theorem. */
@@ -134,16 +117,29 @@ intersect(Ray& r) const
        * the same for the next vertex. */
       int sign, nextSign;
 
+      float uv0[2];
+      float uv1[2];
+
+      auto& v = _vertices[0];
+
+      uv0[U] = v[i1] - INTERSECT_U;
+      uv0[V] = v[i2] - INTERSECT_V;
+
       for (int i = 0; i < _vertexCount; i++)
       {
-         float* A = verts + i*2;
-         float* B = verts + ((i+1) % _vertexCount) * 2;
+         auto& v1 = _vertices[(i + 1) % _vertexCount];
 
-         float Ua = A[U];
-         float Ub = B[U];
+         uv1[U] = v1[i1] - INTERSECT_U;
+         uv1[V] = v1[i2] - INTERSECT_V;
 
-         float Va = A[V];
-         float Vb = B[V];
+         float Ua = uv0[U];
+         float Ub = uv1[U];
+
+         float Va = uv0[V];
+         float Vb = uv1[V];
+
+         uv0[U] = uv1[U];
+         uv0[V] = uv1[V];
 
          if (Va >= 0) sign = +1;
          else sign = -1;
@@ -174,8 +170,6 @@ intersect(Ray& r) const
             }
          }
       }
-
-      delete[] verts;
 
       return crossings % 2 == 1;
    }
