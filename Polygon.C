@@ -108,18 +108,18 @@ intersect(Ray& r) const
       const float INTERSECT_U = p[i1];
       const float INTERSECT_V = p[i2];
 
-      vector<vector<float>> verts(_vertexCount);
+      float* verts = new float[_vertexCount * 2];
 
       for (int i = 0; i < _vertexCount; i++)
       {
-         auto& vert = verts[i];
+         float* vert = verts + i*2;
 
          vec3& vertex = _vertices[i];
 
          /* Centre the new vertices around the intersection point by subtracting
           * it from them. */
-         vert.push_back(vertex[i1] - INTERSECT_U);
-         vert.push_back(vertex[i2] - INTERSECT_V);
+         vert[U] = vertex[i1] - INTERSECT_U;
+         vert[V] = vertex[i2] - INTERSECT_V;
       }
 
       /* Count the amount of times a ray along the +U axis crosses the polygon,
@@ -133,11 +133,14 @@ intersect(Ray& r) const
 
       for (int i = 0; i < _vertexCount; i++)
       {
-         float Ua = verts[i][U];
-         float Ub = verts[(i + 1) % _vertexCount][U];
+         float* A = verts + i*2;
+         float* B = verts + ((i+1) % _vertexCount) * 2;
 
-         float Va = verts[i][V];
-         float Vb = verts[(i + 1) % _vertexCount][V];
+         float Ua = A[U];
+         float Ub = B[U];
+
+         float Va = A[V];
+         float Vb = B[V];
 
          if (Va >= 0) sign = +1;
          else sign = -1;
