@@ -396,4 +396,3 @@ void Squad (Quaternion* res, float t, Quaternion* p, Quaternion* a,
 void QuatToMatrix(Quaternion* quat, float m[4][4]);
 
 #endif
-

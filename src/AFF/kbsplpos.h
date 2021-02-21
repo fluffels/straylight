@@ -210,5 +210,3 @@ static void ComputeArcLength(SplineInfo* info);
 float Length(CubicPolynomial* poly, float u);
 
 #endif
-
-
