@@ -36,7 +36,8 @@ Camera(const vec3& cop, const vec3& at, const vec3& up,
    _right = 2 * tan(_viewAngle / 2) * normalize(_right);
 
    /* Take the aspect ratio of non-square resolutions into account. */
-   _up = _height / _width * length(_right) * normalize(_up);
+   auto ar = (float)_height / _width;
+   _up = ar * length(_right) * normalize(_up);
 }
 
 Ray Camera::

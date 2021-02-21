@@ -13,7 +13,7 @@ for TEST in $TESTS; do
     TEST_PATH="./Test/$TEST.nff"
     echo $TEST_PATH
     echo $TEST_PATH >> ./Test/out/times.log
-    time -a -o ./Test/out/times.log ./straylight -w 512 -h 512 -t 16 -m 2 -f ./Test/$TEST.nff -o ./Test/out/$TEST.png
+    time -a -o ./Test/out/times.log ./straylight -t 16 -m 2 -f ./Test/$TEST.nff -o ./Test/out/$TEST.png
 done
 
 SPD_TESTS="balls gears jacks lattice mount nurbst rings sample shells sombrero teapot tetra tree"
