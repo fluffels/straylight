@@ -1,3 +1,5 @@
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+
 cmake_minimum_required(VERSION 3.5)
 project(straylight)
 
@@ -6,7 +8,9 @@ set(CMAKE_CXX_STANDARD 14)
 if (WIN32)
     set(CMAKE_CXX_FLAGS "/EHsc")
 ELSE()
-    set(CMAKE_CXX_FLAGS "-lpthread")
+    set(CMAKE_CXX_FLAGS "-lpthread -O3")
+    set(CMAKE_CXX_FLAGS_DEBUG "-g")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 ENDIF()
 
 include_directories (${CMAKE_HOME_DIRECTORY}/lib)
