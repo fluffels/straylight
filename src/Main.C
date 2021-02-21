@@ -8,7 +8,7 @@ ThreadProc(
     auto pixel = InterlockedIncrement64(&nextPixel);
 
     while (pixel < width * height) {
-        if ((progress == true) && (pixel % 1000 == 0)) {
+        if ((progress == true) && (pixel % 100000 == 0)) {
             printf("%f%% complete...\n", (float) pixel / (width * height) * 100);
         }
         int y = height - 1 - pixel / width;
