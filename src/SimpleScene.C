@@ -27,7 +27,7 @@ getLineOfSight(Light& source, const SceneObject& dest, vec3& p)
    
    /* This is the maximum distance an obscuring object can be at, measured from 
     * 'source'. */
-   const float MAX_DIST = length(p - source.pos) - 0.001f;
+   const float MAX_DIST = length(p - source.pos) - 0.1f;
 
    /* A ray from the 'source' vector to the 'dest' vector. */
    vec3& pos = source.pos;
