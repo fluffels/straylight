@@ -10,7 +10,7 @@ if (WIN32)
 ELSE()
     set(CMAKE_CXX_FLAGS "-pthread")
     set(CMAKE_CXX_FLAGS_DEBUG "-g")
-    set(CMAKE_CXX_FLAGS_RELEASE "-O2")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O1")
 ENDIF()
 
 include_directories (${CMAKE_HOME_DIRECTORY}/lib)
