@@ -62,7 +62,7 @@ castRays() {
 
     int64_t delta = end.QuadPart - epoch.QuadPart;
     float seconds = (float)delta / counterFrequency.QuadPart;
-    printf("%fs", seconds);
+    printf("%fs\n", seconds);
 }
 #else
 void
@@ -177,17 +177,26 @@ loadNFFFile() {
     fclose(nffFile);
 }
 
-unsigned char*
-post_process(float* image)
-{
-    unsigned char* bytes = new unsigned char[width * height * COMPONENTS];
-    for (int j = 0; j < width * height * COMPONENTS; j++)
-    {
-        float f = image[j];
-        bytes[j] = min<int>(255, f * 255);
+void
+postProcess(float* image, uint8_t* bytes) {
+    float maxLuminance = 0;
+    for (int p = 0; p < width * height; p++) {
+        float* pixel = image + (p * COMPONENTS);
+        float luminance = 0;
+        for (int c = 0; c < COMPONENTS; c++) {
+            luminance += pow(pixel[c], 2);
+        }
+        if (luminance > maxLuminance) {
+            maxLuminance = luminance;
+        }
     }
+    maxLuminance = sqrtf(maxLuminance);
 
-    return bytes;
+    for (int i = 0; i < width * height * COMPONENTS; i++) {
+        float adjustedValue = image[i] / maxLuminance;
+        adjustedValue *= 255;
+        bytes[i] = (uint8_t)adjustedValue;
+    }
 }
 
 int
@@ -198,9 +207,12 @@ main(int argc, char **argv) {
 
     castRays();
 
-    unsigned char *bytes = post_process(image);
+    unsigned char* bytes = new unsigned char[width * height * COMPONENTS];
+    postProcess(image, bytes);
+
     stbi_write_png(outFileName, width, height, COMPONENTS, bytes, 0);
 
+    delete[] bytes;
     delete[] image;
     delete scene;
 
